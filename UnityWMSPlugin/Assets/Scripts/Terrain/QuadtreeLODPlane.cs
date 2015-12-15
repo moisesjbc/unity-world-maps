@@ -5,6 +5,16 @@ using System.Collections.Generic;
 public class QuadtreeLODPlane : MonoBehaviour {
 	private QuadtreeLODNode rootNode = null;
 
+	public Vector2 bottomLeftCoordinates = new Vector2 ( 416000,3067000 );
+	public Vector2 topRightCoordinates = new Vector2 ( 466000,3117000 );
+
+
+	public void Start()
+	{
+		Reset (bottomLeftCoordinates, topRightCoordinates);
+	}
+
+
 	public void Reset( Vector2 bottomLeftCoordinates, Vector3 topRightCoordinates )
 	{
 		Vector3 meshSize = GetComponent<MeshRenderer> ().bounds.size;
