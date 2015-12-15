@@ -5,6 +5,7 @@ using System.Collections.Generic;
 public class QuadtreeLODPlane : MonoBehaviour {
 	private QuadtreeLODNode rootNode = null;
 
+	public string serverURL = "http://idecan1.grafcan.com/ServicioWMS/OrtoExpress";
 	public Vector2 bottomLeftCoordinates = new Vector2 ( 416000,3067000 );
 	public Vector2 topRightCoordinates = new Vector2 ( 466000,3117000 );
 
@@ -41,7 +42,8 @@ public class QuadtreeLODPlane : MonoBehaviour {
 		                               bottomLeftCoordinates,
 		                               topRightCoordinates,
 		                               transform, 
-		                               this.GetComponent<Material>() 
+		                               this.GetComponent<Material>(),
+		                               serverURL
 		                               );
 		GetComponent<MeshRenderer> ().enabled = false;
 	}

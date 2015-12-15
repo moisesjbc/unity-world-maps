@@ -31,13 +31,17 @@ public class QuadtreeLODNode {
 	private static HeightMapsManager heightMapsManager = new HeightMapsManager();
 	private static MapTexturesManager mapTexturesManager = new MapTexturesManager();
 
+	private string serverURL;
 
-	public QuadtreeLODNode( float meshSize, 
+
+	public QuadtreeLODNode( 
+	                       float meshSize, 
 	                       int meshVertexResolution, 
 	                       Vector2 bottomLeftCoordinates,
 	                       Vector2 topLeftCoordinates,
 	                       Transform transform, 
-	                       Material material )
+	                       Material material,
+	                       string serverURL )
 	{		
 		gameObject_ = GameObject.Instantiate( emptyGameObject );
 		gameObject_.AddComponent<MeshRenderer>();
@@ -66,12 +70,14 @@ public class QuadtreeLODNode {
 		metersPerUnit = (topRightCoordinates_.x - bottomLeftCoordinates_.x) / gameObject_.GetComponent<MeshRenderer> ().bounds.size.x;
 		Debug.Log ("metersPerUnit: " + metersPerUnit);
 		
-		textureRequestId = mapTexturesManager.RequestTexture (bottomLeftCoordinates_, topRightCoordinates_);
+		textureRequestId = mapTexturesManager.RequestTexture (serverURL, bottomLeftCoordinates_, topRightCoordinates_);
 		heightMapRequestId = heightMapsManager.RequestHeightMap ( bottomLeftCoordinates_, topRightCoordinates_, meshVertexResolution_ );
+	
+		this.serverURL = serverURL;
 	}
 
 
-	public QuadtreeLODNode( QuadtreeLODNode parent, Color color, Vector3 localPosition, Vector2 bottomLeftCoordinates, Vector2 topRightCoordinates )
+	public QuadtreeLODNode( QuadtreeLODNode parent, Color color, Vector3 localPosition, Vector2 bottomLeftCoordinates, Vector2 topRightCoordinates, string serverURL )
 	{
 		gameObject_ = GameObject.Instantiate( emptyGameObject );
 		gameObject_.AddComponent<MeshRenderer>();
@@ -114,8 +120,10 @@ public class QuadtreeLODNode {
 
 		metersPerUnit = (topRightCoordinates_.x - bottomLeftCoordinates_.x) / gameObject_.GetComponent<MeshRenderer> ().bounds.size.x;
 
-		textureRequestId = mapTexturesManager.RequestTexture (bottomLeftCoordinates_, topRightCoordinates_);
+		textureRequestId = mapTexturesManager.RequestTexture (serverURL, bottomLeftCoordinates_, topRightCoordinates_);
 		heightMapRequestId = heightMapsManager.RequestHeightMap ( bottomLeftCoordinates_ - mapSizeVector, topRightCoordinates_ + mapSizeVector, meshVertexResolution_ + (meshVertexResolution_ - 1) * 2 );
+	
+		this.serverURL = serverURL;
 	}
 
 
@@ -283,7 +291,7 @@ public class QuadtreeLODNode {
 		};
 		
 		for( int i=0; i<4; i++ ){
-			children_[i] = new QuadtreeLODNode( this, childrenColors[i], childLocalPosition[i], childrenBottomLeftCoordinates[i], childrenTopLeftCoordinates[i] ); 
+			children_[i] = new QuadtreeLODNode( this, childrenColors[i], childLocalPosition[i], childrenBottomLeftCoordinates[i], childrenTopLeftCoordinates[i], serverURL ); 
 		}
 	}
 

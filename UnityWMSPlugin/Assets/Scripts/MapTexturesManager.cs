@@ -6,6 +6,7 @@ using System.IO;
 public class MapTexturesManager : OnlineResourcesManager
 {
 	public string RequestTexture( 
+	                            string serverURL,
 	                            Vector2 bottomLeftCoordinates, 
 	                            Vector2 topRightCoordinates
 	                             ){
@@ -17,7 +18,7 @@ public class MapTexturesManager : OnlineResourcesManager
 			return newId
 		}
 #endif
-		string fixedUrl = "http://idecan1.grafcan.com/ServicioWMS/OrtoExpress?SERVICE=WMS&LAYERS=ortoexpress&REQUEST=GetMap&VERSION=1.1.0&FORMAT=image/jpeg&SRS=EPSG:32628&WIDTH=128&HEIGHT=128&REFERER=CAPAWARE";
+		string fixedUrl = serverURL + "?SERVICE=WMS&LAYERS=ortoexpress&REQUEST=GetMap&VERSION=1.1.0&FORMAT=image/jpeg&SRS=EPSG:32628&WIDTH=128&HEIGHT=128&REFERER=CAPAWARE";
 		string bboxUrlQuery = 
 			"&BBOX=" + bottomLeftCoordinates.x + "," +
 				bottomLeftCoordinates.y + "," +

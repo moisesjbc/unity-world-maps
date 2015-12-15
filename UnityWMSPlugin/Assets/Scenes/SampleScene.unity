@@ -124,6 +124,10 @@ Prefab:
       propertyPath: m_RootOrder
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 11401632, guid: d8e350d7eb1a3774880568d15e33ce19, type: 2}
+      propertyPath: serverURL
+      value: http://idecan1.grafcan.com/ServicioWMS/OrtoExpress
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: d8e350d7eb1a3774880568d15e33ce19, type: 2}
   m_IsPrefabParent: 0
