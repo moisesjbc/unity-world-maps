@@ -18,7 +18,7 @@ public class MapTexturesManager : OnlineResourcesManager
 			return newId
 		}
 #endif
-		string fixedUrl = serverURL + "?" + fixedQueryString;
+		string fixedUrl = serverURL + fixedQueryString;
 		string bboxUrlQuery = 
 			"&BBOX=" + bottomLeftCoordinates.x + "," +
 				bottomLeftCoordinates.y + "," +
