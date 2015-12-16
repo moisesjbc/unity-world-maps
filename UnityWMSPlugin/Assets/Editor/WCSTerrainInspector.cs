@@ -16,15 +16,15 @@ public class WCSTerrainInspector : Editor
 		Vector2 topRightCoordinates = quadtreeLODPlane.topRightCoordinates;
 
 		string newServerURL = EditorGUILayout.TextArea (quadtreeLODPlane.serverURL);
-		if (newServerURL != quadtreeLODPlane.serverURL) 
+		if ( quadtreeLODPlane.wmsInfo == null || newServerURL != quadtreeLODPlane.serverURL) 
 		{
 			Debug.Log ("Downloading layers");
 			quadtreeLODPlane.serverURL = newServerURL;
-			quadtreeLODPlane.layers = WMSClient.Request (newServerURL, "1.1.0" ).GetLayerTitles();
+			quadtreeLODPlane.wmsInfo = WMSClient.Request (newServerURL, "1.1.0" );
 		}
 
-		if( quadtreeLODPlane.layers.Length > 0 ){
-			EditorGUILayout.Popup ("Layer", 0, quadtreeLODPlane.layers);
+		if( quadtreeLODPlane.wmsInfo.GetLayerTitles().Length > 0 ){
+			EditorGUILayout.Popup ("Layers", 0, quadtreeLODPlane.wmsInfo.GetLayerTitles());
 		}
 		
 		quadtreeLODPlane.bottomLeftCoordinates = 
