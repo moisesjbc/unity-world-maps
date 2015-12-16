@@ -6,29 +6,48 @@ using System.IO;
 
 public class WMSXMLParser {
 	
-	public static List<string> GetLayers( string xmlString ){
+	public static WMSInfo GetWMSInfo( string xmlString ){
 		Debug.Log(xmlString);
-		List<string> layers = new List<string>();
 
 		XmlDocument xmlDocument = new XmlDocument ();
 		xmlDocument.LoadXml (xmlString);
 
 		XmlNode rootNode = xmlDocument.DocumentElement;
 
-		XmlNodeList layersNodes = rootNode.SelectSingleNode("Capability").SelectNodes ("Layer");
+		// Parse WMS layers.
+		WMSLayer[] layers = parseWMSLayers( rootNode.SelectSingleNode("Capability").SelectNodes ("Layer") );
 
-		foreach( XmlNode layerNode in layersNodes ){
-			string layerTitle = layerNode.SelectSingleNode("Title").InnerText;
+		return new WMSInfo(layers);
+	}
 
-			XmlNodeList subLayersNodes = layerNode.SelectNodes ("Layer");
 
-			foreach( XmlNode subLayerNode in subLayersNodes ){
-				Debug.Log ( subLayerNode.SelectSingleNode("Title").InnerText );
-				layers.Add ( layerTitle + "/" + subLayerNode.SelectSingleNode("Title").InnerText );
+	private static WMSLayer[] parseWMSLayers( XmlNodeList layersNodes )
+	{
+		WMSLayer[] layers = null;
+		if (layersNodes.Count > 0) {
+			layers = new WMSLayer[layersNodes.Count];
+			int i = 0;
+			foreach (XmlNode layerNode in layersNodes) {
+				layers [i] = parseWMSLayer (layerNode);
+				i++;
 			}
-		}
 
+			return layers;
+		}
 		return layers;
+	}
+
+
+	private static WMSLayer parseWMSLayer( XmlNode layerXmlNode )
+	{
+		WMSLayer layer = new WMSLayer();
+
+		layer.title = layerXmlNode.SelectSingleNode("Title").InnerText;
+
+		Debug.Log ("layer.title: " + layer.title);
+		layer.subLayers = parseWMSLayers (layerXmlNode.SelectNodes ("Layer"));
+
+		return layer;
 	}
 
 }

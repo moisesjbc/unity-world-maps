@@ -20,7 +20,7 @@ public class WCSTerrainInspector : Editor
 		{
 			Debug.Log ("Downloading layers");
 			quadtreeLODPlane.serverURL = newServerURL;
-			quadtreeLODPlane.layers = WMSLayersRequester.RequestLayers( newServerURL, "1.1.0" ).ToArray();
+			quadtreeLODPlane.layers = WMSClient.Request (newServerURL, "1.1.0" ).GetLayerTitles();
 		}
 
 		if( quadtreeLODPlane.layers.Length > 0 ){

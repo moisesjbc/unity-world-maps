@@ -2,9 +2,9 @@
 using System.Collections;
 using System.Collections.Generic;
 
-public class WMSLayersRequester {
+public class WMSClient {
 
-	public static List<string> RequestLayers( string server, string version = "1.1.0" )
+	public static WMSInfo Request( string server, string version = "1.1.0" )
 	{
 		string url = 
 			server + "?REQUEST=GetCapabilities&SERVICE=WMS" + "&VERSION=" + version;
@@ -14,7 +14,7 @@ public class WMSLayersRequester {
 		WWW www = new WWW(url);
 		while( !www.isDone );
 
-		return WMSXMLParser.GetLayers (www.text);
+		return WMSXMLParser.GetWMSInfo (www.text);
 	}
 	
 }
