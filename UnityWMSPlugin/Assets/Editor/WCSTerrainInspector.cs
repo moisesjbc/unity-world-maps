@@ -24,20 +24,27 @@ public class WCSTerrainInspector : Editor
 		}
 
 		if( quadtreeLODPlane.wmsInfo.GetLayerTitles().Length > 0 ){
-			EditorGUILayout.Popup ("Layers", 0, quadtreeLODPlane.wmsInfo.GetLayerTitles());
+			quadtreeLODPlane.currentLayerIndex = 
+				EditorGUILayout.Popup (
+					"Layers",
+					quadtreeLODPlane.currentLayerIndex, 
+					quadtreeLODPlane.wmsInfo.GetLayerTitles()
+				);
+		
+			quadtreeLODPlane.bottomLeftCoordinates = 
+				EditorGUILayout.Vector2Field (
+					"Bottom left coordinates",
+					bottomLeftCoordinates
+				);
+			
+			quadtreeLODPlane.topRightCoordinates = 
+				EditorGUILayout.Vector2Field (
+					"Top right coordinates",
+					topRightCoordinates
+				);
 		}
 		
-		quadtreeLODPlane.bottomLeftCoordinates = 
-			EditorGUILayout.Vector2Field (
-				"Bottom left coordinates",
-				bottomLeftCoordinates
-			);
 
-		quadtreeLODPlane.topRightCoordinates = 
-			EditorGUILayout.Vector2Field (
-				"Top right coordinates",
-				topRightCoordinates
-			);
 	}
 
 

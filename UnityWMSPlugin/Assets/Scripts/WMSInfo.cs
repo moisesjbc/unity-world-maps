@@ -12,6 +12,7 @@ public struct WMSLayer
 public class WMSInfo
 {
 	private WMSLayer[] layers;
+	private int currentLayerIndex = 0;
 
 	public WMSInfo( WMSLayer[] layers )
 	{
@@ -38,5 +39,11 @@ public class WMSInfo
 		}
 
 		return layersTitles;
+	}
+
+
+	public int CurrentLayerIndex()
+	{
+		return currentLayerIndex;
 	}
 }
