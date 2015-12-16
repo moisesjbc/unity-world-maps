@@ -14,6 +14,7 @@ public class QuadtreeLODPlane : MonoBehaviour {
 
 	public void Start()
 	{
+		Debug.Log ("<serverURL>: " + serverURL);
 		Reset (bottomLeftCoordinates, topRightCoordinates);
 	}
 
@@ -37,7 +38,7 @@ public class QuadtreeLODPlane : MonoBehaviour {
 				Destroy (mapSectors[i]);
 			}
 		}
-
+		
 		rootNode = new QuadtreeLODNode( 
 		                               mapSize, 
 		                               20, 

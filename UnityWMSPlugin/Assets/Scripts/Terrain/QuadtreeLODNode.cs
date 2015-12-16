@@ -23,7 +23,7 @@ public class QuadtreeLODNode {
 	bool textureLoaded = false;
 
 	string heightMapRequestId;
-	bool heightMapLoaded = false;
+	bool heightMapLoaded = true;
 
 	float metersPerUnit = 0.0f;
 

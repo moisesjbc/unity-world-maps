@@ -15,39 +15,43 @@ public class WMSXMLParser {
 		XmlNode rootNode = xmlDocument.DocumentElement;
 
 		// Parse WMS layers.
-		WMSLayer[] layers = parseWMSLayers( rootNode.SelectSingleNode("Capability").SelectNodes ("Layer") );
+		List<WMSLayer> layers = new List<WMSLayer> ();
+		parseWMSLayers( rootNode.SelectSingleNode("Capability").SelectNodes ("Layer"), ref layers );
 
-		return new WMSInfo(layers);
+		return new WMSInfo(layers.ToArray ());
 	}
 
 
-	private static WMSLayer[] parseWMSLayers( XmlNodeList layersNodes )
+	private static void parseWMSLayers( XmlNodeList layersNodes, ref List<WMSLayer> layers )
 	{
-		WMSLayer[] layers = null;
 		if (layersNodes.Count > 0) {
-			layers = new WMSLayer[layersNodes.Count];
-			int i = 0;
 			foreach (XmlNode layerNode in layersNodes) {
-				layers [i] = parseWMSLayer (layerNode);
-				i++;
+				parseWMSLayer (layerNode, ref layers);
 			}
-
-			return layers;
 		}
-		return layers;
 	}
 
 
-	private static WMSLayer parseWMSLayer( XmlNode layerXmlNode )
+	private static void parseWMSLayer( XmlNode layerXmlNode, ref List<WMSLayer> layers )
 	{
-		WMSLayer layer = new WMSLayer();
+		if (layerXmlNode.SelectNodes ("Layer").Count == 0) {
+			WMSLayer layer = new WMSLayer();
 
-		layer.title = layerXmlNode.SelectSingleNode("Title").InnerText;
+			layer.title = layerXmlNode.SelectSingleNode("Title").InnerText;
 
-		Debug.Log ("layer.title: " + layer.title);
-		layer.subLayers = parseWMSLayers (layerXmlNode.SelectNodes ("Layer"));
+			XmlNode boundingBoxXmlNode = layerXmlNode.SelectSingleNode ("BoundingBox");
+			
+			layer.bottomLeftCoordinates.x = float.Parse (boundingBoxXmlNode.Attributes ["minx"].InnerText);
+			layer.bottomLeftCoordinates.y = float.Parse (boundingBoxXmlNode.Attributes ["miny"].InnerText);
+			layer.topRightCoordinates.x = float.Parse (boundingBoxXmlNode.Attributes ["maxx"].InnerText);
+			layer.topRightCoordinates.y = float.Parse (boundingBoxXmlNode.Attributes ["maxy"].InnerText);
+		
+			Debug.Log ("layer.title: " + layer.title);
 
-		return layer;
+			layers.Add (layer);
+		} else {
+			parseWMSLayers (layerXmlNode.SelectNodes ("Layer"), ref layers);
+		}
 	}
 
 }

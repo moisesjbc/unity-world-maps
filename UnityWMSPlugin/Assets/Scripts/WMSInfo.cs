@@ -5,7 +5,8 @@ using System.Collections.Generic;
 public struct WMSLayer
 {
 	public string title;
-	public WMSLayer[] subLayers;
+	public Vector2 bottomLeftCoordinates;
+	public Vector2 topRightCoordinates;
 }
 
 
@@ -22,28 +23,24 @@ public class WMSInfo
 
 	public string[] GetLayerTitles()
 	{
-		return GenerateLayerTitles (layers).ToArray ();
-	}
-
-
-	private List<string> GenerateLayerTitles( WMSLayer[] layers, string prefix = "" )
-	{
-		List<string> layersTitles = new List<string> ();
-
-		for( int i=0; i<layers.Length; i++ ){
-			if( layers[i].subLayers != null ){
-				layersTitles.AddRange( GenerateLayerTitles ( layers[i].subLayers, prefix + layers[i].title + "/" ) );
-			}else{
-				layersTitles.Add ( prefix + layers[i].title );
-			}
+		string[] layerTitles = new string[layers.Length];
+		
+		for (int i=0; i<layers.Length; i++) {
+			layerTitles[i] = layers[i].title;
 		}
 
-		return layersTitles;
+		return layerTitles;
 	}
 
 
 	public int CurrentLayerIndex()
 	{
 		return currentLayerIndex;
+	}
+
+
+	public WMSLayer GetLayer( int index )
+	{
+		return layers [index];
 	}
 }

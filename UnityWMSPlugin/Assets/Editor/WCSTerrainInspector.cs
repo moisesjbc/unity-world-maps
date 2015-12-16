@@ -6,14 +6,9 @@ using UnityEditor;
 [CustomEditor(typeof(QuadtreeLODPlane))]
 public class WCSTerrainInspector : Editor 
 {
-	public int selectedRegion = 0;
-
 	public override void OnInspectorGUI()
 	{
 		QuadtreeLODPlane quadtreeLODPlane = (QuadtreeLODPlane)target;
-
-		Vector2 bottomLeftCoordinates = quadtreeLODPlane.bottomLeftCoordinates;
-		Vector2 topRightCoordinates = quadtreeLODPlane.topRightCoordinates;
 
 		string newServerURL = EditorGUILayout.TextArea (quadtreeLODPlane.serverURL);
 		if ( quadtreeLODPlane.wmsInfo == null || newServerURL != quadtreeLODPlane.serverURL) 
@@ -30,34 +25,30 @@ public class WCSTerrainInspector : Editor
 					quadtreeLODPlane.currentLayerIndex, 
 					quadtreeLODPlane.wmsInfo.GetLayerTitles()
 				);
+
+			WMSLayer currentLayer = quadtreeLODPlane.wmsInfo.GetLayer ( quadtreeLODPlane.currentLayerIndex );
 		
+			if( GUILayout.Button("Full Layer") ){
+				quadtreeLODPlane.bottomLeftCoordinates = currentLayer.bottomLeftCoordinates;
+				quadtreeLODPlane.topRightCoordinates = currentLayer.topRightCoordinates;
+			}
+
 			quadtreeLODPlane.bottomLeftCoordinates = 
 				EditorGUILayout.Vector2Field (
 					"Bottom left coordinates",
-					bottomLeftCoordinates
+					quadtreeLODPlane.bottomLeftCoordinates
 				);
 			
 			quadtreeLODPlane.topRightCoordinates = 
 				EditorGUILayout.Vector2Field (
 					"Top right coordinates",
-					topRightCoordinates
+					quadtreeLODPlane.topRightCoordinates
 				);
 		}
-		
 
-	}
-
-
-	private void GetSavedLocationCoordinates( string location, 
-	                                    out Vector2 bottomLeftCoordinates, 
-	                                    out Vector2 topRightCoordinates )
-	{
-		if (location == "Gran Canaria") {
-			bottomLeftCoordinates = new Vector2 (416000, 3067000);
-			topRightCoordinates = new Vector2 (466000, 3117000);
-		} else {
-			bottomLeftCoordinates = new Vector2 ( 310000,3090000 );
-			topRightCoordinates = new Vector2 ( 392000,3172000 );
+		// Mark the target assert as changed ("dirty") so Unity save it to disk.
+		if (GUI.changed) {
+			EditorUtility.SetDirty (quadtreeLODPlane);
 		}
 	}
 }
