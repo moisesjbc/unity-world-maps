@@ -27,7 +27,8 @@ public class WCSTerrainInspector : Editor
 				);
 
 			WMSLayer currentLayer = quadtreeLODPlane.wmsInfo.GetLayer ( quadtreeLODPlane.currentLayerIndex );
-		
+			quadtreeLODPlane.layersQuery = currentLayer.name;
+
 			if( GUILayout.Button("Full Layer") ){
 				quadtreeLODPlane.bottomLeftCoordinates = currentLayer.bottomLeftCoordinates;
 				quadtreeLODPlane.topRightCoordinates = currentLayer.topRightCoordinates;

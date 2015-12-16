@@ -126,27 +126,31 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 11401632, guid: d8e350d7eb1a3774880568d15e33ce19, type: 2}
       propertyPath: bottomLeftCoordinates.x
-      value: 300000
+      value: 13.9460001
       objectReference: {fileID: 0}
     - target: {fileID: 11401632, guid: d8e350d7eb1a3774880568d15e33ce19, type: 2}
       propertyPath: bottomLeftCoordinates.y
-      value: 3060000
+      value: 51.7403984
       objectReference: {fileID: 0}
     - target: {fileID: 11401632, guid: d8e350d7eb1a3774880568d15e33ce19, type: 2}
       propertyPath: topRightCoordinates.x
-      value: 662000
+      value: 13.9575996
       objectReference: {fileID: 0}
     - target: {fileID: 11401632, guid: d8e350d7eb1a3774880568d15e33ce19, type: 2}
       propertyPath: topRightCoordinates.y
-      value: 3256000
+      value: 51.7515984
       objectReference: {fileID: 0}
     - target: {fileID: 11401632, guid: d8e350d7eb1a3774880568d15e33ce19, type: 2}
       propertyPath: serverURL
-      value: http://idecan1.grafcan.com/ServicioWMS/OrtoExpress
+      value: http://wms.openstreetmap.de/wms
       objectReference: {fileID: 0}
     - target: {fileID: 11401632, guid: d8e350d7eb1a3774880568d15e33ce19, type: 2}
       propertyPath: currentLayerIndex
-      value: 0
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 11401632, guid: d8e350d7eb1a3774880568d15e33ce19, type: 2}
+      propertyPath: layersQuery
+      value: Calau
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: d8e350d7eb1a3774880568d15e33ce19, type: 2}

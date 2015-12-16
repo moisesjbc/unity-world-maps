@@ -5,6 +5,7 @@ using System.Collections.Generic;
 public struct WMSLayer
 {
 	public string title;
+	public string name;
 	public Vector2 bottomLeftCoordinates;
 	public Vector2 topRightCoordinates;
 }

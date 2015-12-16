@@ -38,6 +38,7 @@ public class WMSXMLParser {
 			WMSLayer layer = new WMSLayer();
 
 			layer.title = layerXmlNode.SelectSingleNode("Title").InnerText;
+			layer.name = layerXmlNode.SelectSingleNode("Name").InnerText;
 
 			XmlNode boundingBoxXmlNode = layerXmlNode.SelectSingleNode ("BoundingBox");
 			
