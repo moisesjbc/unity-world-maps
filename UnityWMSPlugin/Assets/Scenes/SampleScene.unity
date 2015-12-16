@@ -126,31 +126,35 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 11401632, guid: d8e350d7eb1a3774880568d15e33ce19, type: 2}
       propertyPath: bottomLeftCoordinates.x
-      value: 13.9460001
+      value: -24.632
       objectReference: {fileID: 0}
     - target: {fileID: 11401632, guid: d8e350d7eb1a3774880568d15e33ce19, type: 2}
       propertyPath: bottomLeftCoordinates.y
-      value: 51.7403984
+      value: 20.368
       objectReference: {fileID: 0}
     - target: {fileID: 11401632, guid: d8e350d7eb1a3774880568d15e33ce19, type: 2}
       propertyPath: topRightCoordinates.x
-      value: 13.9575996
+      value: 48.7599983
       objectReference: {fileID: 0}
     - target: {fileID: 11401632, guid: d8e350d7eb1a3774880568d15e33ce19, type: 2}
       propertyPath: topRightCoordinates.y
-      value: 51.7515984
+      value: 86.6320038
       objectReference: {fileID: 0}
     - target: {fileID: 11401632, guid: d8e350d7eb1a3774880568d15e33ce19, type: 2}
       propertyPath: serverURL
-      value: http://wms.openstreetmap.de/wms
+      value: http://geo.vliz.be/geoserver/ows
       objectReference: {fileID: 0}
     - target: {fileID: 11401632, guid: d8e350d7eb1a3774880568d15e33ce19, type: 2}
       propertyPath: currentLayerIndex
-      value: 3
+      value: 30
       objectReference: {fileID: 0}
     - target: {fileID: 11401632, guid: d8e350d7eb1a3774880568d15e33ce19, type: 2}
       propertyPath: layersQuery
       value: Calau
+      objectReference: {fileID: 0}
+    - target: {fileID: 11401632, guid: d8e350d7eb1a3774880568d15e33ce19, type: 2}
+      propertyPath: fixedQueryString
+      value: ?SERVICE=WMS&LAYERS=Emodnet:autumn_T&REQUEST=GetMap&VERSION=1.1.0&FORMAT=image/jpeg&SRS=EPSG:4326&WIDTH=128&HEIGHT=128&REFERER=CAPAWARE
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: d8e350d7eb1a3774880568d15e33ce19, type: 2}
@@ -295,8 +299,8 @@ Transform:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1690532459}
-  m_LocalRotation: {x: .382683456, y: 0, z: 0, w: .923879504}
-  m_LocalPosition: {x: 0, y: 10, z: -10}
+  m_LocalRotation: {x: .707106829, y: 0, z: 0, w: .707106709}
+  m_LocalPosition: {x: 0, y: 15, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
