@@ -85,6 +85,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ebcc2a4a1542b4248b6148b1052b6405, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  serverURL: http://idecan1.grafcan.com/ServicioWMS/OrtoExpress
+  layer: 
+  bottomLeftCoordinates: {x: 416000, y: 3067000}
+  topRightCoordinates: {x: 466000, y: 3117000}
 --- !u!1001 &100100000
 Prefab:
   m_ObjectHideFlags: 1

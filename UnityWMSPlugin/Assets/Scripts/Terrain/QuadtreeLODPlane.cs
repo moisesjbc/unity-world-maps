@@ -6,6 +6,7 @@ public class QuadtreeLODPlane : MonoBehaviour {
 	private QuadtreeLODNode rootNode = null;
 
 	public string serverURL = "http://idecan1.grafcan.com/ServicioWMS/OrtoExpress";
+	public string[] layers = new string[]{};
 	public Vector2 bottomLeftCoordinates = new Vector2 ( 416000,3067000 );
 	public Vector2 topRightCoordinates = new Vector2 ( 466000,3117000 );
 
