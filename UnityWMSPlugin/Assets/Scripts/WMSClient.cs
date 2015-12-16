@@ -8,8 +8,6 @@ public class WMSClient {
 	{
 		string url = 
 			server + "?REQUEST=GetCapabilities&SERVICE=WMS" + "&VERSION=" + version;
-			
-		Debug.Log ("url: " + url);
 
 		WWW www = new WWW(url);
 		while( !www.isDone );

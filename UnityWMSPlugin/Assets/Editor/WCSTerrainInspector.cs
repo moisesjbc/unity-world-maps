@@ -13,12 +13,14 @@ public class WCSTerrainInspector : Editor
 		string newServerURL = EditorGUILayout.TextArea (quadtreeLODPlane.serverURL);
 		if ( quadtreeLODPlane.wmsInfo == null || newServerURL != quadtreeLODPlane.serverURL) 
 		{
-			Debug.Log ("Downloading layers");
+			Debug.Log ("Downloading layers ...");
 			quadtreeLODPlane.serverURL = newServerURL;
 			quadtreeLODPlane.wmsInfo = WMSClient.Request (newServerURL, "1.1.0" );
+			Debug.Log ("Downloading layers ...OK");
 		}
 
 		if( quadtreeLODPlane.wmsInfo.GetLayerTitles().Length > 0 ){
+			Debug.Log ("Updating inspector ...");
 			quadtreeLODPlane.currentLayerIndex = 
 				EditorGUILayout.Popup (
 					"Layers",
@@ -51,6 +53,7 @@ public class WCSTerrainInspector : Editor
 		if (GUI.changed) {
 			EditorUtility.SetDirty (quadtreeLODPlane);
 		}
+		Debug.Log ("Updating inspector ...OK");
 	}
 
 

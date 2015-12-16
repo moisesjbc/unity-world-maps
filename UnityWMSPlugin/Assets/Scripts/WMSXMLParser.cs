@@ -49,8 +49,6 @@ public class WMSXMLParser {
 		
 			layer.boundingBoxSRS = boundingBoxXmlNode.Attributes["SRS"].InnerText;
 
-			Debug.Log ("layer.title: " + layer.title);
-
 			layers.Add (layer);
 		} else {
 			parseWMSLayers (layerXmlNode.SelectNodes ("Layer"), ref layers);
