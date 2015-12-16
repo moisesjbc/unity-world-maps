@@ -8,6 +8,7 @@ public struct WMSLayer
 	public string name;
 	public Vector2 bottomLeftCoordinates;
 	public Vector2 topRightCoordinates;
+	public string boundingBoxSRS;
 }
 
 

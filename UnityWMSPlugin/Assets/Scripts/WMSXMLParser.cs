@@ -47,6 +47,8 @@ public class WMSXMLParser {
 			layer.topRightCoordinates.x = float.Parse (boundingBoxXmlNode.Attributes ["maxx"].InnerText);
 			layer.topRightCoordinates.y = float.Parse (boundingBoxXmlNode.Attributes ["maxy"].InnerText);
 		
+			layer.boundingBoxSRS = boundingBoxXmlNode.Attributes["SRS"].InnerText;
+
 			Debug.Log ("layer.title: " + layer.title);
 
 			layers.Add (layer);
