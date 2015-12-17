@@ -78,6 +78,7 @@ public class WCSTerrainInspector : Editor
 			"&REQUEST=GetMap&VERSION=" + wmsVersion +
 			"&FORMAT=image/jpeg" +
 			"&SRS=" + layer.boundingBoxSRS +
+		    "&STYLES=default" +
 			"&WIDTH=128&HEIGHT=128&REFERER=CAPAWARE";
 	}
 
