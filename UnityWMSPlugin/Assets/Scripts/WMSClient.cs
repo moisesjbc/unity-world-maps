@@ -3,16 +3,35 @@ using System.Collections;
 using System.Collections.Generic;
 
 public class WMSClient {
+	private Dictionary<string,WWW> requests_ = new Dictionary<string,WWW>();
 
-	public static WMSInfo Request( string server, string version = "1.1.0" )
+	public string Request( string server, string version = "1.1.0" )
 	{
 		string url = 
 			server + "?REQUEST=GetCapabilities&SERVICE=WMS" + "&VERSION=" + version;
 
-		WWW www = new WWW(url);
-		while( !www.isDone );
+		string requestID = BuildRequestID (server, version);
 
-		return WMSXMLParser.GetWMSInfo (www.text);
+		if (!requests_.ContainsKey (requestID)) {
+			requests_.Add ( requestID, new WWW(url) );
+		}
+
+		return requestID;
 	}
-	
+
+
+	public WMSInfo GetResponse( string requestID )
+	{
+		if (requests_.ContainsKey (requestID) && requests_ [requestID].isDone) {
+			return WMSXMLParser.GetWMSInfo (requests_ [requestID].text);
+		}
+
+		return null;
+	}
+
+
+	private string BuildRequestID( string server, string version = "1.1.0" )
+	{
+		return server + "@@@" + version;
+	}
 }

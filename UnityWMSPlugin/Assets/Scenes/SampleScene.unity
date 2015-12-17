@@ -126,27 +126,27 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 11401632, guid: d8e350d7eb1a3774880568d15e33ce19, type: 2}
       propertyPath: bottomLeftCoordinates.x
-      value: -24.632
+      value: -32.6802254
       objectReference: {fileID: 0}
     - target: {fileID: 11401632, guid: d8e350d7eb1a3774880568d15e33ce19, type: 2}
       propertyPath: bottomLeftCoordinates.y
-      value: 20.368
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 11401632, guid: d8e350d7eb1a3774880568d15e33ce19, type: 2}
       propertyPath: topRightCoordinates.x
-      value: 48.7599983
+      value: 10.0844498
       objectReference: {fileID: 0}
     - target: {fileID: 11401632, guid: d8e350d7eb1a3774880568d15e33ce19, type: 2}
       propertyPath: topRightCoordinates.y
-      value: 86.6320038
+      value: 49.7430229
       objectReference: {fileID: 0}
     - target: {fileID: 11401632, guid: d8e350d7eb1a3774880568d15e33ce19, type: 2}
       propertyPath: serverURL
-      value: http://geo.vliz.be/geoserver/ows
+      value: http://rips-dienste.lubw.baden-wuerttemberg.de/arcgis/services/wms/Gewpaed_Angebote/MapServer/WmsServer
       objectReference: {fileID: 0}
     - target: {fileID: 11401632, guid: d8e350d7eb1a3774880568d15e33ce19, type: 2}
       propertyPath: currentLayerIndex
-      value: 30
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 11401632, guid: d8e350d7eb1a3774880568d15e33ce19, type: 2}
       propertyPath: layersQuery
@@ -154,7 +154,11 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 11401632, guid: d8e350d7eb1a3774880568d15e33ce19, type: 2}
       propertyPath: fixedQueryString
-      value: ?SERVICE=WMS&LAYERS=Emodnet:autumn_T&REQUEST=GetMap&VERSION=1.1.0&FORMAT=image/jpeg&SRS=EPSG:4326&WIDTH=128&HEIGHT=128&REFERER=CAPAWARE
+      value: ?SERVICE=WMS&LAYERS=2&REQUEST=GetMap&VERSION=1.1.0&FORMAT=image/jpeg&SRS=EPSG:4326&WIDTH=128&HEIGHT=128&REFERER=CAPAWARE
+      objectReference: {fileID: 0}
+    - target: {fileID: 11401632, guid: d8e350d7eb1a3774880568d15e33ce19, type: 2}
+      propertyPath: wmsRequestID
+      value: http://rips-dienste.lubw.baden-wuerttemberg.de/arcgis/services/wms/Gewpaed_Angebote/MapServer/WmsServer@@@1.1.0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: d8e350d7eb1a3774880568d15e33ce19, type: 2}

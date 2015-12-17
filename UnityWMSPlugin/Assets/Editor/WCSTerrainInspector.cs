@@ -2,21 +2,35 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEditor;
+using System;
 
 [CustomEditor(typeof(QuadtreeLODPlane))]
 public class WCSTerrainInspector : Editor 
 {
+	public static WMSClient wmsClient = new WMSClient();
+
 	public override void OnInspectorGUI()
 	{
 		QuadtreeLODPlane quadtreeLODPlane = (QuadtreeLODPlane)target;
 
 		string newServerURL = EditorGUILayout.TextArea (quadtreeLODPlane.serverURL);
-		if ( quadtreeLODPlane.wmsInfo == null || newServerURL != quadtreeLODPlane.serverURL) 
-		{
+		if ( quadtreeLODPlane.wmsErrorResponse == "" && quadtreeLODPlane.wmsInfo == null || newServerURL != quadtreeLODPlane.serverURL) {
 			Debug.Log ("Downloading layers ...");
 			quadtreeLODPlane.serverURL = newServerURL;
-			quadtreeLODPlane.wmsInfo = WMSClient.Request (newServerURL, "1.1.0" );
+			quadtreeLODPlane.wmsRequestID = wmsClient.Request (newServerURL, "1.1.0");
+			quadtreeLODPlane.wmsInfo = null;
+			quadtreeLODPlane.wmsErrorResponse = "";
 			Debug.Log ("Downloading layers ...OK");
+		}
+
+		if( quadtreeLODPlane.wmsInfo == null ){
+			Debug.Log ("quadtreeLODPlane.wmsErrorResponse: " + quadtreeLODPlane.wmsErrorResponse );
+			if( quadtreeLODPlane.wmsErrorResponse == "" ){
+				EditorGUILayout.LabelField("Downloading WMS info ...");
+			}else{
+				EditorGUILayout.LabelField(quadtreeLODPlane.wmsErrorResponse);
+			}
+			return;
 		}
 
 		if( quadtreeLODPlane.wmsInfo.GetLayerTitles().Length > 0 ){
@@ -65,5 +79,35 @@ public class WCSTerrainInspector : Editor
 			"&FORMAT=image/jpeg" +
 			"&SRS=" + layer.boundingBoxSRS +
 			"&WIDTH=128&HEIGHT=128&REFERER=CAPAWARE";
+	}
+
+
+	public void OnEnable()
+	{
+		EditorApplication.update += Refresh;
+	}
+
+
+
+	public void OnDisable()
+	{
+		EditorApplication.update -= Refresh;
+	}
+
+
+	public void Refresh()
+	{
+		QuadtreeLODPlane quadtreeLODPlane = (QuadtreeLODPlane)target;
+		if ( quadtreeLODPlane.wmsErrorResponse == "" && quadtreeLODPlane.wmsInfo == null) {
+			try {
+				quadtreeLODPlane.wmsInfo = wmsClient.GetResponse (quadtreeLODPlane.wmsRequestID);
+				if (quadtreeLODPlane.wmsInfo != null) {
+					Repaint ();
+				}
+			} catch (Exception e) {
+				quadtreeLODPlane.wmsErrorResponse = "Exception: " + e.Message;
+				Repaint ();
+			}
+		}
 	}
 }
