@@ -38,6 +38,8 @@ public class WMSXMLParser {
 			WMSLayer layer = new WMSLayer();
 
 			layer.title = layerXmlNode.SelectSingleNode("Title").InnerText;
+
+			Debug.Log ("Parsing layer [" + layer.title + "] ...");
 			layer.name = layerXmlNode.SelectSingleNode("Name").InnerText;
 
 			XmlNode boundingBoxXmlNode = layerXmlNode.SelectSingleNode ("BoundingBox");
@@ -49,6 +51,7 @@ public class WMSXMLParser {
 		
 			layer.boundingBoxSRS = boundingBoxXmlNode.Attributes["SRS"].InnerText;
 
+			Debug.Log ("Parsing layer [" + layer.title + "] ...OK");
 			layers.Add (layer);
 		} else {
 			parseWMSLayers (layerXmlNode.SelectNodes ("Layer"), ref layers);
