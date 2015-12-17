@@ -2,13 +2,30 @@
 using System.Collections;
 using System.Collections.Generic;
 
+
+public struct WMSBoundingBox
+{
+	public string SRS;
+	public Vector2 bottomLeftCoordinates;
+	public Vector2 topRightCoordinates;
+}
+
+
 public struct WMSLayer
 {
 	public string title;
 	public string name;
-	public Vector2 bottomLeftCoordinates;
-	public Vector2 topRightCoordinates;
-	public string boundingBoxSRS;
+	public List<WMSBoundingBox> boundingBoxes;
+
+	public string boundingBoxSRS()
+	{
+		if (boundingBoxes.Count > 0) {
+			return boundingBoxes[0].SRS;
+		}else{
+			// TODO: Return parent bounding box.
+			return null;
+		}
+	}
 }
 
 

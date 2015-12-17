@@ -45,9 +45,11 @@ public class WCSTerrainInspector : Editor
 			WMSLayer currentLayer = quadtreeLODPlane.wmsInfo.GetLayer ( quadtreeLODPlane.currentLayerIndex );
 			quadtreeLODPlane.fixedQueryString = BuildWMSFixedQueryString( currentLayer, "1.1.0" );
 
-			if( GUILayout.Button("Full Layer") ){
-				quadtreeLODPlane.bottomLeftCoordinates = currentLayer.bottomLeftCoordinates;
-				quadtreeLODPlane.topRightCoordinates = currentLayer.topRightCoordinates;
+			if( currentLayer.boundingBoxes.Count > 0 ){
+				if( GUILayout.Button("Full Layer") ){
+					quadtreeLODPlane.bottomLeftCoordinates = currentLayer.boundingBoxes[0].bottomLeftCoordinates;
+					quadtreeLODPlane.topRightCoordinates = currentLayer.boundingBoxes[0].topRightCoordinates;
+				}
 			}
 
 			quadtreeLODPlane.bottomLeftCoordinates = 
@@ -77,7 +79,7 @@ public class WCSTerrainInspector : Editor
 			"?SERVICE=WMS&LAYERS=" + layer.name +
 			"&REQUEST=GetMap&VERSION=" + wmsVersion +
 			"&FORMAT=image/jpeg" +
-			"&SRS=" + layer.boundingBoxSRS +
+			"&SRS=" + layer.boundingBoxSRS() +
 		    "&STYLES=default" +
 			"&WIDTH=128&HEIGHT=128&REFERER=CAPAWARE";
 	}

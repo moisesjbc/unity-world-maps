@@ -41,15 +41,7 @@ public class WMSXMLParser {
 
 			Debug.Log ("Parsing layer [" + layer.title + "] ...");
 			layer.name = layerXmlNode.SelectSingleNode("Name").InnerText;
-
-			XmlNode boundingBoxXmlNode = layerXmlNode.SelectSingleNode ("BoundingBox");
-			
-			layer.bottomLeftCoordinates.x = float.Parse (boundingBoxXmlNode.Attributes ["minx"].InnerText);
-			layer.bottomLeftCoordinates.y = float.Parse (boundingBoxXmlNode.Attributes ["miny"].InnerText);
-			layer.topRightCoordinates.x = float.Parse (boundingBoxXmlNode.Attributes ["maxx"].InnerText);
-			layer.topRightCoordinates.y = float.Parse (boundingBoxXmlNode.Attributes ["maxy"].InnerText);
-		
-			layer.boundingBoxSRS = boundingBoxXmlNode.Attributes["SRS"].InnerText;
+			layer.boundingBoxes = parseWMSBoundingBoxes( layerXmlNode.SelectNodes ("BoundingBox") );
 
 			Debug.Log ("Parsing layer [" + layer.title + "] ...OK");
 			layers.Add (layer);
@@ -58,4 +50,23 @@ public class WMSXMLParser {
 		}
 	}
 
+
+	private static List<WMSBoundingBox> parseWMSBoundingBoxes( XmlNodeList bbXmlNodes )
+	{
+		List<WMSBoundingBox> boundingBoxes = new List<WMSBoundingBox>();
+
+		foreach (XmlNode bbXmlNode in bbXmlNodes) {
+			WMSBoundingBox boundingBox = new WMSBoundingBox();
+
+			boundingBox.SRS = bbXmlNode.Attributes ["SRS"].InnerText;
+			boundingBox.bottomLeftCoordinates.x = float.Parse (bbXmlNode.Attributes ["minx"].InnerText);
+			boundingBox.bottomLeftCoordinates.y = float.Parse (bbXmlNode.Attributes ["miny"].InnerText);
+			boundingBox.topRightCoordinates.x = float.Parse (bbXmlNode.Attributes ["maxx"].InnerText);
+			boundingBox.topRightCoordinates.y = float.Parse (bbXmlNode.Attributes ["maxy"].InnerText);
+		
+			boundingBoxes.Add ( boundingBox );
+		}
+
+		return boundingBoxes;
+	}
 }
