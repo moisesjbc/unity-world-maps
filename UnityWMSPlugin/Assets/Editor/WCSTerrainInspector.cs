@@ -108,6 +108,7 @@ public class WCSTerrainInspector : Editor
 			} catch (Exception e) {
 				quadtreeLODPlane.wmsErrorResponse = "Exception: " + e.Message;
 				Repaint ();
+				throw e;
 			}
 		}
 	}
