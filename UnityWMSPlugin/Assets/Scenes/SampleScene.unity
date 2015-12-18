@@ -160,6 +160,10 @@ Prefab:
       propertyPath: wmsRequestID
       value: http://idecan1.grafcan.com/ServicioWMS/OrtoExpress@@@1.1.0
       objectReference: {fileID: 0}
+    - target: {fileID: 11401632, guid: d8e350d7eb1a3774880568d15e33ce19, type: 2}
+      propertyPath: currentBoundingBoxIndex
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: d8e350d7eb1a3774880568d15e33ce19, type: 2}
   m_IsPrefabParent: 0

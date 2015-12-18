@@ -45,11 +45,12 @@ public class WCSTerrainInspector : Editor
 				);
 
 			WMSLayer currentLayer = quadtreeLODPlane.wmsInfo.GetLayer ( quadtreeLODPlane.currentLayerIndex );
-			quadtreeLODPlane.fixedQueryString = BuildWMSFixedQueryString( currentLayer, "1.1.0" );
 
 			string[] boundingBoxesNames = currentLayer.GetBoundingBoxesNames();
 			Debug.Log ( "boundingBoxesNames: " + boundingBoxesNames.Length );
 			if( boundingBoxesNames.Length > 0 ){
+				quadtreeLODPlane.fixedQueryString = BuildWMSFixedQueryString( currentLayer, "1.1.0", currentLayer.GetBoundingBox( quadtreeLODPlane.currentBoundingBoxIndex ).SRS );
+
 				quadtreeLODPlane.currentBoundingBoxIndex = 
 					EditorGUILayout.Popup (
 						"Bounding Box",
@@ -89,13 +90,13 @@ public class WCSTerrainInspector : Editor
 	}
 
 
-	private string BuildWMSFixedQueryString( WMSLayer layer, string wmsVersion )
+	private string BuildWMSFixedQueryString( WMSLayer layer, string wmsVersion, string SRS )
 	{
 		return 
 			"?SERVICE=WMS&LAYERS=" + layer.name +
 			"&REQUEST=GetMap&VERSION=" + wmsVersion +
 			"&FORMAT=image/jpeg" +
-			"&SRS=" + layer.boundingBoxSRS() +
+			"&SRS=" + SRS +
 		    "&STYLES=default" +
 			"&WIDTH=128&HEIGHT=128&REFERER=CAPAWARE";
 	}

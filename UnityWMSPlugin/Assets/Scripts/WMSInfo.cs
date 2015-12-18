@@ -24,17 +24,6 @@ public struct WMSLayer
 	public List<WMSBoundingBox> boundingBoxes;
 
 
-	public string boundingBoxSRS()
-	{
-		if (boundingBoxes.Count > 0) {
-			return boundingBoxes[0].SRS;
-		}else{
-			// TODO: Return parent bounding box.
-			return null;
-		}
-	}
-
-
 	public List<WMSBoundingBox> GetBoundingBoxes()
 	{
 		List<WMSBoundingBox> boundingBoxes = this.boundingBoxes;
