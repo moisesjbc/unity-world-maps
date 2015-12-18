@@ -49,7 +49,7 @@ public class WMSXMLParser {
 			layer.parentLayer = parentLayer;
 			Debug.Log ("Parsing layer [" + layer.title + "] ...OK");
 
-			if (layerXmlNode.Attributes ["queryable"].InnerText == "1") {
+			if (layerXmlNode.Attributes ["queryable"] != null && layerXmlNode.Attributes ["queryable"].InnerText == "1") {
 				layers.Add (layer);
 			}
 			parseWMSLayers (layerXmlNode.SelectNodes ("Layer"), ref layers, layer);
