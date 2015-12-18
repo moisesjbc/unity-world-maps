@@ -14,6 +14,12 @@ public struct WMSBoundingBox
 	{
 		return bottomLeftCoordinates + ", " + topRightCoordinates;
 	}
+
+
+	public float ratio()
+	{
+		return (topRightCoordinates.x - bottomLeftCoordinates.x) / (topRightCoordinates.y - bottomLeftCoordinates.y);
+	}
 }
 
 
