@@ -12,6 +12,9 @@ public class WCSTerrainInspector : Editor
 	public override void OnInspectorGUI()
 	{
 		QuadtreeLODPlane quadtreeLODPlane = (QuadtreeLODPlane)target;
+	
+		bool layerChanged = false;
+		bool boundingBoxChanged = false;
 
 		string newServerURL = EditorGUILayout.TextArea (quadtreeLODPlane.serverURL);
 		if ( quadtreeLODPlane.wmsErrorResponse == "" && quadtreeLODPlane.wmsInfo == null || newServerURL != quadtreeLODPlane.serverURL) {
@@ -35,52 +38,64 @@ public class WCSTerrainInspector : Editor
 			return;
 		}
 
-		if( quadtreeLODPlane.wmsInfo.GetLayerTitles().Length > 0 ){
-			Debug.Log ("Updating inspector ...");
-			quadtreeLODPlane.currentLayerIndex = 
-				EditorGUILayout.Popup (
-					"Layers",
-					quadtreeLODPlane.currentLayerIndex, 
-					quadtreeLODPlane.wmsInfo.GetLayerTitles()
-				);
-
-			WMSLayer currentLayer = quadtreeLODPlane.wmsInfo.GetLayer ( quadtreeLODPlane.currentLayerIndex );
-
-			string[] boundingBoxesNames = currentLayer.GetBoundingBoxesNames();
-			Debug.Log ( "boundingBoxesNames: " + boundingBoxesNames.Length );
-			if( boundingBoxesNames.Length > 0 ){
-				quadtreeLODPlane.fixedQueryString = BuildWMSFixedQueryString( currentLayer, "1.1.0", currentLayer.GetBoundingBox( quadtreeLODPlane.currentBoundingBoxIndex ).SRS );
-
-				quadtreeLODPlane.currentBoundingBoxIndex = 
-					EditorGUILayout.Popup (
-						"Bounding Box",
-						quadtreeLODPlane.currentBoundingBoxIndex, 
-						boundingBoxesNames
-						);
-
-				if( currentLayer.GetBoundingBoxes().Count > 0 ){
-					WMSBoundingBox currentBoundingBox = 
-						currentLayer.GetBoundingBox( quadtreeLODPlane.currentBoundingBoxIndex );
-					
-					if( GUILayout.Button("Full Bounding Box") ){
-						quadtreeLODPlane.bottomLeftCoordinates = currentBoundingBox.bottomLeftCoordinates;
-						quadtreeLODPlane.topRightCoordinates = currentBoundingBox.topRightCoordinates;
-					}
-				}
-			}
-
-			quadtreeLODPlane.bottomLeftCoordinates = 
-				EditorGUILayout.Vector2Field (
-					"Bottom left coordinates",
-					quadtreeLODPlane.bottomLeftCoordinates
-				);
-			
-			quadtreeLODPlane.topRightCoordinates = 
-				EditorGUILayout.Vector2Field (
-					"Top right coordinates",
-					quadtreeLODPlane.topRightCoordinates
-				);
+		if (quadtreeLODPlane.wmsInfo.GetLayerTitles ().Length <= 0) {
+			EditorGUILayout.LabelField("No layers");
+			return;
 		}
+		
+		Debug.Log ("Updating inspector ...");
+
+		int newLayerIndex = 
+			EditorGUILayout.Popup (
+				"Layers",
+				quadtreeLODPlane.currentLayerIndex, 
+				quadtreeLODPlane.wmsInfo.GetLayerTitles()
+			);
+		layerChanged = (newLayerIndex != quadtreeLODPlane.currentLayerIndex);
+		quadtreeLODPlane.currentLayerIndex = newLayerIndex;
+
+		if( layerChanged ){
+			quadtreeLODPlane.currentBoundingBoxIndex = 0;
+			boundingBoxChanged = true;
+		}
+		WMSLayer currentLayer = quadtreeLODPlane.wmsInfo.GetLayer ( quadtreeLODPlane.currentLayerIndex );
+
+		string[] boundingBoxesNames = currentLayer.GetBoundingBoxesNames();
+		Debug.Log ( "boundingBoxesNames: " + boundingBoxesNames.Length );
+		if( boundingBoxesNames.Length > 0 ){
+			quadtreeLODPlane.fixedQueryString = BuildWMSFixedQueryString( currentLayer, "1.1.0", currentLayer.GetBoundingBox( quadtreeLODPlane.currentBoundingBoxIndex ).SRS );
+
+			int newBoundingBoxIndex = 
+				EditorGUILayout.Popup (
+					"Bounding Box",
+					quadtreeLODPlane.currentBoundingBoxIndex, 
+					boundingBoxesNames
+					);
+
+			boundingBoxChanged = boundingBoxChanged || (newBoundingBoxIndex != quadtreeLODPlane.currentBoundingBoxIndex);
+			quadtreeLODPlane.currentBoundingBoxIndex = newBoundingBoxIndex;
+
+			Debug.Log ( "layerChanged: " + layerChanged );
+			Debug.Log ( "boundingBoxChanged: " + boundingBoxChanged );
+			if( layerChanged || boundingBoxChanged ){
+				WMSBoundingBox currentBoundingBox = currentLayer.GetBoundingBox( quadtreeLODPlane.currentBoundingBoxIndex );
+
+				quadtreeLODPlane.bottomLeftCoordinates = currentBoundingBox.bottomLeftCoordinates;
+				quadtreeLODPlane.topRightCoordinates = currentBoundingBox.topRightCoordinates;
+			}
+		}
+
+		quadtreeLODPlane.bottomLeftCoordinates = 
+			EditorGUILayout.Vector2Field (
+				"Bottom left coordinates",
+				quadtreeLODPlane.bottomLeftCoordinates
+			);
+		
+		quadtreeLODPlane.topRightCoordinates = 
+			EditorGUILayout.Vector2Field (
+				"Top right coordinates",
+				quadtreeLODPlane.topRightCoordinates
+			);
 
 		// Mark the target assert as changed ("dirty") so Unity save it to disk.
 		if (GUI.changed) {
