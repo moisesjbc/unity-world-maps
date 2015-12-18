@@ -17,16 +17,21 @@ public struct WMSBoundingBox
 }
 
 
-public struct WMSLayer
+public class WMSLayer
 {
 	public string title;
 	public string name;
 	public List<WMSBoundingBox> boundingBoxes;
-
+	public WMSLayer parentLayer;
 
 	public List<WMSBoundingBox> GetBoundingBoxes()
 	{
-		List<WMSBoundingBox> boundingBoxes = this.boundingBoxes;
+		List<WMSBoundingBox> boundingBoxes = new List<WMSBoundingBox> ();
+
+		if( parentLayer != null ){
+			boundingBoxes.AddRange ( parentLayer.GetBoundingBoxes() );
+		}
+		boundingBoxes.AddRange ( this.boundingBoxes );
 
 		return boundingBoxes;
 	}
