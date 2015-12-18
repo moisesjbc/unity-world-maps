@@ -16,37 +16,43 @@ public class WMSXMLParser {
 
 		// Parse WMS layers.
 		List<WMSLayer> layers = new List<WMSLayer> ();
-		parseWMSLayers( rootNode.SelectSingleNode("Capability").SelectNodes ("Layer"), ref layers );
+		parseWMSLayers( rootNode.SelectSingleNode("Capability").SelectNodes ("Layer"), ref layers, null );
 
 		return new WMSInfo(layers.ToArray ());
 	}
 
 
-	private static void parseWMSLayers( XmlNodeList layersNodes, ref List<WMSLayer> layers )
+	private static void parseWMSLayers( XmlNodeList layersNodes, ref List<WMSLayer> layers, WMSLayer parentLayer )
 	{
 		if (layersNodes.Count > 0) {
 			foreach (XmlNode layerNode in layersNodes) {
-				parseWMSLayer (layerNode, ref layers);
+				parseWMSLayer (layerNode, ref layers, parentLayer);
 			}
 		}
 	}
 
 
-	private static void parseWMSLayer( XmlNode layerXmlNode, ref List<WMSLayer> layers )
+	private static void parseWMSLayer( XmlNode layerXmlNode, ref List<WMSLayer> layers, WMSLayer parentLayer )
 	{
-		if (layerXmlNode.SelectNodes ("Layer").Count == 0) {
-			WMSLayer layer = new WMSLayer();
+		if (layerXmlNode != null) {
+			WMSLayer layer = new WMSLayer ();
 
-			layer.title = layerXmlNode.SelectSingleNode("Title").InnerText;
+			layer.title = layerXmlNode.SelectSingleNode ("Title").InnerText;
 
 			Debug.Log ("Parsing layer [" + layer.title + "] ...");
-			layer.name = layerXmlNode.SelectSingleNode("Name").InnerText;
-			layer.boundingBoxes = parseWMSBoundingBoxes( layerXmlNode.SelectNodes ("BoundingBox") );
+			if( layerXmlNode.SelectSingleNode ("Name") != null ){
+				layer.name = layerXmlNode.SelectSingleNode ("Name").InnerText;
+			}else{
+				layer.name = "";
+			}
+			layer.boundingBoxes = parseWMSBoundingBoxes (layerXmlNode.SelectNodes ("BoundingBox"));
+			layer.parentLayer = parentLayer;
 			Debug.Log ("Parsing layer [" + layer.title + "] ...OK");
 
-			layers.Add (layer);
-		} else {
-			parseWMSLayers (layerXmlNode.SelectNodes ("Layer"), ref layers);
+			if (layerXmlNode.Attributes ["queryable"].InnerText == "1") {
+				layers.Add (layer);
+			}
+			parseWMSLayers (layerXmlNode.SelectNodes ("Layer"), ref layers, layer);
 		}
 	}
 
