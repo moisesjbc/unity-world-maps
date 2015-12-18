@@ -57,9 +57,14 @@ public class WCSTerrainInspector : Editor
 						boundingBoxesNames
 						);
 
-				if( GUILayout.Button("Full Layer") ){
-					quadtreeLODPlane.bottomLeftCoordinates = currentLayer.boundingBoxes[0].bottomLeftCoordinates;
-					quadtreeLODPlane.topRightCoordinates = currentLayer.boundingBoxes[0].topRightCoordinates;
+				if( currentLayer.GetBoundingBoxes().Count > 0 ){
+					WMSBoundingBox currentBoundingBox = 
+						currentLayer.GetBoundingBox( quadtreeLODPlane.currentBoundingBoxIndex );
+					
+					if( GUILayout.Button("Full Bounding Box") ){
+						quadtreeLODPlane.bottomLeftCoordinates = currentBoundingBox.bottomLeftCoordinates;
+						quadtreeLODPlane.topRightCoordinates = currentBoundingBox.topRightCoordinates;
+					}
 				}
 			}
 

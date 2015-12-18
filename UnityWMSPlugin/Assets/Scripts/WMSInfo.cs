@@ -43,6 +43,18 @@ public struct WMSLayer
 	}
 
 
+	public WMSBoundingBox GetBoundingBox( int index )
+	{
+		WMSBoundingBox[] boundingBoxes = GetBoundingBoxes().ToArray();
+		
+		if ( index < boundingBoxes.Length ) {
+			return boundingBoxes[index];
+		}else{
+			throw new System.IndexOutOfRangeException();
+		}
+	}
+
+
 	public string[] GetBoundingBoxesNames()
 	{
 		WMSBoundingBox[] boundingBoxes = GetBoundingBoxes().ToArray ();
