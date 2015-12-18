@@ -8,6 +8,12 @@ public struct WMSBoundingBox
 	public string SRS;
 	public Vector2 bottomLeftCoordinates;
 	public Vector2 topRightCoordinates;
+
+
+	public override string ToString ()
+	{
+		return bottomLeftCoordinates + ", " + topRightCoordinates;
+	}
 }
 
 
@@ -17,6 +23,7 @@ public struct WMSLayer
 	public string name;
 	public List<WMSBoundingBox> boundingBoxes;
 
+
 	public string boundingBoxSRS()
 	{
 		if (boundingBoxes.Count > 0) {
@@ -25,6 +32,27 @@ public struct WMSLayer
 			// TODO: Return parent bounding box.
 			return null;
 		}
+	}
+
+
+	public List<WMSBoundingBox> GetBoundingBoxes()
+	{
+		List<WMSBoundingBox> boundingBoxes = this.boundingBoxes;
+
+		return boundingBoxes;
+	}
+
+
+	public string[] GetBoundingBoxesNames()
+	{
+		WMSBoundingBox[] boundingBoxes = GetBoundingBoxes().ToArray ();
+		string[] boundingBoxesNames = new string[boundingBoxes.Length];
+
+		for (int i=0; i<boundingBoxes.Length; i++) {
+			boundingBoxesNames[i] = boundingBoxes[i].ToString ();
+		}
+
+		return boundingBoxesNames;
 	}
 }
 

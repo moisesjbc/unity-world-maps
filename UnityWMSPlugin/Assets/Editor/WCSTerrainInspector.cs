@@ -20,6 +20,8 @@ public class WCSTerrainInspector : Editor
 			quadtreeLODPlane.wmsRequestID = wmsClient.Request (newServerURL, "1.1.0");
 			quadtreeLODPlane.wmsInfo = null;
 			quadtreeLODPlane.wmsErrorResponse = "";
+			quadtreeLODPlane.currentLayerIndex = 0;
+			quadtreeLODPlane.currentBoundingBoxIndex = 0;
 			Debug.Log ("Downloading layers ...OK");
 		}
 
@@ -45,7 +47,16 @@ public class WCSTerrainInspector : Editor
 			WMSLayer currentLayer = quadtreeLODPlane.wmsInfo.GetLayer ( quadtreeLODPlane.currentLayerIndex );
 			quadtreeLODPlane.fixedQueryString = BuildWMSFixedQueryString( currentLayer, "1.1.0" );
 
-			if( currentLayer.boundingBoxes.Count > 0 ){
+			string[] boundingBoxesNames = currentLayer.GetBoundingBoxesNames();
+			Debug.Log ( "boundingBoxesNames: " + boundingBoxesNames.Length );
+			if( boundingBoxesNames.Length > 0 ){
+				quadtreeLODPlane.currentBoundingBoxIndex = 
+					EditorGUILayout.Popup (
+						"Bounding Box",
+						quadtreeLODPlane.currentBoundingBoxIndex, 
+						boundingBoxesNames
+						);
+
 				if( GUILayout.Button("Full Layer") ){
 					quadtreeLODPlane.bottomLeftCoordinates = currentLayer.boundingBoxes[0].bottomLeftCoordinates;
 					quadtreeLODPlane.topRightCoordinates = currentLayer.boundingBoxes[0].topRightCoordinates;

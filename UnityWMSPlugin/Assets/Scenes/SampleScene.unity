@@ -126,27 +126,27 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 11401632, guid: d8e350d7eb1a3774880568d15e33ce19, type: 2}
       propertyPath: bottomLeftCoordinates.x
-      value: -32.6802254
+      value: 188000
       objectReference: {fileID: 0}
     - target: {fileID: 11401632, guid: d8e350d7eb1a3774880568d15e33ce19, type: 2}
       propertyPath: bottomLeftCoordinates.y
-      value: 0
+      value: 3060000
       objectReference: {fileID: 0}
     - target: {fileID: 11401632, guid: d8e350d7eb1a3774880568d15e33ce19, type: 2}
       propertyPath: topRightCoordinates.x
-      value: 10.0844498
+      value: 662000
       objectReference: {fileID: 0}
     - target: {fileID: 11401632, guid: d8e350d7eb1a3774880568d15e33ce19, type: 2}
       propertyPath: topRightCoordinates.y
-      value: 49.7430229
+      value: 3256000
       objectReference: {fileID: 0}
     - target: {fileID: 11401632, guid: d8e350d7eb1a3774880568d15e33ce19, type: 2}
       propertyPath: serverURL
-      value: http://rips-dienste.lubw.baden-wuerttemberg.de/arcgis/services/wms/Gewpaed_Angebote/MapServer/WmsServer
+      value: http://idecan1.grafcan.com/ServicioWMS/OrtoExpress
       objectReference: {fileID: 0}
     - target: {fileID: 11401632, guid: d8e350d7eb1a3774880568d15e33ce19, type: 2}
       propertyPath: currentLayerIndex
-      value: 2
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 11401632, guid: d8e350d7eb1a3774880568d15e33ce19, type: 2}
       propertyPath: layersQuery
@@ -154,11 +154,11 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 11401632, guid: d8e350d7eb1a3774880568d15e33ce19, type: 2}
       propertyPath: fixedQueryString
-      value: ?SERVICE=WMS&LAYERS=2&REQUEST=GetMap&VERSION=1.1.0&FORMAT=image/jpeg&SRS=EPSG:4326&WIDTH=128&HEIGHT=128&REFERER=CAPAWARE
+      value: ?SERVICE=WMS&LAYERS=ortoexpress&REQUEST=GetMap&VERSION=1.1.0&FORMAT=image/jpeg&SRS=EPSG:32628&STYLES=default&WIDTH=128&HEIGHT=128&REFERER=CAPAWARE
       objectReference: {fileID: 0}
     - target: {fileID: 11401632, guid: d8e350d7eb1a3774880568d15e33ce19, type: 2}
       propertyPath: wmsRequestID
-      value: http://rips-dienste.lubw.baden-wuerttemberg.de/arcgis/services/wms/Gewpaed_Angebote/MapServer/WmsServer@@@1.1.0
+      value: http://idecan1.grafcan.com/ServicioWMS/OrtoExpress@@@1.1.0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: d8e350d7eb1a3774880568d15e33ce19, type: 2}

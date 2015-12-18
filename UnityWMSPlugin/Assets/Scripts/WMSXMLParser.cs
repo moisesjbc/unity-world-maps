@@ -42,8 +42,8 @@ public class WMSXMLParser {
 			Debug.Log ("Parsing layer [" + layer.title + "] ...");
 			layer.name = layerXmlNode.SelectSingleNode("Name").InnerText;
 			layer.boundingBoxes = parseWMSBoundingBoxes( layerXmlNode.SelectNodes ("BoundingBox") );
-
 			Debug.Log ("Parsing layer [" + layer.title + "] ...OK");
+
 			layers.Add (layer);
 		} else {
 			parseWMSLayers (layerXmlNode.SelectNodes ("Layer"), ref layers);
@@ -64,6 +64,7 @@ public class WMSXMLParser {
 			boundingBox.topRightCoordinates.x = float.Parse (bbXmlNode.Attributes ["maxx"].InnerText);
 			boundingBox.topRightCoordinates.y = float.Parse (bbXmlNode.Attributes ["maxy"].InnerText);
 		
+			Debug.Log ("Parsing bounding box: " + boundingBox.ToString ());
 			boundingBoxes.Add ( boundingBox );
 		}
 
