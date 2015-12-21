@@ -125,6 +125,11 @@ public class WCSTerrainInspector : Editor
 				stylesQuery += "default,";
 			}
 		}
+		// Remove last character (',').
+		if (layersQuery.Length > 0) {
+			layersQuery = layersQuery.Remove(layersQuery.Length - 1);
+			stylesQuery = stylesQuery.Remove(stylesQuery.Length - 1);
+		}
 		return 
 			"?SERVICE=WMS" +
 			"&LAYERS=" + layersQuery +
