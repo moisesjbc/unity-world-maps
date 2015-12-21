@@ -47,37 +47,8 @@ public class WCSTerrainInspector : Editor
 		
 		DisplayLayersSelector (ref quadtreeLODPlane, out layerChanged);
 
-		if( layerChanged ){
-			quadtreeLODPlane.currentBoundingBoxIndex = 0;
-			boundingBoxChanged = true;
-		}
-		WMSLayer currentLayer = quadtreeLODPlane.wmsInfo.GetLayer ( quadtreeLODPlane.currentLayerIndex );
-
-		string[] boundingBoxesNames = currentLayer.GetBoundingBoxesNames();
-		Debug.Log ( "boundingBoxesNames: " + boundingBoxesNames.Length );
-		if( boundingBoxesNames.Length > 0 ){
-			quadtreeLODPlane.fixedQueryString = BuildWMSFixedQueryString( quadtreeLODPlane.wmsInfo.layers, "1.1.0", currentLayer.GetBoundingBox( quadtreeLODPlane.currentBoundingBoxIndex ).SRS );
-
-			int newBoundingBoxIndex = 
-				EditorGUILayout.Popup (
-					"Bounding Box",
-					quadtreeLODPlane.currentBoundingBoxIndex, 
-					boundingBoxesNames
-					);
-
-			boundingBoxChanged = boundingBoxChanged || (newBoundingBoxIndex != quadtreeLODPlane.currentBoundingBoxIndex);
-			quadtreeLODPlane.currentBoundingBoxIndex = newBoundingBoxIndex;
-
-			Debug.Log ( "layerChanged: " + layerChanged );
-			Debug.Log ( "boundingBoxChanged: " + boundingBoxChanged );
-			if( layerChanged || boundingBoxChanged ){
-				WMSBoundingBox currentBoundingBox = currentLayer.GetBoundingBox( quadtreeLODPlane.currentBoundingBoxIndex );
-
-				quadtreeLODPlane.bottomLeftCoordinates = currentBoundingBox.bottomLeftCoordinates;
-				quadtreeLODPlane.topRightCoordinates = currentBoundingBox.topRightCoordinates;
-			}
-		}
-
+		DisplayBoundingBoxSelector (ref quadtreeLODPlane, layerChanged, out boundingBoxChanged);
+		
 		quadtreeLODPlane.bottomLeftCoordinates = 
 			EditorGUILayout.Vector2Field (
 				"Bottom left coordinates",
@@ -111,6 +82,40 @@ public class WCSTerrainInspector : Editor
 
 			layerChanged |= (newToggleValue != layers[i].selected);
 			layers[i].selected = newToggleValue;
+		}
+	}
+
+
+	private void DisplayBoundingBoxSelector( ref QuadtreeLODPlane quadtreeLODPlane, bool layerChanged, out bool boundingBoxChanged )
+	{
+		boundingBoxChanged = false;
+
+		if( layerChanged ){
+			quadtreeLODPlane.currentBoundingBoxIndex = 0;
+			boundingBoxChanged = true;
+		}
+
+		string[] boundingBoxesNames = quadtreeLODPlane.wmsInfo.GetBoundingBoxesNames();
+		Debug.Log ( "boundingBoxesNames: " + boundingBoxesNames.Length );
+		if( boundingBoxesNames.Length > 0 ){
+			quadtreeLODPlane.fixedQueryString = BuildWMSFixedQueryString( quadtreeLODPlane.wmsInfo.layers, "1.1.0", quadtreeLODPlane.wmsInfo.GetBoundingBox( quadtreeLODPlane.currentBoundingBoxIndex ).SRS );
+			
+			int newBoundingBoxIndex = 
+				EditorGUILayout.Popup (
+					"Bounding Box",
+					quadtreeLODPlane.currentBoundingBoxIndex, 
+					boundingBoxesNames
+					);
+			
+			boundingBoxChanged = boundingBoxChanged || (newBoundingBoxIndex != quadtreeLODPlane.currentBoundingBoxIndex);
+			quadtreeLODPlane.currentBoundingBoxIndex = newBoundingBoxIndex;
+
+			if( layerChanged || boundingBoxChanged ){
+				WMSBoundingBox currentBoundingBox = quadtreeLODPlane.wmsInfo.GetBoundingBox( quadtreeLODPlane.currentBoundingBoxIndex );
+				
+				quadtreeLODPlane.bottomLeftCoordinates = currentBoundingBox.bottomLeftCoordinates;
+				quadtreeLODPlane.topRightCoordinates = currentBoundingBox.topRightCoordinates;
+			}
 		}
 	}
 

@@ -97,4 +97,37 @@ public class WMSInfo
 	{
 		return layers [index];
 	}
+
+
+	public List<WMSBoundingBox> GetBoundingBoxes()
+	{
+		List<WMSBoundingBox> boundingBoxes = new List<WMSBoundingBox> ();
+
+		foreach (WMSLayer layer in layers) {
+			if( layer.selected ){
+				boundingBoxes.AddRange (layer.GetBoundingBoxes());
+			}
+		}
+		
+		return boundingBoxes;
+	}
+
+
+	public string[] GetBoundingBoxesNames()
+	{
+		WMSBoundingBox[] boundingBoxes = GetBoundingBoxes().ToArray ();
+		string[] boundingBoxesNames = new string[boundingBoxes.Length];
+		
+		for (int i=0; i<boundingBoxes.Length; i++) {
+			boundingBoxesNames[i] = boundingBoxes[i].ToString ();
+		}
+		
+		return boundingBoxesNames;
+	}
+
+
+	public WMSBoundingBox GetBoundingBox( int index)
+	{
+		return GetBoundingBoxes().ToArray ()[index];
+	}
 }
