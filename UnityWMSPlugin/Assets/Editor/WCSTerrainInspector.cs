@@ -23,7 +23,6 @@ public class WCSTerrainInspector : Editor
 			quadtreeLODPlane.wmsRequestID = wmsClient.Request (newServerURL, "1.1.0");
 			quadtreeLODPlane.wmsInfo = null;
 			quadtreeLODPlane.wmsErrorResponse = "";
-			quadtreeLODPlane.currentLayerIndex = 0;
 			quadtreeLODPlane.currentBoundingBoxIndex = 0;
 			Debug.Log ("Downloading layers ...OK");
 		}
