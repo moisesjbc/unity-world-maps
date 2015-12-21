@@ -23,7 +23,6 @@ public class WCSTerrainInspector : Editor
 			quadtreeLODPlane.wmsRequestID = wmsClient.Request (newServerURL, "1.1.0");
 			quadtreeLODPlane.wmsInfo = null;
 			quadtreeLODPlane.wmsErrorResponse = "";
-			quadtreeLODPlane.currentLayerIndex = 0;
 			quadtreeLODPlane.currentBoundingBoxIndex = 0;
 			Debug.Log ("Downloading layers ...OK");
 		}
@@ -44,76 +43,87 @@ public class WCSTerrainInspector : Editor
 		}
 		
 		Debug.Log ("Updating inspector ...");
+		
+		DisplayLayersSelector (ref quadtreeLODPlane, out layerChanged);
 
-		int newLayerIndex = 
-			EditorGUILayout.Popup (
-				"Layers",
-				quadtreeLODPlane.currentLayerIndex, 
-				quadtreeLODPlane.wmsInfo.GetLayerTitles()
-			);
-		layerChanged = (newLayerIndex != quadtreeLODPlane.currentLayerIndex);
-		quadtreeLODPlane.currentLayerIndex = newLayerIndex;
+		DisplayBoundingBoxSelector (ref quadtreeLODPlane, layerChanged, out boundingBoxChanged);
+
+		Vector2 newBottomLeftCoordinates =
+			EditorGUILayout.Vector2Field (
+				"Bottom left coordinates",
+				quadtreeLODPlane.bottomLeftCoordinates
+				);
+		
+		Vector2 newTopRightCoordinates =
+			EditorGUILayout.Vector2Field (
+				"Top right coordinates",
+				quadtreeLODPlane.topRightCoordinates
+				);
+		
+		UpdateBoundingBox (ref quadtreeLODPlane.bottomLeftCoordinates,
+		                   ref quadtreeLODPlane.topRightCoordinates,
+		                   newBottomLeftCoordinates,
+		                   newTopRightCoordinates,
+		                   1.25f);
+		
+		// Mark the target assert as changed ("dirty") so Unity save it to disk.
+		if (GUI.changed) {
+			EditorUtility.SetDirty (quadtreeLODPlane);
+		}
+		Debug.Log ("Updating inspector ...OK");
+	}
+
+
+	private void DisplayLayersSelector( ref QuadtreeLODPlane quadtreeLODPlane, out bool layerChanged )
+	{
+		layerChanged = false;
+
+		EditorGUILayout.LabelField ("Layers");
+
+		WMSLayer[] layers = quadtreeLODPlane.wmsInfo.layers;
+		for( int i=0; i<layers.Length; i++) {
+			if( layers[i].name != "" ){
+				bool newToggleValue = 
+					EditorGUILayout.Toggle (layers[i].title, layers[i].selected);
+
+				layerChanged |= (newToggleValue != layers[i].selected);
+				layers[i].selected = newToggleValue;
+			}
+		}
+	}
+
+
+	private void DisplayBoundingBoxSelector( ref QuadtreeLODPlane quadtreeLODPlane, bool layerChanged, out bool boundingBoxChanged )
+	{
+		boundingBoxChanged = false;
 
 		if( layerChanged ){
 			quadtreeLODPlane.currentBoundingBoxIndex = 0;
 			boundingBoxChanged = true;
 		}
-		WMSLayer currentLayer = quadtreeLODPlane.wmsInfo.GetLayer ( quadtreeLODPlane.currentLayerIndex );
-
-		string[] boundingBoxesNames = currentLayer.GetBoundingBoxesNames();
-
-		if (boundingBoxesNames.Length <= 0) {
-			EditorGUILayout.LabelField("No bounding boxes");
-			return;
-		}
-
-		WMSBoundingBox	currentBoundingBox = currentLayer.GetBoundingBox( quadtreeLODPlane.currentBoundingBoxIndex );
-
+		
+		string[] boundingBoxesNames = quadtreeLODPlane.wmsInfo.GetBoundingBoxesNames();
 		Debug.Log ( "boundingBoxesNames: " + boundingBoxesNames.Length );
 		if( boundingBoxesNames.Length > 0 ){
-			quadtreeLODPlane.fixedQueryString = BuildWMSFixedQueryString( currentLayer, "1.1.0", currentLayer.GetBoundingBox( quadtreeLODPlane.currentBoundingBoxIndex ).SRS );
-
+			quadtreeLODPlane.fixedQueryString = BuildWMSFixedQueryString( quadtreeLODPlane.wmsInfo.layers, "1.1.0", quadtreeLODPlane.wmsInfo.GetBoundingBox( quadtreeLODPlane.currentBoundingBoxIndex ).SRS );
+			
 			int newBoundingBoxIndex = 
 				EditorGUILayout.Popup (
 					"Bounding Box",
 					quadtreeLODPlane.currentBoundingBoxIndex, 
 					boundingBoxesNames
 					);
-
+			
 			boundingBoxChanged = boundingBoxChanged || (newBoundingBoxIndex != quadtreeLODPlane.currentBoundingBoxIndex);
 			quadtreeLODPlane.currentBoundingBoxIndex = newBoundingBoxIndex;
 
-			Debug.Log ( "layerChanged: " + layerChanged );
-			Debug.Log ( "boundingBoxChanged: " + boundingBoxChanged );
-			if( layerChanged || boundingBoxChanged ){
+			if( layerChanged || boundingBoxChanged || GUILayout.Button ("Reset bounding box") ){
+				WMSBoundingBox currentBoundingBox = quadtreeLODPlane.wmsInfo.GetBoundingBox( quadtreeLODPlane.currentBoundingBoxIndex );
+
 				quadtreeLODPlane.bottomLeftCoordinates = currentBoundingBox.bottomLeftCoordinates;
 				quadtreeLODPlane.topRightCoordinates = currentBoundingBox.topRightCoordinates;
 			}
 		}
-
-		Vector2 newBottomLeftCoordinates =
-			EditorGUILayout.Vector2Field (
-				"Bottom left coordinates",
-				quadtreeLODPlane.bottomLeftCoordinates
-			);
-
-		Vector2 newTopRightCoordinates =
-			EditorGUILayout.Vector2Field (
-				"Top right coordinates",
-				quadtreeLODPlane.topRightCoordinates
-				);
-
-		UpdateBoundingBox (ref quadtreeLODPlane.bottomLeftCoordinates,
-		                  ref quadtreeLODPlane.topRightCoordinates,
-		                  newBottomLeftCoordinates,
-		                  newTopRightCoordinates,
-		                  currentBoundingBox.ratio ());
-
-		// Mark the target assert as changed ("dirty") so Unity save it to disk.
-		if (GUI.changed) {
-			EditorUtility.SetDirty (quadtreeLODPlane);
-		}
-		Debug.Log ("Updating inspector ...OK");
 	}
 
 
@@ -134,14 +144,28 @@ public class WCSTerrainInspector : Editor
 	}
 
 
-	private string BuildWMSFixedQueryString( WMSLayer layer, string wmsVersion, string SRS )
+	private string BuildWMSFixedQueryString( WMSLayer[] layers, string wmsVersion, string SRS )
 	{
+		string layersQuery = "";
+		string stylesQuery = "";
+		foreach (WMSLayer layer in layers) {
+			if( layer.selected && layer.name != "" ){
+				layersQuery += layer.name + ",";
+				stylesQuery += "default,";
+			}
+		}
+		// Remove last character (',').
+		if (layersQuery.Length > 0) {
+			layersQuery = layersQuery.Remove(layersQuery.Length - 1);
+			stylesQuery = stylesQuery.Remove(stylesQuery.Length - 1);
+		}
 		return 
-			"?SERVICE=WMS&LAYERS=" + layer.name +
+			"?SERVICE=WMS" +
+			"&LAYERS=" + layersQuery +
 			"&REQUEST=GetMap&VERSION=" + wmsVersion +
 			"&FORMAT=image/jpeg" +
 			"&SRS=" + SRS +
-		    "&STYLES=default" +
+		    "&STYLES=" + stylesQuery +
 			"&WIDTH=128&HEIGHT=128&REFERER=CAPAWARE";
 	}
 
