@@ -44,15 +44,8 @@ public class WCSTerrainInspector : Editor
 		}
 		
 		Debug.Log ("Updating inspector ...");
-
-		int newLayerIndex = 
-			EditorGUILayout.Popup (
-				"Layers",
-				quadtreeLODPlane.currentLayerIndex, 
-				quadtreeLODPlane.wmsInfo.GetLayerTitles()
-			);
-		layerChanged = (newLayerIndex != quadtreeLODPlane.currentLayerIndex);
-		quadtreeLODPlane.currentLayerIndex = newLayerIndex;
+		
+		DisplayLayersSelector (ref quadtreeLODPlane, out layerChanged);
 
 		if( layerChanged ){
 			quadtreeLODPlane.currentBoundingBoxIndex = 0;
@@ -63,7 +56,7 @@ public class WCSTerrainInspector : Editor
 		string[] boundingBoxesNames = currentLayer.GetBoundingBoxesNames();
 		Debug.Log ( "boundingBoxesNames: " + boundingBoxesNames.Length );
 		if( boundingBoxesNames.Length > 0 ){
-			quadtreeLODPlane.fixedQueryString = BuildWMSFixedQueryString( currentLayer, "1.1.0", currentLayer.GetBoundingBox( quadtreeLODPlane.currentBoundingBoxIndex ).SRS );
+			quadtreeLODPlane.fixedQueryString = BuildWMSFixedQueryString( quadtreeLODPlane.wmsInfo.layers, "1.1.0", currentLayer.GetBoundingBox( quadtreeLODPlane.currentBoundingBoxIndex ).SRS );
 
 			int newBoundingBoxIndex = 
 				EditorGUILayout.Popup (
@@ -105,14 +98,40 @@ public class WCSTerrainInspector : Editor
 	}
 
 
-	private string BuildWMSFixedQueryString( WMSLayer layer, string wmsVersion, string SRS )
+	private void DisplayLayersSelector( ref QuadtreeLODPlane quadtreeLODPlane, out bool layerChanged )
 	{
+		layerChanged = false;
+
+		EditorGUILayout.LabelField ("Layers");
+
+		WMSLayer[] layers = quadtreeLODPlane.wmsInfo.layers;
+		for( int i=0; i<layers.Length; i++) {
+			bool newToggleValue = 
+				EditorGUILayout.Toggle (layers[i].title, layers[i].selected);
+
+			layerChanged |= (newToggleValue != layers[i].selected);
+			layers[i].selected = newToggleValue;
+		}
+	}
+
+
+	private string BuildWMSFixedQueryString( WMSLayer[] layers, string wmsVersion, string SRS )
+	{
+		string layersQuery = "";
+		string stylesQuery = "";
+		foreach (WMSLayer layer in layers) {
+			if( layer.selected ){
+				layersQuery += layer.name + ",";
+				stylesQuery += "default,";
+			}
+		}
 		return 
-			"?SERVICE=WMS&LAYERS=" + layer.name +
+			"?SERVICE=WMS" +
+			"&LAYERS=" + layersQuery +
 			"&REQUEST=GetMap&VERSION=" + wmsVersion +
 			"&FORMAT=image/jpeg" +
 			"&SRS=" + SRS +
-		    "&STYLES=default" +
+		    "&STYLES=" + stylesQuery +
 			"&WIDTH=128&HEIGHT=128&REFERER=CAPAWARE";
 	}
 

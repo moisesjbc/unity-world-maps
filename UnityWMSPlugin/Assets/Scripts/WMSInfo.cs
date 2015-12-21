@@ -23,6 +23,7 @@ public class WMSLayer
 	public string name;
 	public List<WMSBoundingBox> boundingBoxes;
 	public WMSLayer parentLayer;
+	public bool selected = false;
 
 	public List<WMSBoundingBox> GetBoundingBoxes()
 	{
@@ -65,7 +66,7 @@ public class WMSLayer
 
 public class WMSInfo
 {
-	private WMSLayer[] layers;
+	public WMSLayer[] layers { get; private set; }
 	private int currentLayerIndex = 0;
 
 	public WMSInfo( WMSLayer[] layers )
