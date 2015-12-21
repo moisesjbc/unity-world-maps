@@ -77,11 +77,13 @@ public class WCSTerrainInspector : Editor
 
 		WMSLayer[] layers = quadtreeLODPlane.wmsInfo.layers;
 		for( int i=0; i<layers.Length; i++) {
-			bool newToggleValue = 
-				EditorGUILayout.Toggle (layers[i].title, layers[i].selected);
+			if( layers[i].name != "" ){
+				bool newToggleValue = 
+					EditorGUILayout.Toggle (layers[i].title, layers[i].selected);
 
-			layerChanged |= (newToggleValue != layers[i].selected);
-			layers[i].selected = newToggleValue;
+				layerChanged |= (newToggleValue != layers[i].selected);
+				layers[i].selected = newToggleValue;
+			}
 		}
 	}
 
@@ -125,7 +127,7 @@ public class WCSTerrainInspector : Editor
 		string layersQuery = "";
 		string stylesQuery = "";
 		foreach (WMSLayer layer in layers) {
-			if( layer.selected ){
+			if( layer.selected && layer.name != "" ){
 				layersQuery += layer.name + ",";
 				stylesQuery += "default,";
 			}
