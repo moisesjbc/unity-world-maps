@@ -111,7 +111,7 @@ public class WCSTerrainInspector : Editor
 			boundingBoxChanged = boundingBoxChanged || (newBoundingBoxIndex != quadtreeLODPlane.currentBoundingBoxIndex);
 			quadtreeLODPlane.currentBoundingBoxIndex = newBoundingBoxIndex;
 
-			if( layerChanged || boundingBoxChanged ){
+			if( layerChanged || boundingBoxChanged || GUILayout.Button ("Reset bounding box") ){
 				WMSBoundingBox currentBoundingBox = quadtreeLODPlane.wmsInfo.GetBoundingBox( quadtreeLODPlane.currentBoundingBoxIndex );
 				
 				quadtreeLODPlane.bottomLeftCoordinates = currentBoundingBox.bottomLeftCoordinates;
