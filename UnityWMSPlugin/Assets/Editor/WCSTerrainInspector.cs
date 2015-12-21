@@ -63,8 +63,7 @@ public class WCSTerrainInspector : Editor
 		UpdateBoundingBox (ref quadtreeLODPlane.bottomLeftCoordinates,
 		                   ref quadtreeLODPlane.topRightCoordinates,
 		                   newBottomLeftCoordinates,
-		                   newTopRightCoordinates,
-		                   1.25f);
+		                   newTopRightCoordinates);
 		
 		// Mark the target assert as changed ("dirty") so Unity save it to disk.
 		if (GUI.changed) {
@@ -131,14 +130,32 @@ public class WCSTerrainInspector : Editor
 	                               ref Vector2 oldBottomLeftCoordinates, 
 	                               ref Vector2 oldTopRightCoordinates,
 	                               Vector2 newBottomLeftCoordinates, 
-	                               Vector2 newTopRightCoordinates,
-	                               float boundigBoxRatio )
+	                               Vector2 newTopRightCoordinates )
 	{
 		Vector2 auxBottomLeftCoordinates = newBottomLeftCoordinates;
 		Vector2 auxTopRightCoordinates = newTopRightCoordinates;
 
-		// TODO: Keep aspect ratio.
+		// Compute aspect ratio
+		float width = oldTopRightCoordinates.y - oldBottomLeftCoordinates.y;
+		if (width == 0.0f) {
+			width = 1.0f;
+		}
 
+		float height = oldTopRightCoordinates.y - oldBottomLeftCoordinates.y;
+		if (height == 0.0f) {
+			height = 1.0f;
+		}
+
+		float boundigBoxRatio = width / height;
+		
+		// Update Y coordinates according to bounding box ratio (if X changed).
+		auxBottomLeftCoordinates.y += (newBottomLeftCoordinates.x - oldBottomLeftCoordinates.x) / boundigBoxRatio;
+		auxTopRightCoordinates.y += (newTopRightCoordinates.x - oldTopRightCoordinates.x) / boundigBoxRatio;
+		
+		// Update X coordinates according to bounding box ratio (if Y changed).
+		auxBottomLeftCoordinates.x += (newBottomLeftCoordinates.y - oldBottomLeftCoordinates.y) * boundigBoxRatio;
+		auxTopRightCoordinates.x += (newTopRightCoordinates.y - oldTopRightCoordinates.y) * boundigBoxRatio;
+		
 		oldBottomLeftCoordinates = auxBottomLeftCoordinates;
 		oldTopRightCoordinates = auxTopRightCoordinates;
 	}

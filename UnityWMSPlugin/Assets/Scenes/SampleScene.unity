@@ -126,23 +126,23 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 11401632, guid: d8e350d7eb1a3774880568d15e33ce19, type: 2}
       propertyPath: bottomLeftCoordinates.x
-      value: 188000
+      value: -124.506149
       objectReference: {fileID: 0}
     - target: {fileID: 11401632, guid: d8e350d7eb1a3774880568d15e33ce19, type: 2}
       propertyPath: bottomLeftCoordinates.y
-      value: 3060000
+      value: 32.4237137
       objectReference: {fileID: 0}
     - target: {fileID: 11401632, guid: d8e350d7eb1a3774880568d15e33ce19, type: 2}
       propertyPath: topRightCoordinates.x
-      value: 662000
+      value: -116.497803
       objectReference: {fileID: 0}
     - target: {fileID: 11401632, guid: d8e350d7eb1a3774880568d15e33ce19, type: 2}
       propertyPath: topRightCoordinates.y
-      value: 3256000
+      value: 39.0687065
       objectReference: {fileID: 0}
     - target: {fileID: 11401632, guid: d8e350d7eb1a3774880568d15e33ce19, type: 2}
       propertyPath: serverURL
-      value: http://idecan1.grafcan.com/ServicioWMS/OrtoExpress
+      value: http://gispublic.waterboards.ca.gov/arcgis/services/Administrative/Regional_Board_Boundaries/MapServer/WmsServer
       objectReference: {fileID: 0}
     - target: {fileID: 11401632, guid: d8e350d7eb1a3774880568d15e33ce19, type: 2}
       propertyPath: currentLayerIndex
@@ -154,11 +154,11 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 11401632, guid: d8e350d7eb1a3774880568d15e33ce19, type: 2}
       propertyPath: fixedQueryString
-      value: ?SERVICE=WMS&LAYERS=ortoexpress&REQUEST=GetMap&VERSION=1.1.0&FORMAT=image/jpeg&SRS=EPSG:32628&STYLES=default&WIDTH=128&HEIGHT=128&REFERER=CAPAWARE
+      value: ?SERVICE=WMS&LAYERS=0&REQUEST=GetMap&VERSION=1.1.0&FORMAT=image/jpeg&SRS=EPSG:4326&STYLES=default&WIDTH=128&HEIGHT=128&REFERER=CAPAWARE
       objectReference: {fileID: 0}
     - target: {fileID: 11401632, guid: d8e350d7eb1a3774880568d15e33ce19, type: 2}
       propertyPath: wmsRequestID
-      value: http://idecan1.grafcan.com/ServicioWMS/OrtoExpress@@@1.1.0
+      value: http://gispublic.waterboards.ca.gov/arcgis/services/Administrative/Regional_Board_Boundaries/MapServer/WmsServer@@@1.1.0
       objectReference: {fileID: 0}
     - target: {fileID: 11401632, guid: d8e350d7eb1a3774880568d15e33ce19, type: 2}
       propertyPath: currentBoundingBoxIndex
