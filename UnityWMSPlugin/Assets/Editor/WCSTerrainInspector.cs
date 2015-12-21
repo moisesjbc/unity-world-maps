@@ -12,15 +12,16 @@ public class WCSTerrainInspector : Editor
 	public override void OnInspectorGUI()
 	{
 		QuadtreeLODPlane quadtreeLODPlane = (QuadtreeLODPlane)target;
-		
+
+		bool serverChanged = false;
 		bool layerChanged = false;
 		bool boundingBoxChanged = false;
 
-		string newServerURL = EditorGUILayout.TextArea (quadtreeLODPlane.serverURL);
-		if ( quadtreeLODPlane.wmsErrorResponse == "" && quadtreeLODPlane.wmsInfo == null || newServerURL != quadtreeLODPlane.serverURL) {
+		DisplayServerSelector (ref quadtreeLODPlane, out serverChanged);
+		
+		if (serverChanged) {
 			Debug.Log ("Downloading layers ...");
-			quadtreeLODPlane.serverURL = newServerURL;
-			quadtreeLODPlane.wmsRequestID = wmsClient.Request (newServerURL, "1.1.0");
+			quadtreeLODPlane.wmsRequestID = wmsClient.Request (quadtreeLODPlane.serverURL, "1.1.0");
 			quadtreeLODPlane.wmsInfo = null;
 			quadtreeLODPlane.wmsErrorResponse = "";
 			quadtreeLODPlane.currentBoundingBoxIndex = 0;
@@ -70,6 +71,16 @@ public class WCSTerrainInspector : Editor
 			EditorUtility.SetDirty (quadtreeLODPlane);
 		}
 		Debug.Log ("Updating inspector ...OK");
+	}
+
+
+	private void DisplayServerSelector(ref QuadtreeLODPlane quadtreeLODPlane, out bool serverChanged)
+	{
+		string newServerURL = EditorGUILayout.TextArea (quadtreeLODPlane.serverURL);
+
+		serverChanged = (quadtreeLODPlane.wmsErrorResponse == "" && quadtreeLODPlane.wmsInfo == null || newServerURL != quadtreeLODPlane.serverURL);
+
+		quadtreeLODPlane.serverURL = newServerURL;
 	}
 
 
