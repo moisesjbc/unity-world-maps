@@ -13,6 +13,7 @@ public class QuadtreeLODPlane : MonoBehaviour {
 	public int currentBoundingBoxIndex = 0;
 	public Vector2 bottomLeftCoordinates = new Vector2 ( 416000,3067000 );
 	public Vector2 topRightCoordinates = new Vector2 ( 466000,3117000 );
+	public int vertexResolution = 20;
 
 
 	public void Start()
@@ -44,7 +45,7 @@ public class QuadtreeLODPlane : MonoBehaviour {
 		
 		rootNode = new QuadtreeLODNode( 
 		                               mapSize, 
-		                               20, 
+									   vertexResolution,
 		                               bottomLeftCoordinates,
 		                               topRightCoordinates,
 		                               transform, 

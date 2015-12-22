@@ -17,6 +17,10 @@ public class WCSTerrainInspector : Editor
 		bool layerChanged = false;
 		bool boundingBoxChanged = false;
 
+		quadtreeLODPlane.vertexResolution = 
+			EditorGUILayout.IntField ("Vertex resolution:", quadtreeLODPlane.vertexResolution);
+
+
 		DisplayServerSelector (ref quadtreeLODPlane, out serverChanged);
 
 		if (serverChanged) {
@@ -65,7 +69,7 @@ public class WCSTerrainInspector : Editor
 		                   ref quadtreeLODPlane.topRightCoordinates,
 		                   newBottomLeftCoordinates,
 		                   newTopRightCoordinates);
-		
+
 		// Mark the target assert as changed ("dirty") so Unity save it to disk.
 		if (GUI.changed) {
 			EditorUtility.SetDirty (quadtreeLODPlane);
