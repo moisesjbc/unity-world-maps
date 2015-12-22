@@ -7,7 +7,7 @@ using System;
 [CustomEditor(typeof(WMSComponent))]
 public class WMSComponentInspector : Editor
 {
-	public static WMSClient wmsClient = new WMSClient();
+	private static WMSServerBookmarks bookmarks = new WMSServerBookmarks();
 
 	public override void OnInspectorGUI()
 	{
@@ -19,35 +19,38 @@ public class WMSComponentInspector : Editor
 
 		DisplayServerSelector (ref wmsComponent, out serverChanged);
 
-		if (serverChanged) {
-			Debug.Log ("Downloading layers ...");
-			wmsComponent.wmsRequestID = wmsClient.Request (wmsComponent.serverURL, "1.1.0");
-			wmsComponent.wmsInfo = null;
-			wmsComponent.wmsErrorResponse = "";
+		if (wmsComponent.wmsRequest == null || serverChanged) {
+			Debug.Log ("Requesting capabilities to server ...");
+			wmsComponent.wmsRequest = new WMSRequest (wmsComponent.serverURL, "1.1.0");
 			wmsComponent.currentBoundingBoxIndex = 0;
-			Debug.Log ("Downloading layers ...OK");
+			Debug.Log ("Requesting capabilities to server ...OK");
 		}
 
-		if( wmsComponent.wmsInfo == null ){
-			Debug.Log ("wmsComponent.wmsErrorResponse: " + wmsComponent.wmsErrorResponse );
-			if( wmsComponent.wmsErrorResponse == "" ){
+		WMSRequestStatus requestStatus = 
+			wmsComponent.wmsRequest.Status ();
+		Debug.Log ("requestStatus: " + requestStatus.state);
+			
+		if (requestStatus.state != WMSRequestState.OK) {
+			if( requestStatus.state == WMSRequestState.DOWNLOADING ){
 				EditorGUILayout.LabelField("Downloading WMS info ...");
-			}else{
-				EditorGUILayout.LabelField(wmsComponent.wmsErrorResponse);
+			}else if( requestStatus.state == WMSRequestState.ERROR ){
+				EditorGUILayout.LabelField(requestStatus.errorMessage);
 			}
 			return;
 		}
 
-		if (wmsComponent.wmsInfo.GetLayerTitles ().Length <= 0) {
+		WMSInfo wmsInfo = requestStatus.response;
+			
+		if (wmsInfo.GetLayerTitles ().Length <= 0) {
 			EditorGUILayout.LabelField("No layers");
 			return;
 		}
 		
 		Debug.Log ("Updating inspector ...");
 		
-		DisplayLayersSelector (ref wmsComponent, out layerChanged);
+		DisplayLayersSelector (ref wmsComponent, wmsInfo, out layerChanged);
 
-		DisplayBoundingBoxSelector (ref wmsComponent, layerChanged, out boundingBoxChanged);
+		DisplayBoundingBoxSelector (ref wmsComponent, wmsInfo, layerChanged, out boundingBoxChanged);
 
 		Vector2 newBottomLeftCoordinates =
 			EditorGUILayout.Vector2Field (
@@ -86,16 +89,21 @@ public class WMSComponentInspector : Editor
 
 		string newServerURL = EditorGUILayout.TextField("Server URL:", wmsComponent.serverURL);
 
-		serverChanged |= wmsComponent.wmsRequestID == "" && wmsComponent.wmsErrorResponse == "" && wmsComponent.wmsInfo == null || newServerURL != wmsComponent.serverURL;
+		serverChanged |= (newServerURL != wmsComponent.serverURL);
 		wmsComponent.serverURL = newServerURL;
 		if (serverChanged) {
 			Debug.LogWarning ("Server changed with text: " + wmsComponent.serverURL);
 		}
 
-		if (wmsComponent.wmsInfo != null) {
-			DisplayServerBookmarkButton (wmsComponent.serverURL);
-			if (wmsClient.bookmarks.ServerIsBookmarked (wmsComponent.serverURL)) {
-				DisplayRemoveServerFromBookmarksButton (wmsComponent.serverURL);
+		if (wmsComponent.wmsRequest != null) {
+			WMSRequestStatus requestStatus = 
+				wmsComponent.wmsRequest.Status ();
+			
+			if (requestStatus.state == WMSRequestState.OK) {
+				DisplayServerBookmarkButton (wmsComponent.serverURL);
+				if (bookmarks.ServerIsBookmarked (wmsComponent.serverURL)) {
+					DisplayRemoveServerFromBookmarksButton (wmsComponent.serverURL);
+				}
 			}
 		}
 	}
@@ -103,29 +111,29 @@ public class WMSComponentInspector : Editor
 
 	private void DisplayServerPopup(ref WMSComponent wmsComponent, ref bool serverChanged)
 	{
-		string[] serverURLs = wmsClient.bookmarks.ToArray ();
+		string[] serverURLs = bookmarks.ToArray ();
 
 		for( int i=0; i<serverURLs.Length; i++ ){
 			serverURLs[i] = serverURLs[i].Replace ("/", "\\");
 		}
 
-		int newServerIndex = EditorGUILayout.Popup ("Bookmarked servers", wmsClient.serverURLindex, serverURLs);
-		serverChanged = wmsComponent.wmsRequestID == "" && wmsComponent.wmsErrorResponse == "" && wmsComponent.wmsInfo == null || newServerIndex != wmsClient.serverURLindex;
+		int newServerIndex = EditorGUILayout.Popup ("Bookmarked servers", wmsComponent.serverURLindex, serverURLs);
+		serverChanged = (newServerIndex != wmsComponent.serverURLindex);
 
 		if (serverChanged) {
-			wmsClient.serverURLindex = newServerIndex;
-			wmsComponent.serverURL = serverURLs [wmsClient.serverURLindex].Replace("\\", "/");
+			wmsComponent.serverURLindex = newServerIndex;
+			wmsComponent.serverURL = serverURLs [wmsComponent.serverURLindex].Replace("\\", "/");
 		}
 	}
 
 
-	private void DisplayLayersSelector( ref WMSComponent wmsComponent, out bool layerChanged )
+	private void DisplayLayersSelector( ref WMSComponent wmsComponent, WMSInfo wmsInfo, out bool layerChanged )
 	{
 		layerChanged = false;
 
 		EditorGUILayout.LabelField ("Layers");
 
-		WMSLayer[] layers = wmsComponent.wmsInfo.layers;
+		WMSLayer[] layers = wmsInfo.layers;
 		for( int i=0; i<layers.Length; i++) {
 			if( layers[i].name != "" ){
 				bool newToggleValue = 
@@ -138,7 +146,7 @@ public class WMSComponentInspector : Editor
 	}
 
 
-	private void DisplayBoundingBoxSelector( ref WMSComponent wmsComponent, bool layerChanged, out bool boundingBoxChanged )
+	private void DisplayBoundingBoxSelector( ref WMSComponent wmsComponent, WMSInfo wmsInfo, bool layerChanged, out bool boundingBoxChanged )
 	{
 		boundingBoxChanged = false;
 
@@ -147,10 +155,10 @@ public class WMSComponentInspector : Editor
 			boundingBoxChanged = true;
 		}
 		
-		string[] boundingBoxesNames = wmsComponent.wmsInfo.GetBoundingBoxesNames();
+		string[] boundingBoxesNames = wmsInfo.GetBoundingBoxesNames();
 		Debug.Log ( "boundingBoxesNames: " + boundingBoxesNames.Length );
 		if( boundingBoxesNames.Length > 0 ){
-			wmsComponent.fixedQueryString = BuildWMSFixedQueryString( wmsComponent.wmsInfo.layers, "1.1.0", wmsComponent.wmsInfo.GetBoundingBox( wmsComponent.currentBoundingBoxIndex ).SRS );
+			wmsComponent.fixedQueryString = BuildWMSFixedQueryString( wmsInfo.layers, "1.1.0", wmsInfo.GetBoundingBox( wmsComponent.currentBoundingBoxIndex ).SRS );
 			
 			int newBoundingBoxIndex = 
 				EditorGUILayout.Popup (
@@ -163,7 +171,7 @@ public class WMSComponentInspector : Editor
 			wmsComponent.currentBoundingBoxIndex = newBoundingBoxIndex;
 
 			if( layerChanged || boundingBoxChanged || GUILayout.Button ("Reset bounding box") ){
-				WMSBoundingBox currentBoundingBox = wmsComponent.wmsInfo.GetBoundingBox( wmsComponent.currentBoundingBoxIndex );
+				WMSBoundingBox currentBoundingBox = wmsInfo.GetBoundingBox( wmsComponent.currentBoundingBoxIndex );
 
 				wmsComponent.bottomLeftCoordinates = currentBoundingBox.bottomLeftCoordinates;
 				wmsComponent.topRightCoordinates = currentBoundingBox.topRightCoordinates;
@@ -236,7 +244,7 @@ public class WMSComponentInspector : Editor
 	private void DisplayServerBookmarkButton(string serverURL)
 	{
 		if (GUILayout.Button ("Bookmark server")){
-			wmsClient.bookmarks.BookmarkServer (serverURL);
+			bookmarks.BookmarkServer (serverURL);
 		}
 	}
 
@@ -244,10 +252,10 @@ public class WMSComponentInspector : Editor
 	private void DisplayRemoveServerFromBookmarksButton(string serverURL)
 	{
 		if (GUILayout.Button ("Remove server from bookmarks")){
-			wmsClient.bookmarks.RemoveServerFromBookmarks (serverURL);
+			bookmarks.RemoveServerFromBookmarks (serverURL);
 		}
 	}
-
+		
 
 	public void OnEnable()
 	{
@@ -265,17 +273,8 @@ public class WMSComponentInspector : Editor
 	public void Refresh()
 	{
 		WMSComponent wmsComponent = (WMSComponent)target;
-		if ( wmsComponent.wmsErrorResponse == "" && wmsComponent.wmsInfo == null) {
-			try {
-				wmsComponent.wmsInfo = wmsClient.GetResponse (wmsComponent.wmsRequestID);
-				if (wmsComponent.wmsInfo != null) {
-					Repaint ();
-				}
-			} catch (Exception e) {
-				wmsComponent.wmsErrorResponse = "Exception: " + e.Message;
-				Repaint ();
-				throw e;
-			}
+		if (wmsComponent.wmsRequest != null && wmsComponent.wmsRequest.Status ().state == WMSRequestState.DOWNLOADING) {
+			Repaint ();
 		}
 	}
 }
