@@ -18,7 +18,7 @@ public class WCSTerrainInspector : Editor
 		bool boundingBoxChanged = false;
 
 		DisplayServerSelector (ref quadtreeLODPlane, out serverChanged);
-		
+
 		if (serverChanged) {
 			Debug.Log ("Downloading layers ...");
 			quadtreeLODPlane.wmsRequestID = wmsClient.Request (quadtreeLODPlane.serverURL, "1.1.0");
@@ -60,7 +60,7 @@ public class WCSTerrainInspector : Editor
 				"Top right coordinates",
 				quadtreeLODPlane.topRightCoordinates
 				);
-		
+						
 		UpdateBoundingBox (ref quadtreeLODPlane.bottomLeftCoordinates,
 		                   ref quadtreeLODPlane.topRightCoordinates,
 		                   newBottomLeftCoordinates,
@@ -76,14 +76,26 @@ public class WCSTerrainInspector : Editor
 
 	private void DisplayServerSelector(ref QuadtreeLODPlane quadtreeLODPlane, out bool serverChanged)
 	{
+		Debug.LogWarning ("DisplayingServerSelector");
 		serverChanged = false;
 
 		DisplayServerPopup (ref quadtreeLODPlane, ref serverChanged);
+		if (serverChanged) {
+			Debug.LogWarning ("Server changed with popup: " + quadtreeLODPlane.serverURL);
+		}
 
 		string newServerURL = EditorGUILayout.TextField("Server URL:", quadtreeLODPlane.serverURL);
 
 		serverChanged |= (quadtreeLODPlane.wmsErrorResponse == "" && quadtreeLODPlane.wmsInfo == null || newServerURL != quadtreeLODPlane.serverURL);
 		quadtreeLODPlane.serverURL = newServerURL;
+		if (serverChanged) {
+			Debug.LogWarning ("Server changed with text: " + quadtreeLODPlane.serverURL);
+		}
+
+		DisplayServerBookmarkButton (quadtreeLODPlane.serverURL);
+		if( wmsClient.ServerIsBookmarked(quadtreeLODPlane.serverURL) ){
+			DisplayRemoveServerFromBookmarksButton (quadtreeLODPlane.serverURL);
+		}
 	}
 
 
@@ -216,6 +228,22 @@ public class WCSTerrainInspector : Editor
 			"&SRS=" + SRS +
 		    "&STYLES=" + stylesQuery +
 			"&WIDTH=128&HEIGHT=128&REFERER=CAPAWARE";
+	}
+
+
+	private void DisplayServerBookmarkButton(string serverURL)
+	{
+		if (GUILayout.Button ("Bookmark server")){
+			wmsClient.BookmarkServer (serverURL);
+		}
+	}
+
+
+	private void DisplayRemoveServerFromBookmarksButton(string serverURL)
+	{
+		if (GUILayout.Button ("Remove server from bookmarks")){
+			wmsClient.RemoveServerFromBookmarks (serverURL);
+		}
 	}
 
 
