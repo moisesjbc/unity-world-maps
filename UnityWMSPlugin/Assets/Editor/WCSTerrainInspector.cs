@@ -12,15 +12,16 @@ public class WCSTerrainInspector : Editor
 	public override void OnInspectorGUI()
 	{
 		QuadtreeLODPlane quadtreeLODPlane = (QuadtreeLODPlane)target;
-		
+
+		bool serverChanged = false;
 		bool layerChanged = false;
 		bool boundingBoxChanged = false;
 
-		string newServerURL = EditorGUILayout.TextArea (quadtreeLODPlane.serverURL);
-		if ( quadtreeLODPlane.wmsErrorResponse == "" && quadtreeLODPlane.wmsInfo == null || newServerURL != quadtreeLODPlane.serverURL) {
+		DisplayServerSelector (ref quadtreeLODPlane, out serverChanged);
+
+		if (serverChanged) {
 			Debug.Log ("Downloading layers ...");
-			quadtreeLODPlane.serverURL = newServerURL;
-			quadtreeLODPlane.wmsRequestID = wmsClient.Request (newServerURL, "1.1.0");
+			quadtreeLODPlane.wmsRequestID = wmsClient.Request (quadtreeLODPlane.serverURL, "1.1.0");
 			quadtreeLODPlane.wmsInfo = null;
 			quadtreeLODPlane.wmsErrorResponse = "";
 			quadtreeLODPlane.currentBoundingBoxIndex = 0;
@@ -59,7 +60,7 @@ public class WCSTerrainInspector : Editor
 				"Top right coordinates",
 				quadtreeLODPlane.topRightCoordinates
 				);
-		
+						
 		UpdateBoundingBox (ref quadtreeLODPlane.bottomLeftCoordinates,
 		                   ref quadtreeLODPlane.topRightCoordinates,
 		                   newBottomLeftCoordinates,
@@ -70,6 +71,51 @@ public class WCSTerrainInspector : Editor
 			EditorUtility.SetDirty (quadtreeLODPlane);
 		}
 		Debug.Log ("Updating inspector ...OK");
+	}
+
+
+	private void DisplayServerSelector(ref QuadtreeLODPlane quadtreeLODPlane, out bool serverChanged)
+	{
+		Debug.LogWarning ("DisplayingServerSelector");
+		serverChanged = false;
+
+		DisplayServerPopup (ref quadtreeLODPlane, ref serverChanged);
+		if (serverChanged) {
+			Debug.LogWarning ("Server changed with popup: " + quadtreeLODPlane.serverURL);
+		}
+
+		string newServerURL = EditorGUILayout.TextField("Server URL:", quadtreeLODPlane.serverURL);
+
+		serverChanged |= quadtreeLODPlane.wmsRequestID == "" && quadtreeLODPlane.wmsErrorResponse == "" && quadtreeLODPlane.wmsInfo == null || newServerURL != quadtreeLODPlane.serverURL;
+		quadtreeLODPlane.serverURL = newServerURL;
+		if (serverChanged) {
+			Debug.LogWarning ("Server changed with text: " + quadtreeLODPlane.serverURL);
+		}
+
+		if (quadtreeLODPlane.wmsInfo != null) {
+			DisplayServerBookmarkButton (quadtreeLODPlane.serverURL);
+			if (wmsClient.ServerIsBookmarked (quadtreeLODPlane.serverURL)) {
+				DisplayRemoveServerFromBookmarksButton (quadtreeLODPlane.serverURL);
+			}
+		}
+	}
+
+
+	private void DisplayServerPopup(ref QuadtreeLODPlane quadtreeLODPlane, ref bool serverChanged)
+	{
+		string[] serverURLs = wmsClient.serverURLs.ToArray ();
+
+		for( int i=0; i<serverURLs.Length; i++ ){
+			serverURLs[i] = serverURLs[i].Replace ("/", "\\");
+		}
+
+		int newServerIndex = EditorGUILayout.Popup ("Bookmarked servers", wmsClient.serverURLindex, serverURLs);
+		serverChanged = quadtreeLODPlane.wmsRequestID == "" && quadtreeLODPlane.wmsErrorResponse == "" && quadtreeLODPlane.wmsInfo == null || newServerIndex != wmsClient.serverURLindex;
+
+		if (serverChanged) {
+			wmsClient.serverURLindex = newServerIndex;
+			quadtreeLODPlane.serverURL = serverURLs [wmsClient.serverURLindex].Replace("\\", "/");
+		}
 	}
 
 
@@ -184,6 +230,22 @@ public class WCSTerrainInspector : Editor
 			"&SRS=" + SRS +
 		    "&STYLES=" + stylesQuery +
 			"&WIDTH=128&HEIGHT=128&REFERER=CAPAWARE";
+	}
+
+
+	private void DisplayServerBookmarkButton(string serverURL)
+	{
+		if (GUILayout.Button ("Bookmark server")){
+			wmsClient.BookmarkServer (serverURL);
+		}
+	}
+
+
+	private void DisplayRemoveServerFromBookmarksButton(string serverURL)
+	{
+		if (GUILayout.Button ("Remove server from bookmarks")){
+			wmsClient.RemoveServerFromBookmarks (serverURL);
+		}
 	}
 
 

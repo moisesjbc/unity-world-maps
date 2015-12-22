@@ -134,11 +134,11 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 11401632, guid: d8e350d7eb1a3774880568d15e33ce19, type: 2}
       propertyPath: topRightCoordinates.x
-      value: -116.497803
+      value: -113.497818
       objectReference: {fileID: 0}
     - target: {fileID: 11401632, guid: d8e350d7eb1a3774880568d15e33ce19, type: 2}
       propertyPath: topRightCoordinates.y
-      value: 39.0687065
+      value: 42.0686874
       objectReference: {fileID: 0}
     - target: {fileID: 11401632, guid: d8e350d7eb1a3774880568d15e33ce19, type: 2}
       propertyPath: serverURL
@@ -154,7 +154,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 11401632, guid: d8e350d7eb1a3774880568d15e33ce19, type: 2}
       propertyPath: fixedQueryString
-      value: ?SERVICE=WMS&LAYERS=0&REQUEST=GetMap&VERSION=1.1.0&FORMAT=image/jpeg&SRS=EPSG:4326&STYLES=default&WIDTH=128&HEIGHT=128&REFERER=CAPAWARE
+      value: ?SERVICE=WMS&LAYERS=0,1&REQUEST=GetMap&VERSION=1.1.0&FORMAT=image/jpeg&SRS=EPSG:4326&STYLES=default,default&WIDTH=128&HEIGHT=128&REFERER=CAPAWARE
       objectReference: {fileID: 0}
     - target: {fileID: 11401632, guid: d8e350d7eb1a3774880568d15e33ce19, type: 2}
       propertyPath: wmsRequestID
