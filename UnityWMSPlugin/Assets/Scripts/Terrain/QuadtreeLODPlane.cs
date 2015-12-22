@@ -41,8 +41,7 @@ public class QuadtreeLODPlane : MonoBehaviour {
 									   GetComponent<WMSComponent>().topRightCoordinates,
 		                               transform, 
 		                               this.GetComponent<Material>(),
-									   GetComponent<WMSComponent>().serverURL,
-			                           GetComponent<WMSComponent>().fixedQueryString
+									   GetComponent<WMSComponent>()
 		                               );
 		GetComponent<MeshRenderer> ().enabled = false;
 	}
