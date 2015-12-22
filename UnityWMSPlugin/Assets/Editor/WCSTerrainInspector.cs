@@ -92,9 +92,11 @@ public class WCSTerrainInspector : Editor
 			Debug.LogWarning ("Server changed with text: " + quadtreeLODPlane.serverURL);
 		}
 
-		DisplayServerBookmarkButton (quadtreeLODPlane.serverURL);
-		if( wmsClient.ServerIsBookmarked(quadtreeLODPlane.serverURL) ){
-			DisplayRemoveServerFromBookmarksButton (quadtreeLODPlane.serverURL);
+		if (quadtreeLODPlane.wmsInfo != null) {
+			DisplayServerBookmarkButton (quadtreeLODPlane.serverURL);
+			if (wmsClient.ServerIsBookmarked (quadtreeLODPlane.serverURL)) {
+				DisplayRemoveServerFromBookmarksButton (quadtreeLODPlane.serverURL);
+			}
 		}
 	}
 
