@@ -76,11 +76,32 @@ public class WCSTerrainInspector : Editor
 
 	private void DisplayServerSelector(ref QuadtreeLODPlane quadtreeLODPlane, out bool serverChanged)
 	{
+		serverChanged = false;
+
+		DisplayServerPopup (ref quadtreeLODPlane, ref serverChanged);
+
 		string newServerURL = EditorGUILayout.TextArea (quadtreeLODPlane.serverURL);
 
-		serverChanged = (quadtreeLODPlane.wmsErrorResponse == "" && quadtreeLODPlane.wmsInfo == null || newServerURL != quadtreeLODPlane.serverURL);
-
+		serverChanged |= (quadtreeLODPlane.wmsErrorResponse == "" && quadtreeLODPlane.wmsInfo == null || newServerURL != quadtreeLODPlane.serverURL);
 		quadtreeLODPlane.serverURL = newServerURL;
+	}
+
+
+	private void DisplayServerPopup(ref QuadtreeLODPlane quadtreeLODPlane, ref bool serverChanged)
+	{
+		string[] serverURLs = wmsClient.serverURLs.ToArray ();
+
+		for( int i=0; i<serverURLs.Length; i++ ){
+			serverURLs[i] = serverURLs[i].Replace ("/", "\\");
+		}
+
+		int newServerIndex = EditorGUILayout.Popup ("Server", wmsClient.serverURLindex, serverURLs);
+		serverChanged = (quadtreeLODPlane.wmsErrorResponse == "" && quadtreeLODPlane.wmsInfo == null || newServerIndex != wmsClient.serverURLindex);
+
+		if (serverChanged) {
+			wmsClient.serverURLindex = newServerIndex;
+			quadtreeLODPlane.serverURL = serverURLs [wmsClient.serverURLindex].Replace("\\", "/");
+		}
 	}
 
 

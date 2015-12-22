@@ -4,7 +4,14 @@ using System.Collections.Generic;
 
 public class WMSClient {
 	private Dictionary<string,WWW> requests_ = new Dictionary<string,WWW>();
-	private List<string> serverURLs = new List<string> ();
+	public List<string> serverURLs = 
+		new List<string> ( 
+			new string[]{
+				"http://idecan1.grafcan.com/ServicioWMS/OrtoExpress",
+				"http://www.ign.es/wms-inspire/pnoa-ma"
+			}
+		);
+	public int serverURLindex = 0;
 
 	public string Request( string server, string version = "1.1.0" )
 	{
@@ -24,8 +31,6 @@ public class WMSClient {
 	public WMSInfo GetResponse( string requestID )
 	{
 		if (requests_.ContainsKey (requestID) && requests_ [requestID].isDone) {
-			serverURLs.Add( GetHostFromURL(requestID) );
-			Debug.Log ("Server added to list: " + GetHostFromURL(requests_ [requestID].url) );
 			return WMSXMLParser.GetWMSInfo (requests_ [requestID].text);
 		}
 
@@ -39,12 +44,12 @@ public class WMSClient {
 	}
 
 
-	private string GetHostFromURL( string id )
+	private string GetHostFromURL( string url )
 	{
-		int separatorIndex = id.IndexOf("?");
+		int separatorIndex = url.IndexOf("?");
 		if (separatorIndex > 0){
-			return id.Substring(0, separatorIndex);
+			return url.Substring(0, separatorIndex);
 		}
-		return id;
+		return url;
 	}
 }
