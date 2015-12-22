@@ -4,108 +4,104 @@ using System.Collections.Generic;
 using UnityEditor;
 using System;
 
-[CustomEditor(typeof(QuadtreeLODPlane))]
-public class WCSTerrainInspector : Editor 
+[CustomEditor(typeof(WMSComponent))]
+public class WMSComponentInspector : Editor
 {
 	public static WMSClient wmsClient = new WMSClient();
 
 	public override void OnInspectorGUI()
 	{
-		QuadtreeLODPlane quadtreeLODPlane = (QuadtreeLODPlane)target;
+		WMSComponent wmsComponent = (WMSComponent)target;
 
 		bool serverChanged = false;
 		bool layerChanged = false;
 		bool boundingBoxChanged = false;
 
-		quadtreeLODPlane.vertexResolution = 
-			EditorGUILayout.IntField ("Vertex resolution:", quadtreeLODPlane.vertexResolution);
-
-
-		DisplayServerSelector (ref quadtreeLODPlane, out serverChanged);
+		DisplayServerSelector (ref wmsComponent, out serverChanged);
 
 		if (serverChanged) {
 			Debug.Log ("Downloading layers ...");
-			quadtreeLODPlane.wmsRequestID = wmsClient.Request (quadtreeLODPlane.serverURL, "1.1.0");
-			quadtreeLODPlane.wmsInfo = null;
-			quadtreeLODPlane.wmsErrorResponse = "";
-			quadtreeLODPlane.currentBoundingBoxIndex = 0;
+			wmsComponent.wmsRequestID = wmsClient.Request (wmsComponent.serverURL, "1.1.0");
+			wmsComponent.wmsInfo = null;
+			wmsComponent.wmsErrorResponse = "";
+			wmsComponent.currentBoundingBoxIndex = 0;
 			Debug.Log ("Downloading layers ...OK");
 		}
 
-		if( quadtreeLODPlane.wmsInfo == null ){
-			Debug.Log ("quadtreeLODPlane.wmsErrorResponse: " + quadtreeLODPlane.wmsErrorResponse );
-			if( quadtreeLODPlane.wmsErrorResponse == "" ){
+		if( wmsComponent.wmsInfo == null ){
+			Debug.Log ("wmsComponent.wmsErrorResponse: " + wmsComponent.wmsErrorResponse );
+			if( wmsComponent.wmsErrorResponse == "" ){
 				EditorGUILayout.LabelField("Downloading WMS info ...");
 			}else{
-				EditorGUILayout.LabelField(quadtreeLODPlane.wmsErrorResponse);
+				EditorGUILayout.LabelField(wmsComponent.wmsErrorResponse);
 			}
 			return;
 		}
 
-		if (quadtreeLODPlane.wmsInfo.GetLayerTitles ().Length <= 0) {
+		if (wmsComponent.wmsInfo.GetLayerTitles ().Length <= 0) {
 			EditorGUILayout.LabelField("No layers");
 			return;
 		}
 		
 		Debug.Log ("Updating inspector ...");
 		
-		DisplayLayersSelector (ref quadtreeLODPlane, out layerChanged);
+		DisplayLayersSelector (ref wmsComponent, out layerChanged);
 
-		DisplayBoundingBoxSelector (ref quadtreeLODPlane, layerChanged, out boundingBoxChanged);
+		DisplayBoundingBoxSelector (ref wmsComponent, layerChanged, out boundingBoxChanged);
 
 		Vector2 newBottomLeftCoordinates =
 			EditorGUILayout.Vector2Field (
 				"Bottom left coordinates",
-				quadtreeLODPlane.bottomLeftCoordinates
+				wmsComponent.bottomLeftCoordinates
 				);
 		
 		Vector2 newTopRightCoordinates =
 			EditorGUILayout.Vector2Field (
 				"Top right coordinates",
-				quadtreeLODPlane.topRightCoordinates
+				wmsComponent.topRightCoordinates
 				);
 						
-		UpdateBoundingBox (ref quadtreeLODPlane.bottomLeftCoordinates,
-		                   ref quadtreeLODPlane.topRightCoordinates,
+		UpdateBoundingBox (ref wmsComponent.bottomLeftCoordinates,
+		                   ref wmsComponent.topRightCoordinates,
 		                   newBottomLeftCoordinates,
 		                   newTopRightCoordinates);
 
 		// Mark the target assert as changed ("dirty") so Unity save it to disk.
 		if (GUI.changed) {
-			EditorUtility.SetDirty (quadtreeLODPlane);
+			EditorUtility.SetDirty (wmsComponent);
 		}
 		Debug.Log ("Updating inspector ...OK");
 	}
 
 
-	private void DisplayServerSelector(ref QuadtreeLODPlane quadtreeLODPlane, out bool serverChanged)
+	private void DisplayServerSelector(ref WMSComponent wmsComponent, out bool serverChanged)
 	{
 		Debug.LogWarning ("DisplayingServerSelector");
 		serverChanged = false;
 
-		DisplayServerPopup (ref quadtreeLODPlane, ref serverChanged);
+		DisplayServerPopup (ref wmsComponent, ref serverChanged);
 		if (serverChanged) {
-			Debug.LogWarning ("Server changed with popup: " + quadtreeLODPlane.serverURL);
+			Debug.LogWarning ("Server changed with popup: " + wmsComponent.serverURL);
 		}
 
-		string newServerURL = EditorGUILayout.TextField("Server URL:", quadtreeLODPlane.serverURL);
+		string newServerURL = EditorGUILayout.TextField("Server URL:", wmsComponent.serverURL);
 
-		serverChanged |= quadtreeLODPlane.wmsRequestID == "" && quadtreeLODPlane.wmsErrorResponse == "" && quadtreeLODPlane.wmsInfo == null || newServerURL != quadtreeLODPlane.serverURL;
-		quadtreeLODPlane.serverURL = newServerURL;
+		serverChanged |= wmsComponent.wmsRequestID == "" && wmsComponent.wmsErrorResponse == "" && wmsComponent.wmsInfo == null || newServerURL != wmsComponent.serverURL;
+		wmsComponent.serverURL = newServerURL;
 		if (serverChanged) {
-			Debug.LogWarning ("Server changed with text: " + quadtreeLODPlane.serverURL);
+			Debug.LogWarning ("Server changed with text: " + wmsComponent.serverURL);
 		}
 
-		if (quadtreeLODPlane.wmsInfo != null) {
-			DisplayServerBookmarkButton (quadtreeLODPlane.serverURL);
-			if (wmsClient.bookmarks.ServerIsBookmarked (quadtreeLODPlane.serverURL)) {
-				DisplayRemoveServerFromBookmarksButton (quadtreeLODPlane.serverURL);
+		if (wmsComponent.wmsInfo != null) {
+			DisplayServerBookmarkButton (wmsComponent.serverURL);
+			if (wmsClient.bookmarks.ServerIsBookmarked (wmsComponent.serverURL)) {
+				DisplayRemoveServerFromBookmarksButton (wmsComponent.serverURL);
 			}
 		}
 	}
 
 
-	private void DisplayServerPopup(ref QuadtreeLODPlane quadtreeLODPlane, ref bool serverChanged)
+	private void DisplayServerPopup(ref WMSComponent wmsComponent, ref bool serverChanged)
 	{
 		string[] serverURLs = wmsClient.bookmarks.ToArray ();
 
@@ -114,22 +110,22 @@ public class WCSTerrainInspector : Editor
 		}
 
 		int newServerIndex = EditorGUILayout.Popup ("Bookmarked servers", wmsClient.serverURLindex, serverURLs);
-		serverChanged = quadtreeLODPlane.wmsRequestID == "" && quadtreeLODPlane.wmsErrorResponse == "" && quadtreeLODPlane.wmsInfo == null || newServerIndex != wmsClient.serverURLindex;
+		serverChanged = wmsComponent.wmsRequestID == "" && wmsComponent.wmsErrorResponse == "" && wmsComponent.wmsInfo == null || newServerIndex != wmsClient.serverURLindex;
 
 		if (serverChanged) {
 			wmsClient.serverURLindex = newServerIndex;
-			quadtreeLODPlane.serverURL = serverURLs [wmsClient.serverURLindex].Replace("\\", "/");
+			wmsComponent.serverURL = serverURLs [wmsClient.serverURLindex].Replace("\\", "/");
 		}
 	}
 
 
-	private void DisplayLayersSelector( ref QuadtreeLODPlane quadtreeLODPlane, out bool layerChanged )
+	private void DisplayLayersSelector( ref WMSComponent wmsComponent, out bool layerChanged )
 	{
 		layerChanged = false;
 
 		EditorGUILayout.LabelField ("Layers");
 
-		WMSLayer[] layers = quadtreeLODPlane.wmsInfo.layers;
+		WMSLayer[] layers = wmsComponent.wmsInfo.layers;
 		for( int i=0; i<layers.Length; i++) {
 			if( layers[i].name != "" ){
 				bool newToggleValue = 
@@ -142,35 +138,35 @@ public class WCSTerrainInspector : Editor
 	}
 
 
-	private void DisplayBoundingBoxSelector( ref QuadtreeLODPlane quadtreeLODPlane, bool layerChanged, out bool boundingBoxChanged )
+	private void DisplayBoundingBoxSelector( ref WMSComponent wmsComponent, bool layerChanged, out bool boundingBoxChanged )
 	{
 		boundingBoxChanged = false;
 
 		if( layerChanged ){
-			quadtreeLODPlane.currentBoundingBoxIndex = 0;
+			wmsComponent.currentBoundingBoxIndex = 0;
 			boundingBoxChanged = true;
 		}
 		
-		string[] boundingBoxesNames = quadtreeLODPlane.wmsInfo.GetBoundingBoxesNames();
+		string[] boundingBoxesNames = wmsComponent.wmsInfo.GetBoundingBoxesNames();
 		Debug.Log ( "boundingBoxesNames: " + boundingBoxesNames.Length );
 		if( boundingBoxesNames.Length > 0 ){
-			quadtreeLODPlane.fixedQueryString = BuildWMSFixedQueryString( quadtreeLODPlane.wmsInfo.layers, "1.1.0", quadtreeLODPlane.wmsInfo.GetBoundingBox( quadtreeLODPlane.currentBoundingBoxIndex ).SRS );
+			wmsComponent.fixedQueryString = BuildWMSFixedQueryString( wmsComponent.wmsInfo.layers, "1.1.0", wmsComponent.wmsInfo.GetBoundingBox( wmsComponent.currentBoundingBoxIndex ).SRS );
 			
 			int newBoundingBoxIndex = 
 				EditorGUILayout.Popup (
 					"Bounding Box",
-					quadtreeLODPlane.currentBoundingBoxIndex, 
+					wmsComponent.currentBoundingBoxIndex, 
 					boundingBoxesNames
 					);
 			
-			boundingBoxChanged = boundingBoxChanged || (newBoundingBoxIndex != quadtreeLODPlane.currentBoundingBoxIndex);
-			quadtreeLODPlane.currentBoundingBoxIndex = newBoundingBoxIndex;
+			boundingBoxChanged = boundingBoxChanged || (newBoundingBoxIndex != wmsComponent.currentBoundingBoxIndex);
+			wmsComponent.currentBoundingBoxIndex = newBoundingBoxIndex;
 
 			if( layerChanged || boundingBoxChanged || GUILayout.Button ("Reset bounding box") ){
-				WMSBoundingBox currentBoundingBox = quadtreeLODPlane.wmsInfo.GetBoundingBox( quadtreeLODPlane.currentBoundingBoxIndex );
+				WMSBoundingBox currentBoundingBox = wmsComponent.wmsInfo.GetBoundingBox( wmsComponent.currentBoundingBoxIndex );
 
-				quadtreeLODPlane.bottomLeftCoordinates = currentBoundingBox.bottomLeftCoordinates;
-				quadtreeLODPlane.topRightCoordinates = currentBoundingBox.topRightCoordinates;
+				wmsComponent.bottomLeftCoordinates = currentBoundingBox.bottomLeftCoordinates;
+				wmsComponent.topRightCoordinates = currentBoundingBox.topRightCoordinates;
 			}
 		}
 	}
@@ -268,15 +264,15 @@ public class WCSTerrainInspector : Editor
 
 	public void Refresh()
 	{
-		QuadtreeLODPlane quadtreeLODPlane = (QuadtreeLODPlane)target;
-		if ( quadtreeLODPlane.wmsErrorResponse == "" && quadtreeLODPlane.wmsInfo == null) {
+		WMSComponent wmsComponent = (WMSComponent)target;
+		if ( wmsComponent.wmsErrorResponse == "" && wmsComponent.wmsInfo == null) {
 			try {
-				quadtreeLODPlane.wmsInfo = wmsClient.GetResponse (quadtreeLODPlane.wmsRequestID);
-				if (quadtreeLODPlane.wmsInfo != null) {
+				wmsComponent.wmsInfo = wmsClient.GetResponse (wmsComponent.wmsRequestID);
+				if (wmsComponent.wmsInfo != null) {
 					Repaint ();
 				}
 			} catch (Exception e) {
-				quadtreeLODPlane.wmsErrorResponse = "Exception: " + e.Message;
+				wmsComponent.wmsErrorResponse = "Exception: " + e.Message;
 				Repaint ();
 				throw e;
 			}

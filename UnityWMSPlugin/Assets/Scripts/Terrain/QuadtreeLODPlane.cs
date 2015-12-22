@@ -4,22 +4,13 @@ using System.Collections.Generic;
 
 public class QuadtreeLODPlane : MonoBehaviour {
 	private QuadtreeLODNode rootNode = null;
-
-	public string serverURL = "http://idecan1.grafcan.com/ServicioWMS/OrtoExpress";
-	public string fixedQueryString;
-	public WMSInfo wmsInfo = null;
-	public string wmsRequestID = "";
-	public string wmsErrorResponse = "";
-	public int currentBoundingBoxIndex = 0;
-	public Vector2 bottomLeftCoordinates = new Vector2 ( 416000,3067000 );
-	public Vector2 topRightCoordinates = new Vector2 ( 466000,3117000 );
 	public int vertexResolution = 20;
 
 
 	public void Start()
 	{
-		Debug.Log ("<serverURL>: " + serverURL);
-		Reset (bottomLeftCoordinates, topRightCoordinates);
+		Debug.Log ("<serverURL>: " + GetComponent<WMSComponent>().serverURL);
+		Reset (GetComponent<WMSComponent>().bottomLeftCoordinates, GetComponent<WMSComponent>().topRightCoordinates);
 	}
 
 
@@ -46,12 +37,12 @@ public class QuadtreeLODPlane : MonoBehaviour {
 		rootNode = new QuadtreeLODNode( 
 		                               mapSize, 
 									   vertexResolution,
-		                               bottomLeftCoordinates,
-		                               topRightCoordinates,
+									   GetComponent<WMSComponent>().bottomLeftCoordinates,
+									   GetComponent<WMSComponent>().topRightCoordinates,
 		                               transform, 
 		                               this.GetComponent<Material>(),
-		                               serverURL,
-		                               fixedQueryString
+									   GetComponent<WMSComponent>().serverURL,
+			                           GetComponent<WMSComponent>().fixedQueryString
 		                               );
 		GetComponent<MeshRenderer> ().enabled = false;
 	}
