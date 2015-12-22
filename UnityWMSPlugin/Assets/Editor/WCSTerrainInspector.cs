@@ -98,7 +98,7 @@ public class WCSTerrainInspector : Editor
 
 		if (quadtreeLODPlane.wmsInfo != null) {
 			DisplayServerBookmarkButton (quadtreeLODPlane.serverURL);
-			if (wmsClient.ServerIsBookmarked (quadtreeLODPlane.serverURL)) {
+			if (wmsClient.bookmarks.ServerIsBookmarked (quadtreeLODPlane.serverURL)) {
 				DisplayRemoveServerFromBookmarksButton (quadtreeLODPlane.serverURL);
 			}
 		}
@@ -107,7 +107,7 @@ public class WCSTerrainInspector : Editor
 
 	private void DisplayServerPopup(ref QuadtreeLODPlane quadtreeLODPlane, ref bool serverChanged)
 	{
-		string[] serverURLs = wmsClient.serverURLs.ToArray ();
+		string[] serverURLs = wmsClient.bookmarks.ToArray ();
 
 		for( int i=0; i<serverURLs.Length; i++ ){
 			serverURLs[i] = serverURLs[i].Replace ("/", "\\");
@@ -240,7 +240,7 @@ public class WCSTerrainInspector : Editor
 	private void DisplayServerBookmarkButton(string serverURL)
 	{
 		if (GUILayout.Button ("Bookmark server")){
-			wmsClient.BookmarkServer (serverURL);
+			wmsClient.bookmarks.BookmarkServer (serverURL);
 		}
 	}
 
@@ -248,7 +248,7 @@ public class WCSTerrainInspector : Editor
 	private void DisplayRemoveServerFromBookmarksButton(string serverURL)
 	{
 		if (GUILayout.Button ("Remove server from bookmarks")){
-			wmsClient.RemoveServerFromBookmarks (serverURL);
+			wmsClient.bookmarks.RemoveServerFromBookmarks (serverURL);
 		}
 	}
 
