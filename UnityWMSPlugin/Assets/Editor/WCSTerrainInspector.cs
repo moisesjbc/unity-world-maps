@@ -86,7 +86,7 @@ public class WCSTerrainInspector : Editor
 
 		string newServerURL = EditorGUILayout.TextField("Server URL:", quadtreeLODPlane.serverURL);
 
-		serverChanged |= (quadtreeLODPlane.wmsErrorResponse == "" && quadtreeLODPlane.wmsInfo == null || newServerURL != quadtreeLODPlane.serverURL);
+		serverChanged |= quadtreeLODPlane.wmsRequestID == "" && quadtreeLODPlane.wmsErrorResponse == "" && quadtreeLODPlane.wmsInfo == null || newServerURL != quadtreeLODPlane.serverURL;
 		quadtreeLODPlane.serverURL = newServerURL;
 		if (serverChanged) {
 			Debug.LogWarning ("Server changed with text: " + quadtreeLODPlane.serverURL);
@@ -108,7 +108,7 @@ public class WCSTerrainInspector : Editor
 		}
 
 		int newServerIndex = EditorGUILayout.Popup ("Bookmarked servers", wmsClient.serverURLindex, serverURLs);
-		serverChanged = (quadtreeLODPlane.wmsErrorResponse == "" && quadtreeLODPlane.wmsInfo == null || newServerIndex != wmsClient.serverURLindex);
+		serverChanged = quadtreeLODPlane.wmsRequestID == "" && quadtreeLODPlane.wmsErrorResponse == "" && quadtreeLODPlane.wmsInfo == null || newServerIndex != wmsClient.serverURLindex;
 
 		if (serverChanged) {
 			wmsClient.serverURLindex = newServerIndex;
