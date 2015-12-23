@@ -42,7 +42,11 @@ public class WMSRequest : ScriptableObject {
 			server + "?REQUEST=GetCapabilities&SERVICE=WMS" + "&VERSION=" + version;
 		
 		www = new WWW (url);
-		status = new WMSRequestStatus ();
+	}
+
+	public void OnEnable ()
+	{
+		Debug.LogWarning ("[OnEnable]: status.response == null?: " + (status.response == null) );
 	}
 
 

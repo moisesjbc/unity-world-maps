@@ -76,7 +76,7 @@ public class WMSLayer
 public class WMSInfo
 {
 	[SerializeField]
-	public WMSLayer[] layers { get; private set; }
+	public WMSLayer[] layers = new WMSLayer[0]{};
 	[SerializeField]
 	private int currentLayerIndex = 0;
 
