@@ -6,7 +6,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 
-public abstract class OnlineResourcesManager {
+public abstract class OnlineResourcesManager : MonoBehaviour {
 	protected Dictionary<string,WWW> requests_ = new Dictionary<string,WWW>();
 
 	protected bool ResourceNotRequested( string id )

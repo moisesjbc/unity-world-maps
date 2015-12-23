@@ -12,6 +12,7 @@ GameObject:
   - 64: {fileID: 6456676}
   - 23: {fileID: 2394930}
   - 114: {fileID: 11401632}
+  - 114: {fileID: 11455338}
   m_Layer: 0
   m_Name: WCSTerrain
   m_TagString: Untagged
@@ -49,8 +50,10 @@ MeshRenderer:
   m_ProbeAnchor: {fileID: 0}
   m_ScaleInLightmap: 1
   m_PreserveUVs: 1
+  m_IgnoreNormalsForChartDetection: 0
   m_ImportantGI: 0
-  m_AutoUVMaxDistance: .5
+  m_MinimumChartSize: 4
+  m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
@@ -86,9 +89,24 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   serverURL: http://idecan1.grafcan.com/ServicioWMS/OrtoExpress
-  layer: 
-  bottomLeftCoordinates: {x: 416000, y: 3067000}
-  topRightCoordinates: {x: 466000, y: 3117000}
+  fixedQueryString: ?SERVICE=WMS&LAYERS=ortoexpress&REQUEST=GetMap&VERSION=1.1.0&FORMAT=image/jpeg&SRS=EPSG:32628&STYLES=default&WIDTH=128&HEIGHT=128&REFERER=CAPAWARE
+  wmsRequestID: http://idecan1.grafcan.com/ServicioWMS/OrtoExpress@@@1.1.0
+  wmsErrorResponse: 
+  currentBoundingBoxIndex: 0
+  bottomLeftCoordinates: {x: 180000, y: 2900000}
+  topRightCoordinates: {x: 680000, y: 3300000}
+  vertexResolution: 10
+--- !u!114 &11455338
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 139200}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c36d84c73ddeffd46848cec5ca01f232, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &100100000
 Prefab:
   m_ObjectHideFlags: 1
