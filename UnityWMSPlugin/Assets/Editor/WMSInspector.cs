@@ -33,6 +33,10 @@ public class WMSComponentInspector : Editor
 			}else if( requestStatus.state == WMSRequestState.ERROR ){
 				EditorGUILayout.LabelField(requestStatus.errorMessage);
 			}
+
+			if (GUI.changed) {
+				EditorUtility.SetDirty (wmsComponent);
+			}
 			return;
 		}
 
@@ -40,6 +44,10 @@ public class WMSComponentInspector : Editor
 			
 		if (wmsInfo.GetLayerTitles ().Length <= 0) {
 			EditorGUILayout.LabelField("No layers");
+
+			if (GUI.changed) {
+				EditorUtility.SetDirty (wmsComponent);
+			}
 			return;
 		}
 		
