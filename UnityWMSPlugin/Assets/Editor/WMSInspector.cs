@@ -27,7 +27,7 @@ public class WMSComponentInspector : Editor
 		}
 
 		WMSRequestStatus requestStatus = 
-			wmsComponent.wmsRequest.Status ();
+			wmsComponent.wmsRequest.status;
 		Debug.Log ("requestStatus: " + requestStatus.state);
 			
 		if (requestStatus.state != WMSRequestState.OK) {
@@ -97,7 +97,7 @@ public class WMSComponentInspector : Editor
 
 		if (wmsComponent.wmsRequest != null) {
 			WMSRequestStatus requestStatus = 
-				wmsComponent.wmsRequest.Status ();
+				wmsComponent.wmsRequest.status;
 			
 			if (requestStatus.state == WMSRequestState.OK) {
 				DisplayServerBookmarkButton (wmsComponent.serverURL);
@@ -273,7 +273,7 @@ public class WMSComponentInspector : Editor
 	public void Refresh()
 	{
 		WMSComponent wmsComponent = (WMSComponent)target;
-		if (wmsComponent.wmsRequest != null && wmsComponent.wmsRequest.Status ().state == WMSRequestState.DOWNLOADING) {
+		if (wmsComponent.wmsRequest != null && wmsComponent.wmsRequest.UpdateStatus ().state == WMSRequestState.DOWNLOADING) {
 			Repaint ();
 		}
 	}

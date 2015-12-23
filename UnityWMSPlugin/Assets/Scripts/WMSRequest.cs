@@ -28,7 +28,7 @@ public class WMSRequestStatus
 
 public class WMSRequest {
 	private WWW www;
-	private WMSRequestStatus status;
+	public WMSRequestStatus status { get; private set; }
 
 	public WMSRequest (string server, string version = "1.1.0")
 	{
@@ -40,7 +40,7 @@ public class WMSRequest {
 	}
 
 
-	public WMSRequestStatus Status()
+	public WMSRequestStatus UpdateStatus()
 	{
 		if (status.state == WMSRequestState.DOWNLOADING) {
 			if (www.isDone) {
