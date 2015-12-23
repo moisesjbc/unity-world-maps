@@ -30,11 +30,11 @@ public class WMSRequestStatus
 
 
 [Serializable]
-public class WMSRequest {
+public class WMSRequest : ScriptableObject {
 	[SerializeField]
 	private WWW www;
 	[SerializeField]
-	public WMSRequestStatus status { get; private set; }
+	public WMSRequestStatus status = new WMSRequestStatus ();
 
 	public WMSRequest (string server, string version = "1.1.0")
 	{
