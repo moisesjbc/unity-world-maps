@@ -1,9 +1,10 @@
 ﻿using UnityEngine;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 
-
-public struct WMSBoundingBox
+[Serializable]
+public class WMSBoundingBox
 {
 	public string SRS;
 	public Vector2 bottomLeftCoordinates;
@@ -23,6 +24,7 @@ public struct WMSBoundingBox
 }
 
 
+[Serializable]
 public class WMSLayer
 {
 	public string title;
@@ -70,9 +72,12 @@ public class WMSLayer
 }
 
 
+[Serializable]
 public class WMSInfo
 {
+	[SerializeField]
 	public WMSLayer[] layers { get; private set; }
+	[SerializeField]
 	private int currentLayerIndex = 0;
 
 	public WMSInfo( WMSLayer[] layers )

@@ -4,6 +4,7 @@ using System.Collections;
 using System.Collections.Generic;
 
 
+[Serializable]
 public enum WMSRequestState
 {
 	DOWNLOADING = 0,
@@ -12,6 +13,7 @@ public enum WMSRequestState
 }
 
 
+[Serializable]
 public class WMSRequestStatus
 {
 	public WMSRequestState state;
@@ -27,8 +29,11 @@ public class WMSRequestStatus
 }
 
 
+[Serializable]
 public class WMSRequest {
+	[SerializeField]
 	private WWW www;
+	[SerializeField]
 	public WMSRequestStatus status { get; private set; }
 
 	public WMSRequest (string server, string version = "1.1.0")
