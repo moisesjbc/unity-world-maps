@@ -20,15 +20,12 @@ public class WMSComponentInspector : Editor
 		DisplayServerSelector (ref wmsComponent, out serverChanged);
 
 		if (wmsComponent.wmsRequest == null || serverChanged) {
-			Debug.Log ("Requesting capabilities to server ...");
 			wmsComponent.wmsRequest = new WMSRequest (wmsComponent.serverURL, "1.1.0");
 			wmsComponent.currentBoundingBoxIndex = 0;
-			Debug.Log ("Requesting capabilities to server ...OK");
 		}
 
 		WMSRequestStatus requestStatus = 
 			wmsComponent.wmsRequest.status;
-		Debug.Log ("requestStatus: " + requestStatus.state);
 			
 		if (requestStatus.state != WMSRequestState.OK) {
 			if( requestStatus.state == WMSRequestState.DOWNLOADING ){
@@ -45,8 +42,6 @@ public class WMSComponentInspector : Editor
 			EditorGUILayout.LabelField("No layers");
 			return;
 		}
-		
-		Debug.Log ("Updating inspector ...");
 		
 		DisplayLayersSelector (ref wmsComponent, wmsInfo, out layerChanged);
 
@@ -73,27 +68,19 @@ public class WMSComponentInspector : Editor
 		if (GUI.changed) {
 			EditorUtility.SetDirty (wmsComponent);
 		}
-		Debug.Log ("Updating inspector ...OK");
 	}
 
 
 	private void DisplayServerSelector(ref WMSComponent wmsComponent, out bool serverChanged)
 	{
-		Debug.LogWarning ("DisplayingServerSelector");
 		serverChanged = false;
 
 		DisplayServerPopup (ref wmsComponent, ref serverChanged);
-		if (serverChanged) {
-			Debug.LogWarning ("Server changed with popup: " + wmsComponent.serverURL);
-		}
 
 		string newServerURL = EditorGUILayout.TextField("Server URL:", wmsComponent.serverURL);
 
 		serverChanged |= (newServerURL != wmsComponent.serverURL);
 		wmsComponent.serverURL = newServerURL;
-		if (serverChanged) {
-			Debug.LogWarning ("Server changed with text: " + wmsComponent.serverURL);
-		}
 
 		if (wmsComponent.wmsRequest != null) {
 			WMSRequestStatus requestStatus = 
@@ -156,7 +143,7 @@ public class WMSComponentInspector : Editor
 		}
 		
 		string[] boundingBoxesNames = wmsInfo.GetBoundingBoxesNames();
-		Debug.Log ( "boundingBoxesNames: " + boundingBoxesNames.Length );
+
 		if( boundingBoxesNames.Length > 0 ){
 			wmsComponent.fixedQueryString = BuildWMSFixedQueryString( wmsInfo.layers, "1.1.0", wmsInfo.GetBoundingBox( wmsComponent.currentBoundingBoxIndex ).SRS );
 			

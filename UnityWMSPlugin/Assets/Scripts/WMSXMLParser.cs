@@ -7,8 +7,6 @@ using System.IO;
 public class WMSXMLParser {
 	
 	public static WMSInfo GetWMSInfo( string xmlString ){
-		Debug.Log(xmlString);
-
 		XmlDocument xmlDocument = new XmlDocument ();
 		xmlDocument.LoadXml (xmlString);
 
@@ -39,7 +37,6 @@ public class WMSXMLParser {
 
 			layer.title = layerXmlNode.SelectSingleNode ("Title").InnerText;
 
-			Debug.Log ("Parsing layer [" + layer.title + "] ...");
 			if( layerXmlNode.SelectSingleNode ("Name") != null ){
 				layer.name = layerXmlNode.SelectSingleNode ("Name").InnerText;
 			}else{
@@ -47,7 +44,6 @@ public class WMSXMLParser {
 			}
 			layer.boundingBoxes = parseWMSBoundingBoxes (layerXmlNode.SelectNodes ("BoundingBox"));
 			layer.parentLayer = parentLayer;
-			Debug.Log ("Parsing layer [" + layer.title + "] ...OK");
 
 			if (layerXmlNode.Attributes ["queryable"] != null && layerXmlNode.Attributes ["queryable"].InnerText == "1") {
 				layers.Add (layer);
@@ -70,7 +66,6 @@ public class WMSXMLParser {
 			boundingBox.topRightCoordinates.x = float.Parse (bbXmlNode.Attributes ["maxx"].InnerText);
 			boundingBox.topRightCoordinates.y = float.Parse (bbXmlNode.Attributes ["maxy"].InnerText);
 		
-			Debug.Log ("Parsing bounding box: " + boundingBox.ToString ());
 			boundingBoxes.Add ( boundingBox );
 		}
 
