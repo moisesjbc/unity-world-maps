@@ -273,7 +273,8 @@ public class WMSComponentInspector : Editor
 	public void Refresh()
 	{
 		WMSComponent wmsComponent = (WMSComponent)target;
-		if (wmsComponent.wmsRequest != null && wmsComponent.wmsRequest.UpdateStatus ().state == WMSRequestState.DOWNLOADING) {
+		if (wmsComponent.wmsRequest != null) {
+			wmsComponent.wmsRequest.UpdateStatus ();
 			Repaint ();
 		}
 	}

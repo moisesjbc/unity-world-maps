@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 
@@ -44,12 +45,17 @@ public class WMSRequest {
 	{
 		if (status.state == WMSRequestState.DOWNLOADING) {
 			if (www.isDone) {
+				try{
 					status.response = WMSXMLParser.GetWMSInfo (www.text);
-				if (status.response != null) {
-					status.state = WMSRequestState.OK;
-				} else {
+					if (status.response != null) {
+						status.state = WMSRequestState.OK;
+					} else {
+						status.state = WMSRequestState.ERROR;
+						status.errorMessage = "ERROR: Unknown";
+					}
+				}catch( Exception e ){
 					status.state = WMSRequestState.ERROR;
-					status.errorMessage = "ERROR!";
+					status.errorMessage = "ERROR: " + e.Message;
 				}
 			}
 		}
