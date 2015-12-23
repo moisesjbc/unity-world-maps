@@ -55,7 +55,7 @@ public class WMSRequest {
 					}
 				}catch( Exception e ){
 					status.state = WMSRequestState.ERROR;
-					status.errorMessage = "ERROR: " + e.Message;
+					status.errorMessage = "ERROR parsing WMS response: " + e.Message;
 				}
 			}
 		}
