@@ -1,6 +1,8 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
+using System.Linq;
 
 public class WMSServerBookmarks {
 	private List<string> serverURLs;
@@ -8,13 +10,12 @@ public class WMSServerBookmarks {
 
 	public WMSServerBookmarks()
 	{
-		serverURLs =
-			new List<string> ( 
-				new string[]{
-					"http://idecan1.grafcan.com/ServicioWMS/OrtoExpress",
-					"http://www.ign.es/wms-inspire/pnoa-ma"
-				}
-			);
+		serverURLs = File.ReadAllLines ("Assets/WMSServerBookmarks").ToList();
+	}
+
+
+	~WMSServerBookmarks(){
+		File.WriteAllLines("Assets/WMSServerBookmarks", serverURLs.ToArray());
 	}
 
 
