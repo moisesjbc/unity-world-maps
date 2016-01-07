@@ -33,7 +33,7 @@ public class WMSRequestStatus
 [Serializable]
 public class WMSRequest : ScriptableObject {
 	[SerializeField]
-	private string url;
+	public string url;
 	[SerializeField]
 	private WWW www;
 	[SerializeField]
@@ -99,7 +99,7 @@ public class WMSRequest : ScriptableObject {
 	}
 
 
-	private static string URLToFilePath(string url)
+	public static string URLToFilePath(string url)
 	{
 		string filepath = url;
 
