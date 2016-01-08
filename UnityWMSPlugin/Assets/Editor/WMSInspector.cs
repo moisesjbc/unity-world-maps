@@ -8,6 +8,7 @@ using System;
 public class WMSComponentInspector : Editor
 {
 	private static WMSServerBookmarks bookmarks = new WMSServerBookmarks();
+	private static WMSInfoRequester wmsInfoRequester = new WMSInfoRequester();
 
 	public override void OnInspectorGUI()
 	{
@@ -20,13 +21,13 @@ public class WMSComponentInspector : Editor
 
 		DisplayServerSelector (ref wmsComponent, out serverChanged);
 
-		if (wmsComponent.wmsRequest == null || serverChanged) {
-			wmsComponent.wmsRequest = new WMSRequest (wmsComponent.serverURL, "1.1.0");
+		if (wmsComponent.wmsRequestID == "" || serverChanged) {
+			wmsComponent.wmsRequestID = wmsInfoRequester.RequestWMSInfo (wmsComponent.serverURL);
 			wmsComponent.currentBoundingBoxIndex = 0;
 		}
 
 		WMSRequestStatus requestStatus = 
-			wmsComponent.wmsRequest.status;
+			wmsInfoRequester.GetRequest (wmsComponent.wmsRequestID).status;
 			
 		if (requestStatus.state != WMSRequestState.OK) {
 			if( requestStatus.state == WMSRequestState.DOWNLOADING ){
@@ -91,9 +92,9 @@ public class WMSComponentInspector : Editor
 		serverChanged |= (newServerURL != wmsComponent.serverURL);
 		wmsComponent.serverURL = newServerURL;
 
-		if (wmsComponent.wmsRequest != null) {
+		if (wmsComponent.wmsRequestID != "") {
 			WMSRequestStatus requestStatus = 
-				wmsComponent.wmsRequest.status;
+				wmsInfoRequester.GetRequest (wmsComponent.wmsRequestID).status;
 			
 			if (requestStatus.state == WMSRequestState.OK) {
 				DisplayServerBookmarkButton (wmsComponent.serverURL);
@@ -269,8 +270,9 @@ public class WMSComponentInspector : Editor
 	public void Refresh()
 	{
 		WMSComponent wmsComponent = (WMSComponent)target;
-		if (wmsComponent.wmsRequest != null) {
-			wmsComponent.wmsRequest.UpdateStatus ();
+		Debug.Log("wmsRequestID: " + wmsComponent.wmsRequestID);
+		if (wmsComponent.wmsRequestID != "") {
+			wmsInfoRequester.GetRequest (wmsComponent.wmsRequestID).UpdateStatus ();
 			Repaint ();
 		}
 	}
