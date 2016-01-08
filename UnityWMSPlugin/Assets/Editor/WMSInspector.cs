@@ -24,6 +24,7 @@ public class WMSComponentInspector : Editor
 		DisplayServerSelector (ref wmsComponent, out serverChanged);
 
 		if (serverChanged) {
+			wmsComponent.selectedLayers.Clear ();
 			wmsComponent.currentBoundingBoxIndex = 0;
 		}
 
