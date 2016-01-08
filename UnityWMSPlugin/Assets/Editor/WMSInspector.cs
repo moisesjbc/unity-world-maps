@@ -19,10 +19,11 @@ public class WMSComponentInspector : Editor
 		bool layerChanged = false;
 		bool boundingBoxChanged = false;
 
+		wmsComponent.wmsRequestID = wmsInfoRequester.RequestWMSInfo (wmsComponent.serverURL);
+
 		DisplayServerSelector (ref wmsComponent, out serverChanged);
 
-		if (wmsComponent.wmsRequestID == "" || serverChanged) {
-			wmsComponent.wmsRequestID = wmsInfoRequester.RequestWMSInfo (wmsComponent.serverURL);
+		if (serverChanged) {
 			wmsComponent.currentBoundingBoxIndex = 0;
 		}
 
@@ -270,10 +271,8 @@ public class WMSComponentInspector : Editor
 	public void Refresh()
 	{
 		WMSComponent wmsComponent = (WMSComponent)target;
-		Debug.Log("wmsRequestID: " + wmsComponent.wmsRequestID);
-		if (wmsComponent.wmsRequestID != "") {
-			wmsInfoRequester.GetRequest (wmsComponent.wmsRequestID).UpdateStatus ();
-			Repaint ();
-		}
+		wmsComponent.wmsRequestID = wmsInfoRequester.RequestWMSInfo (wmsComponent.serverURL);
+		wmsInfoRequester.GetRequest (wmsComponent.wmsRequestID).UpdateStatus ();
+		Repaint ();
 	}
 }
