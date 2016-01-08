@@ -12,6 +12,7 @@ public class WMSComponentInspector : Editor
 	public override void OnInspectorGUI()
 	{
 		WMSComponent wmsComponent = (WMSComponent)target;
+		EditorUtility.SetDirty (wmsComponent);
 
 		bool serverChanged = false;
 		bool layerChanged = false;
@@ -35,7 +36,7 @@ public class WMSComponentInspector : Editor
 			}
 
 			if (GUI.changed) {
-				EditorUtility.SetDirty (wmsComponent);
+				EditorApplication.MarkSceneDirty ();
 			}
 			return;
 		}
@@ -46,7 +47,7 @@ public class WMSComponentInspector : Editor
 			EditorGUILayout.LabelField("No layers");
 
 			if (GUI.changed) {
-				EditorUtility.SetDirty (wmsComponent);
+				EditorApplication.MarkSceneDirty ();
 			}
 			return;
 		}
@@ -74,7 +75,7 @@ public class WMSComponentInspector : Editor
 
 		// Mark the target assert as changed ("dirty") so Unity save it to disk.
 		if (GUI.changed) {
-			EditorUtility.SetDirty (wmsComponent);
+			EditorApplication.MarkSceneDirty ();
 		}
 	}
 
