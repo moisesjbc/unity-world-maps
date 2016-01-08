@@ -5,16 +5,16 @@ using System.Collections.Generic;
 public class QuadtreeLODPlane : MonoBehaviour {
 	private QuadtreeLODNode rootNode = null;
 	public int vertexResolution = 20;
+	public OnlineTexturesRequester texturesRequester; 
 
 
 	public void Start()
 	{
-		Debug.Log ("<serverURL>: " + GetComponent<WMSComponent>().serverURL);
-		Reset (GetComponent<WMSComponent>().bottomLeftCoordinates, GetComponent<WMSComponent>().topRightCoordinates);
+		Reset ();
 	}
 
 
-	public void Reset( Vector2 bottomLeftCoordinates, Vector3 topRightCoordinates )
+	public void Reset()
 	{
 		Vector3 meshSize = GetComponent<MeshRenderer> ().bounds.size;
 		if (meshSize.x != meshSize.z) {
@@ -33,13 +33,25 @@ public class QuadtreeLODPlane : MonoBehaviour {
 				Destroy (mapSectors[i]);
 			}
 		}
-		
+			
+		if (GetComponent<WMSComponent> () != null) {
+			texturesRequester = this.GetComponent<WMSComponent> ();
+
+			if (GetComponent<BingComponent> () != null) {
+				throw new UnityException ("Terrain can't have both WMSComponent and BingComponent componets!");
+			}
+		} else if (GetComponent<BingComponent> () != null) {
+			texturesRequester = this.GetComponent<BingComponent> ();
+		} else {
+			throw new MissingComponentException ("Terrain must have a WMSComponent or BingComponent");
+		}
+			
 		rootNode = new QuadtreeLODNode( 
 		                               mapSize, 
 									   vertexResolution,
 		                               transform, 
 		                               this.GetComponent<Material>(),
-									   GetComponent<WMSComponent>()
+									   texturesRequester
 		                               );
 		GetComponent<MeshRenderer> ().enabled = false;
 	}
