@@ -37,13 +37,13 @@ public class QuadtreeLODPlane : MonoBehaviour {
 		if (GetComponent<WMSComponent> () != null) {
 			texturesRequester = this.GetComponent<WMSComponent> ();
 
-			if (GetComponent<BingComponent> () != null) {
-				throw new UnityException ("Terrain can't have both WMSComponent and BingComponent componets!");
+			if (GetComponent<BingMapsComponent> () != null) {
+				throw new UnityException ("Terrain can't have both WMSComponent and BingMapsComponent componets!");
 			}
-		} else if (GetComponent<BingComponent> () != null) {
-			texturesRequester = this.GetComponent<BingComponent> ();
+		} else if (GetComponent<BingMapsComponent> () != null) {
+			texturesRequester = this.GetComponent<BingMapsComponent> ();
 		} else {
-			throw new MissingComponentException ("Terrain must have a WMSComponent or BingComponent");
+			throw new MissingComponentException ("Terrain must have a WMSComponent or BingMapsComponent");
 		}
 			
 		rootNode = new QuadtreeLODNode( 

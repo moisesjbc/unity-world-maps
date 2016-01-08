@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class BingComponent : OnlineTexturesRequester {
+public class BingMapsComponent : OnlineTexturesRequester {
 	public string serverURL = "http://ecn.t0.tiles.virtualearth.net/tiles/a<id>.jpeg?g=4756";
 
 
