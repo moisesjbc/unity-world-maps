@@ -22,13 +22,9 @@ public class QuadtreeLODNode {
 	string textureRequestId;
 	bool textureLoaded = false;
 
-	string heightMapRequestId;
-	bool heightMapLoaded = true;
-
 	float metersPerUnit = 0.0f;
 
 	static GameObject emptyGameObject = new GameObject();
-	private HeightMapsManager heightMapsManager = new HeightMapsManager();
 	WMSComponent wms;
 
 
@@ -71,7 +67,6 @@ public class QuadtreeLODNode {
 		Debug.Log ("metersPerUnit: " + metersPerUnit);
 		
 		textureRequestId = wms.RequestTexture (bottomLeftCoordinates_, topRightCoordinates_);
-		heightMapRequestId = heightMapsManager.RequestHeightMap ( bottomLeftCoordinates_, topRightCoordinates_, meshVertexResolution_ );
 	}
 
 
@@ -121,7 +116,6 @@ public class QuadtreeLODNode {
 		metersPerUnit = (topRightCoordinates_.x - bottomLeftCoordinates_.x) / gameObject_.GetComponent<MeshRenderer> ().bounds.size.x;
 
 		textureRequestId = wms.RequestTexture (bottomLeftCoordinates_, topRightCoordinates_);
-		heightMapRequestId = heightMapsManager.RequestHeightMap ( bottomLeftCoordinates_ - mapSizeVector, topRightCoordinates_ + mapSizeVector, meshVertexResolution_ + (meshVertexResolution_ - 1) * 2 );
 	}
 
 
@@ -199,18 +193,6 @@ public class QuadtreeLODNode {
 				textureLoaded = true;
 				material_.mainTexture = texture;
 				material_.mainTexture.wrapMode = TextureWrapMode.Clamp;
-			}
-		}
-
-		if (!heightMapLoaded) {
-			float[,] heightMatrix = heightMapsManager.GetHeightMatrix( heightMapRequestId );
-			if( heightMatrix != null ){
-				heightMapLoaded = true;
-				if( depth_ == 0 ){
-					SetHeightsMap( heightMatrix );
-				}else{
-					SetHeightsMap( GetSubMatrix( heightMatrix, meshVertexResolution_ - 1, meshVertexResolution_ - 1, 2 * meshVertexResolution_ - 1, 2 * meshVertexResolution_ - 1 ) );
-				}
 			}
 		}
 	}
@@ -297,7 +279,7 @@ public class QuadtreeLODNode {
 	private bool AreChildrenLoaded(){
 		if (children_ [0] != null) {
 			for (int i = 0; i < 4; i++) {
-				if (children_ [i].textureLoaded == false || children_ [i].heightMapLoaded == false) {
+				if (children_ [i].textureLoaded == false) {
 					return false;
 				}
 			}
@@ -305,49 +287,6 @@ public class QuadtreeLODNode {
 		} else {
 			return false;
 		}
-	}
-
-
-	private float[,] GetSubMatrix( float[,] M, 
-	                                int startRow, 
-	                                int startColumn,
-	                                int lastRow,
-	                                int lastColumn )
-	{
-		int N_ROWS = lastRow - startRow;
-		int N_COLUMNS = lastColumn - startColumn;
-
-		float[,] subMatrix = new float[N_ROWS,N_COLUMNS];
-
-		for (int i=0; i<N_ROWS; i++) {
-			for(int j=0; j<N_COLUMNS; j++){
-				subMatrix[i,j] = M[i+startRow,j+startColumn];
-			}
-		}
-		return subMatrix;
-	}
-
-
-	private void SetHeightsMap( float[,] heights )
-	{
-		Vector3[] vertices = mesh_.vertices;
-		
-		int N_ROWS = heights.GetLength(0);
-		for (int row=0; row<N_ROWS; row++) {
-			// FIXME: This is forcing N_COLUMS = N_ROWS.
-			int N_COLUMNS = N_ROWS;
-			for (int column=0; column<N_COLUMNS; column++) {
-				int VERTEX_INDEX = row * N_COLUMNS + column;
-				vertices[VERTEX_INDEX].y = heights[row,column] / (metersPerUnit / 2.0f);
-			}
-		}
-		
-		mesh_.vertices = vertices;
-		mesh_.RecalculateBounds ();
-		mesh_.RecalculateNormals ();
-
-		// Add a collider to the node.
-		gameObject_.AddComponent<MeshCollider>();
 	}
 
 
