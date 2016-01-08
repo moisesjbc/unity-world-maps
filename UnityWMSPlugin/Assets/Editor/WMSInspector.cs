@@ -135,10 +135,10 @@ public class WMSComponentInspector : Editor
 		for( int i=0; i<layers.Length; i++) {
 			if( layers[i].name != "" ){
 				bool newToggleValue = 
-					EditorGUILayout.Toggle (layers[i].title, layers[i].selected);
+					EditorGUILayout.Toggle (layers[i].title, (wmsComponent.LayerSelected(layers[i].name)));
 
-				layerChanged |= (newToggleValue != layers[i].selected);
-				layers[i].selected = newToggleValue;
+				layerChanged |= (newToggleValue != wmsComponent.LayerSelected(layers[i].name));
+				wmsComponent.SetLayerSelected (layers[i].name, newToggleValue);
 			}
 		}
 	}
@@ -153,10 +153,10 @@ public class WMSComponentInspector : Editor
 			boundingBoxChanged = true;
 		}
 		
-		string[] boundingBoxesNames = wmsInfo.GetBoundingBoxesNames();
+		string[] boundingBoxesNames = wmsInfo.GetBoundingBoxesNames(wmsComponent.selectedLayers);
 
 		if( boundingBoxesNames.Length > 0 ){
-			wmsComponent.fixedQueryString = BuildWMSFixedQueryString( wmsInfo.layers, "1.1.0", wmsInfo.GetBoundingBox( wmsComponent.currentBoundingBoxIndex ).SRS );
+			wmsComponent.fixedQueryString = BuildWMSFixedQueryString( wmsInfo.layers, wmsComponent.selectedLayers, "1.1.0", wmsInfo.GetBoundingBox( wmsComponent.selectedLayers, wmsComponent.currentBoundingBoxIndex ).SRS );
 			
 			int newBoundingBoxIndex = 
 				EditorGUILayout.Popup (
@@ -169,7 +169,7 @@ public class WMSComponentInspector : Editor
 			wmsComponent.currentBoundingBoxIndex = newBoundingBoxIndex;
 
 			if( layerChanged || boundingBoxChanged || GUILayout.Button ("Reset bounding box") ){
-				WMSBoundingBox currentBoundingBox = wmsInfo.GetBoundingBox( wmsComponent.currentBoundingBoxIndex );
+				WMSBoundingBox currentBoundingBox = wmsInfo.GetBoundingBox( wmsComponent.selectedLayers, wmsComponent.currentBoundingBoxIndex );
 
 				wmsComponent.bottomLeftCoordinates = currentBoundingBox.bottomLeftCoordinates;
 				wmsComponent.topRightCoordinates = currentBoundingBox.topRightCoordinates;
@@ -213,12 +213,12 @@ public class WMSComponentInspector : Editor
 	}
 
 
-	private string BuildWMSFixedQueryString( WMSLayer[] layers, string wmsVersion, string SRS )
+	private string BuildWMSFixedQueryString( WMSLayer[] layers, List<string> selectedLayers, string wmsVersion, string SRS )
 	{
 		string layersQuery = "";
 		string stylesQuery = "";
 		foreach (WMSLayer layer in layers) {
-			if( layer.selected && layer.name != "" ){
+			if( layer.name != "" && selectedLayers.Contains(layer.name) ){
 				layersQuery += layer.name + ",";
 				stylesQuery += "default,";
 			}
