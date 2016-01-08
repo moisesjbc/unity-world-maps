@@ -11,8 +11,8 @@ public class QuadtreeLODNode {
 	private int meshVertexResolution_;
 	private Material material_;
 	private bool visible_;
-	Vector2 bottomLeftCoordinates_;
-	Vector2 topRightCoordinates_;
+
+	private string nodeID;
 	
 	QuadtreeLODNode[] children_;
 
@@ -25,19 +25,18 @@ public class QuadtreeLODNode {
 	float metersPerUnit = 0.0f;
 
 	static GameObject emptyGameObject = new GameObject();
-	WMSComponent wms;
+	OnlineTexturesRequester onlineTexturesRequester;
 
 
 	public QuadtreeLODNode( 
 	                       float meshSize, 
-	                       int meshVertexResolution, 
-	                       Vector2 bottomLeftCoordinates,
-	                       Vector2 topLeftCoordinates,
+	                       int meshVertexResolution,  
 	                       Transform transform, 
 	                       Material material,
-						   WMSComponent wms )
+					       OnlineTexturesRequester onlineTexturesRequester )
 	{		
-		this.wms = wms;
+		nodeID = "0";
+		this.onlineTexturesRequester = onlineTexturesRequester;
 
 		gameObject_ = GameObject.Instantiate( emptyGameObject );
 		gameObject_.AddComponent<MeshRenderer>();
@@ -59,23 +58,22 @@ public class QuadtreeLODNode {
 		visible_ = true;
 
 		children_ = new QuadtreeLODNode[]{ null, null, null, null };
-		
-		bottomLeftCoordinates_ = bottomLeftCoordinates;
-		topRightCoordinates_ = topLeftCoordinates;
 
-		metersPerUnit = (topRightCoordinates_.x - bottomLeftCoordinates_.x) / gameObject_.GetComponent<MeshRenderer> ().bounds.size.x;
+		// FIXME: Compute this instead of giving a arbitrary value.
+		metersPerUnit = 1000;
 		Debug.Log ("metersPerUnit: " + metersPerUnit);
 		
-		textureRequestId = wms.RequestTexture (bottomLeftCoordinates_, topRightCoordinates_);
+		textureRequestId = onlineTexturesRequester.RequestTexture (nodeID);
 	}
 
 
-	public QuadtreeLODNode( QuadtreeLODNode parent, Color color, Vector3 localPosition, Vector2 bottomLeftCoordinates, Vector2 topRightCoordinates, WMSComponent wms )
+	public QuadtreeLODNode( QuadtreeLODNode parent, string nodeID, Color color, Vector3 localPosition, OnlineTexturesRequester onlineTexturesRequester )
 	{
 		gameObject_ = GameObject.Instantiate( emptyGameObject );
 		gameObject_.AddComponent<MeshRenderer>();
 
-		this.wms = wms;
+		this.nodeID = nodeID;
+		this.onlineTexturesRequester = onlineTexturesRequester;
 
 		// Copy given mesh.
 		mesh_ = new Mesh ();
@@ -104,18 +102,13 @@ public class QuadtreeLODNode {
 
 		visible_ = false;
 		gameObject_.GetComponent<MeshRenderer> ().enabled = false;
-
-		bottomLeftCoordinates_ = bottomLeftCoordinates;
-		topRightCoordinates_ = topRightCoordinates;
-		
+				
 		children_ = new QuadtreeLODNode[]{ null, null, null, null };
 
-		float mapSize = topRightCoordinates_.x - bottomLeftCoordinates_.x;
-		Vector2 mapSizeVector = new Vector2( mapSize, mapSize );
+		// FIXME: Compute this instead of giving a arbitrary value.
+		metersPerUnit = 1000;
 
-		metersPerUnit = (topRightCoordinates_.x - bottomLeftCoordinates_.x) / gameObject_.GetComponent<MeshRenderer> ().bounds.size.x;
-
-		textureRequestId = wms.RequestTexture (bottomLeftCoordinates_, topRightCoordinates_);
+		textureRequestId = onlineTexturesRequester.RequestTexture (nodeID);
 	}
 
 
@@ -188,7 +181,7 @@ public class QuadtreeLODNode {
 		}
 
 		if (!textureLoaded) {
-			Texture2D texture = wms.GetTexture (textureRequestId);
+			Texture2D texture = onlineTexturesRequester.GetTexture (textureRequestId);
 			if (texture != null) {
 				textureLoaded = true;
 				material_.mainTexture = texture;
@@ -230,6 +223,8 @@ public class QuadtreeLODNode {
 			1.0f / transform_.lossyScale.y,
 			1.0f / transform_.lossyScale.z
 			);
+
+
 		Vector3[] childLocalPosition = new Vector3[]
 		{
 			Vector3.Scale ( new Vector3( -meshSize.x/4,0,meshSize.z/4 ), S ),
@@ -237,30 +232,7 @@ public class QuadtreeLODNode {
 			Vector3.Scale ( new Vector3( meshSize.x/4,0,meshSize.z/4), S ),
 			Vector3.Scale ( new Vector3( meshSize.x/4,0,-meshSize.z/4), S )
 		};
-		
-		float x0 = bottomLeftCoordinates_.x;
-		float y0 = bottomLeftCoordinates_.y;
-		float x1 = topRightCoordinates_.x;
-		float y1 = topRightCoordinates_.y;
-		
-		float cx = (x0 + x1)/2.0f;
-		float cy = (y0 + y1)/2.0f;
-		
-		Vector2[] childrenBottomLeftCoordinates = new Vector2[]
-		{
-			new Vector2( x0, cy ),
-			new Vector2( x0, y0 ),
-			new Vector2( cx, cy ),
-			new Vector2( cx, y0 )
-		};
-		
-		Vector2[] childrenTopLeftCoordinates = new Vector2[]
-		{
-			new Vector2( cx, y1 ),
-			new Vector2( cx, cy ),
-			new Vector2( x1, y1 ),
-			new Vector2( x1, cy )
-		};
+
 
 		Color[] childrenColors = new Color[]
 		{
@@ -269,9 +241,18 @@ public class QuadtreeLODNode {
 			new Color( 0.0f, 0.0f, 1.0f, 1.0f ),
 			new Color( 1.0f, 1.0f, 0.0f, 1.0f )
 		};
+
+
+		string[] childrenIDs = new string[] 
+		{
+			nodeID + "0",
+			nodeID + "1",
+			nodeID + "2",
+			nodeID + "3"
+		};
 		
 		for( int i=0; i<4; i++ ){
-			children_[i] = new QuadtreeLODNode( this, childrenColors[i], childLocalPosition[i], childrenBottomLeftCoordinates[i], childrenTopLeftCoordinates[i], wms ); 
+			children_[i] = new QuadtreeLODNode( this, childrenIDs[i], childrenColors[i], childLocalPosition[i], onlineTexturesRequester ); 
 		}
 	}
 

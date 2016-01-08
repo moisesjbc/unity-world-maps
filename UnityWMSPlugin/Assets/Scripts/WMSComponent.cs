@@ -2,7 +2,7 @@
 using System.Collections;
 
 [ExecuteInEditMode]
-public class WMSComponent : OnlineResourcesManager {
+public class WMSComponent : OnlineTexturesRequester {
 	public string serverURL = "http://idecan1.grafcan.com/ServicioWMS/OrtoExpress";
 	public string fixedQueryString;
 	public int currentBoundingBoxIndex = 0;
@@ -12,37 +12,29 @@ public class WMSComponent : OnlineResourcesManager {
 	public Vector2 topRightCoordinates = new Vector2 ( 466000,3117000 );
 
 
-	public string RequestTexture( 
-		Vector2 bottomLeftCoordinates, 
-		Vector2 topRightCoordinates
-	){
-		string newId = GenerateID (bottomLeftCoordinates, topRightCoordinates );
-
-		#if CACHE_RESOURCES
-		if ( !ResourceNotRequested( newId ) ) {
-		Debug.LogFormat ("Requesting texture with id [{0}] - Cached!", newId);
-		return newId
-		}
-		#endif
+	protected override string GenerateRequestURL (string nodeID)
+	{
+		Vector2 bottomLeftCoordinates = this.bottomLeftCoordinates;
+		Vector2 topRightCoordinates = this.topRightCoordinates;
+		GenerateWMSBoundingBox (nodeID, ref bottomLeftCoordinates, ref topRightCoordinates);
+			
 		string fixedUrl = serverURL + fixedQueryString;
 		string bboxUrlQuery = 
 			"&BBOX=" + bottomLeftCoordinates.x + "," +
 			bottomLeftCoordinates.y + "," +
 			topRightCoordinates.x + "," +
 			topRightCoordinates.y;
-		string url = fixedUrl + bboxUrlQuery;
-
-		requests_ [newId] = new WWW (url);
-
-		Debug.LogFormat ("Requesting texture with id [{0}] - NOT cached", newId);
-		Debug.Log ("Texture URL - " + url);
-
-		return newId;
+		
+		return fixedUrl + bboxUrlQuery;
 	}
 
 
-	protected string GenerateID( Vector2 bottomLeftCoordinates, Vector2 topRightCoordinates )
+	protected override string GenerateRequestID(string nodeID)
 	{
+		Vector2 bottomLeftCoordinates = this.bottomLeftCoordinates;
+		Vector2 topRightCoordinates = this.topRightCoordinates;
+		GenerateWMSBoundingBox (nodeID, ref bottomLeftCoordinates, ref topRightCoordinates);
+
 		return 
 			"texture-" + 
 			bottomLeftCoordinates.x + "-" + 
@@ -53,35 +45,29 @@ public class WMSComponent : OnlineResourcesManager {
 	}
 
 
-	public Texture2D GetTexture( string id )
+	private void GenerateWMSBoundingBox(string nodeID, ref Vector2 bottomLeftCoordinates, ref Vector2 topRightCoordinates)
 	{
-		#if CACHE_RESOURCES
-		byte[] jpgTextureData = null;
+		for (int i = 1; i < nodeID.Length; i++) {
+			float x0 = bottomLeftCoordinates.x;
+			float y0 = bottomLeftCoordinates.y;
+			float x1 = topRightCoordinates.x;
+			float y1 = topRightCoordinates.y;
+			float cx = (x0 + x1)/2.0f;
+			float cy = (y0 + y1)/2.0f;
 
-		// Check if we have a finished request with the same ID
-		// and save the result to a file.
-		if ( requests_.ContainsKey(id) && requests_ [id].isDone ){
-		jpgTextureData = requests_[id].texture.EncodeToJPG();
-		File.WriteAllBytes( FilePath( id ), jpgTextureData );
+			if (nodeID [i] == '0') {
+				bottomLeftCoordinates = new Vector2( x0, cy );
+				topRightCoordinates = new Vector2 (cx, y1);
+			}else if(nodeID[i] == '1'){
+				bottomLeftCoordinates = new Vector2( x0, y0 );
+				topRightCoordinates = new Vector2( cx, cy );
+			}else if(nodeID[i] == '2'){
+				bottomLeftCoordinates = new Vector2( cx, cy );
+				topRightCoordinates = new Vector2( x1, y1 );
+			}else if(nodeID[i] == '3'){
+				bottomLeftCoordinates = new Vector2( cx, y0 );
+				topRightCoordinates = new Vector2( x1, cy );
+			}
 		}
-
-		// If the request hasn't finished, the file won't exist
-		// yet.
-		if( !File.Exists ( FilePath( id ) ) ){
-		return null;
-		}
-
-		if( jpgTextureData == null ){
-		jpgTextureData = File.ReadAllBytes( FilePath( id ) );
-		}
-
-		return new Texture2D( jpgTextureData );
-		#else
-		if ( requests_.ContainsKey(id) && requests_ [id].isDone ){
-			return requests_ [id].texture;
-		}else{
-			return null;
-		}
-		#endif
 	}
 }

@@ -37,8 +37,6 @@ public class QuadtreeLODPlane : MonoBehaviour {
 		rootNode = new QuadtreeLODNode( 
 		                               mapSize, 
 									   vertexResolution,
-									   GetComponent<WMSComponent>().bottomLeftCoordinates,
-									   GetComponent<WMSComponent>().topRightCoordinates,
 		                               transform, 
 		                               this.GetComponent<Material>(),
 									   GetComponent<WMSComponent>()
