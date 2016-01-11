@@ -6,7 +6,6 @@ using System.Collections;
 
 public class QuadtreeLODNode {
 	private GameObject gameObject_;
-	private Transform transform_;
 	private Mesh mesh_;
 	private int meshVertexResolution_;
 	private Material material_;
@@ -46,11 +45,7 @@ public class QuadtreeLODNode {
 		mesh_ = MeshFactory.CreateMesh ( meshSize, meshVertexResolution );
 		gameObject_.AddComponent<MeshFilter> ().mesh = mesh_;
 		meshVertexResolution_ = meshVertexResolution;
-
-		// Make this mesh transform relative to parent.
-		transform_ = gameObject_.transform;
-		transform_.parent = transform;
-		
+				
 		// Copy given material.
 		material_ = new Material (Shader.Find ("Standard"));
 		gameObject_.GetComponent<Renderer>().material = material_;
@@ -87,11 +82,10 @@ public class QuadtreeLODNode {
 		gameObject_.tag = "MapSector";
 
 		// Make this mesh transform relative to parent.
-		transform_ = gameObject_.transform;
-		transform_.parent = parent.gameObject_.transform;
+		gameObject_.transform.parent = parent.gameObject_.transform;
 
-		transform_.localScale = new Vector3( 0.5f, 1.0f, 0.5f );
-		transform_.localPosition = localPosition;
+		gameObject_.transform.localScale = new Vector3( 0.5f, 1.0f, 0.5f );
+		gameObject_.transform.localPosition = localPosition;
 		
 		material_ = new Material (Shader.Find ("Standard"));
 		gameObject_.GetComponent<Renderer>().material = material_;
@@ -149,7 +143,7 @@ public class QuadtreeLODNode {
 	{
 		if (visible_ || AreChildrenLoaded()) {
 			DistanceTestResult distanceTestResult = DoDistanceTest();
-			Vector3 meshSize = Vector3.Scale (mesh_.bounds.size, transform_.lossyScale);
+			Vector3 meshSize = Vector3.Scale (mesh_.bounds.size, gameObject_.transform.lossyScale);
 
 			// Subdivide the plane if camera is closer than a threshold.
 			if (visible_ && distanceTestResult == DistanceTestResult.SUBDIVIDE ) {
@@ -219,9 +213,9 @@ public class QuadtreeLODNode {
 	private void CreateChildren( Vector3 meshSize )
 	{
 		Vector3 S = new Vector3(
-			1.0f / transform_.lossyScale.x,
-			1.0f / transform_.lossyScale.y,
-			1.0f / transform_.lossyScale.z
+			1.0f / gameObject_.transform.lossyScale.x,
+			1.0f / gameObject_.transform.lossyScale.y,
+			1.0f / gameObject_.transform.lossyScale.z
 			);
 
 
@@ -275,11 +269,11 @@ public class QuadtreeLODNode {
 	{
 		if (visible_) {
 			// Compute if the XZ rect of the map sector contains the observer.
-			Vector3 sectorSize = Vector3.Scale (mesh_.bounds.size, transform_.lossyScale);
+			Vector3 sectorSize = Vector3.Scale (mesh_.bounds.size, gameObject_.transform.lossyScale);
 
 			Rect sectorRect = new Rect (
-				transform_.position.x - sectorSize.x / 2.0f,
-				transform_.position.z - sectorSize.z / 2.0f,
+				gameObject_.transform.position.x - sectorSize.x / 2.0f,
+				gameObject_.transform.position.z - sectorSize.z / 2.0f,
 				sectorSize.x,
 				sectorSize.z
 			);
