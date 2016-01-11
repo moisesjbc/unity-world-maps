@@ -105,7 +105,7 @@ MonoBehaviour:
   fixedQueryString: 
   currentBoundingBoxIndex: 0
   serverURLindex: 0
-  wmsRequestID: 
+  wmsRequestID: http://idecan1.grafcan.com/ServicioWMS/OrtoExpress
   bottomLeftCoordinates: {x: 416000, y: 3067000}
   topRightCoordinates: {x: 466000, y: 3117000}
   selectedLayers: []

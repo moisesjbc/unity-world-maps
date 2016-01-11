@@ -92,9 +92,13 @@ Prefab:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 11455338, guid: d8e350d7eb1a3774880568d15e33ce19, type: 2}
+      propertyPath: selectedLayers.Array.size
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 470644, guid: d8e350d7eb1a3774880568d15e33ce19, type: 2}
       propertyPath: m_LocalPosition.x
-      value: 0
+      value: 5.5
       objectReference: {fileID: 0}
     - target: {fileID: 470644, guid: d8e350d7eb1a3774880568d15e33ce19, type: 2}
       propertyPath: m_LocalPosition.y
@@ -123,6 +127,34 @@ Prefab:
     - target: {fileID: 470644, guid: d8e350d7eb1a3774880568d15e33ce19, type: 2}
       propertyPath: m_RootOrder
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 11455338, guid: d8e350d7eb1a3774880568d15e33ce19, type: 2}
+      propertyPath: wmsRequestID
+      value: http://idecan1.grafcan.com/ServicioWMS/OrtoExpress
+      objectReference: {fileID: 0}
+    - target: {fileID: 11455338, guid: d8e350d7eb1a3774880568d15e33ce19, type: 2}
+      propertyPath: fixedQueryString
+      value: ?SERVICE=WMS&LAYERS=WMS_OrtoExpress&REQUEST=GetMap&VERSION=1.1.0&FORMAT=image/jpeg&SRS=EPSG:32628&STYLES=default&WIDTH=128&HEIGHT=128&REFERER=CAPAWARE
+      objectReference: {fileID: 0}
+    - target: {fileID: 11455338, guid: d8e350d7eb1a3774880568d15e33ce19, type: 2}
+      propertyPath: bottomLeftCoordinates.x
+      value: 180000
+      objectReference: {fileID: 0}
+    - target: {fileID: 11455338, guid: d8e350d7eb1a3774880568d15e33ce19, type: 2}
+      propertyPath: bottomLeftCoordinates.y
+      value: 2900000
+      objectReference: {fileID: 0}
+    - target: {fileID: 11455338, guid: d8e350d7eb1a3774880568d15e33ce19, type: 2}
+      propertyPath: topRightCoordinates.x
+      value: 680000
+      objectReference: {fileID: 0}
+    - target: {fileID: 11455338, guid: d8e350d7eb1a3774880568d15e33ce19, type: 2}
+      propertyPath: topRightCoordinates.y
+      value: 3300000
+      objectReference: {fileID: 0}
+    - target: {fileID: 11455338, guid: d8e350d7eb1a3774880568d15e33ce19, type: 2}
+      propertyPath: selectedLayers.Array.data[0]
+      value: WMS_OrtoExpress
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: d8e350d7eb1a3774880568d15e33ce19, type: 2}
@@ -187,7 +219,49 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 2
+  m_RootOrder: 3
+--- !u!1001 &651626982
+Prefab:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 470644, guid: c8a277206326ba14698c12e405da6a50, type: 2}
+      propertyPath: m_LocalPosition.x
+      value: -5.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 470644, guid: c8a277206326ba14698c12e405da6a50, type: 2}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 470644, guid: c8a277206326ba14698c12e405da6a50, type: 2}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 470644, guid: c8a277206326ba14698c12e405da6a50, type: 2}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 470644, guid: c8a277206326ba14698c12e405da6a50, type: 2}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 470644, guid: c8a277206326ba14698c12e405da6a50, type: 2}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 470644, guid: c8a277206326ba14698c12e405da6a50, type: 2}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 470644, guid: c8a277206326ba14698c12e405da6a50, type: 2}
+      propertyPath: m_RootOrder
+      value: 1
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+  m_ParentPrefab: {fileID: 100100000, guid: c8a277206326ba14698c12e405da6a50, type: 2}
+  m_IsPrefabParent: 0
 --- !u!1 &1690532459
 GameObject:
   m_ObjectHideFlags: 0
@@ -274,7 +348,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 1
+  m_RootOrder: 2
 --- !u!114 &1690532465
 MonoBehaviour:
   m_ObjectHideFlags: 0
