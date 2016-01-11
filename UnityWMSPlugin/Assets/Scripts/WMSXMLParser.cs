@@ -49,7 +49,7 @@ public class WMSXMLParser {
 	private static void updateWMSLayer( XmlDocument xmlDocument, XmlNode layerXmlNode, List<WMSLayer> layers )
 	{
 		if (layerXmlNode != null) {
-			if (layerXmlNode.Attributes ["queryable"] != null && layerXmlNode.Attributes ["queryable"].InnerText == "1") {
+			if (layerXmlNode.Attributes ["name"] != null) {
 				// Update the "selected" layer attribute in XML.
 				XmlAttribute layerSelectedAttribute = xmlDocument.CreateAttribute("selected");
 				bool layerSelected = layers.Find (element => element.title == layerXmlNode.SelectSingleNode ("Title").InnerText).selected;
