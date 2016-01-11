@@ -2,6 +2,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 
 [Serializable]
 public class WMSBoundingBox
@@ -31,7 +32,6 @@ public class WMSLayer
 	public string name;
 	public List<WMSBoundingBox> boundingBoxes;
 	public WMSLayer parentLayer;
-	public bool selected = false;
 
 	public List<WMSBoundingBox> GetBoundingBoxes()
 	{
@@ -110,23 +110,23 @@ public class WMSInfo
 	}
 
 
-	public List<WMSBoundingBox> GetBoundingBoxes()
+	public List<WMSBoundingBox> GetBoundingBoxes(List<string> selectedLayers)
 	{
 		List<WMSBoundingBox> boundingBoxes = new List<WMSBoundingBox> ();
 
 		foreach (WMSLayer layer in layers) {
-			if( layer.selected ){
+			if( selectedLayers.Contains(layer.name) ){
 				boundingBoxes.AddRange (layer.GetBoundingBoxes());
 			}
 		}
-		
+
 		return boundingBoxes;
 	}
 
 
-	public string[] GetBoundingBoxesNames()
+	public string[] GetBoundingBoxesNames(List<string> selectedLayers)
 	{
-		WMSBoundingBox[] boundingBoxes = GetBoundingBoxes().ToArray ();
+		WMSBoundingBox[] boundingBoxes = GetBoundingBoxes(selectedLayers).ToArray ();
 		string[] boundingBoxesNames = new string[boundingBoxes.Length];
 		
 		for (int i=0; i<boundingBoxes.Length; i++) {
@@ -137,8 +137,9 @@ public class WMSInfo
 	}
 
 
-	public WMSBoundingBox GetBoundingBox( int index)
+	public WMSBoundingBox GetBoundingBox(List<string> selectedLayers, int index)
 	{
-		return GetBoundingBoxes().ToArray ()[index];
+		return GetBoundingBoxes(selectedLayers).ToArray ()[index];
 	}
+
 }

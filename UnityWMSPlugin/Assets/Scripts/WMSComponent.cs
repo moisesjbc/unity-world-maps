@@ -1,15 +1,18 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
 
 [ExecuteInEditMode]
 public class WMSComponent : OnlineTexturesRequester {
 	public string serverURL = "http://129.206.228.72/cached/osm";
 	public string fixedQueryString;
 	public int currentBoundingBoxIndex = 0;
-	public WMSRequest wmsRequest = null;
 	public int serverURLindex = 0;
+	public string wmsRequestID = "";
 	public Vector2 bottomLeftCoordinates = new Vector2 ( 416000,3067000 );
 	public Vector2 topRightCoordinates = new Vector2 ( 466000,3117000 );
+	public List<string> selectedLayers = new List<string>();
 
 
 	protected override string GenerateRequestURL (string nodeID)
@@ -69,5 +72,20 @@ public class WMSComponent : OnlineTexturesRequester {
 				topRightCoordinates = new Vector2( x1, cy );
 			}
 		}
+	}
+
+
+	public void SetLayerSelected( string layerName, bool layerSelected ){
+		if (layerSelected && !selectedLayers.Contains (layerName)) {
+			selectedLayers.Add (layerName);
+		} else if (!layerSelected && selectedLayers.Contains (layerName)) {
+			selectedLayers.Remove (layerName);
+		}
+	}
+
+
+	public bool LayerSelected( string layerName )
+	{
+		return selectedLayers.Contains (layerName);
 	}
 }

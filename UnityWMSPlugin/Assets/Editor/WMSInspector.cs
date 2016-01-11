@@ -9,6 +9,7 @@ using System.IO;
 public class WMSComponentInspector : Editor
 {
 	private static WMSServerBookmarks bookmarks = new WMSServerBookmarks();
+	private static WMSInfoRequester wmsInfoRequester = new WMSInfoRequester();
 
 	public override void OnInspectorGUI()
 	{
@@ -19,15 +20,17 @@ public class WMSComponentInspector : Editor
 		bool layerChanged = false;
 		bool boundingBoxChanged = false;
 
+		wmsComponent.wmsRequestID = wmsInfoRequester.RequestWMSInfo (wmsComponent.serverURL);
+
 		DisplayServerSelector (ref wmsComponent, out serverChanged);
 
-		if (wmsComponent.wmsRequest == null || serverChanged) {
-			wmsComponent.wmsRequest = new WMSRequest (wmsComponent.serverURL, "1.1.0");
+		if (serverChanged) {
+			wmsComponent.selectedLayers.Clear ();
 			wmsComponent.currentBoundingBoxIndex = 0;
 		}
 
 		WMSRequestStatus requestStatus = 
-			wmsComponent.wmsRequest.status;
+			wmsInfoRequester.GetRequest (wmsComponent.wmsRequestID).status;
 			
 		if (requestStatus.state != WMSRequestState.OK) {
 			if( requestStatus.state == WMSRequestState.DOWNLOADING ){
@@ -92,9 +95,9 @@ public class WMSComponentInspector : Editor
 		serverChanged |= (newServerURL != wmsComponent.serverURL);
 		wmsComponent.serverURL = newServerURL;
 
-		if (wmsComponent.wmsRequest != null) {
+		if (wmsComponent.wmsRequestID != "") {
 			WMSRequestStatus requestStatus = 
-				wmsComponent.wmsRequest.status;
+				wmsInfoRequester.GetRequest (wmsComponent.wmsRequestID).status;
 			
 			if (requestStatus.state == WMSRequestState.OK) {
 				DisplayServerBookmarkButton (wmsComponent.serverURL);
@@ -137,10 +140,10 @@ public class WMSComponentInspector : Editor
 		for( int i=0; i<layers.Length; i++) {
 			if( layers[i].name != "" ){
 				bool newToggleValue = 
-					EditorGUILayout.Toggle (layers[i].title, layers[i].selected);
+					EditorGUILayout.Toggle (layers[i].title, (wmsComponent.LayerSelected(layers[i].name)));
 
-				layerChanged |= (newToggleValue != layers[i].selected);
-				layers[i].selected = newToggleValue;
+				layerChanged |= (newToggleValue != wmsComponent.LayerSelected(layers[i].name));
+				wmsComponent.SetLayerSelected (layers[i].name, newToggleValue);
 			}
 		}
 	}
@@ -155,10 +158,10 @@ public class WMSComponentInspector : Editor
 			boundingBoxChanged = true;
 		}
 		
-		string[] boundingBoxesNames = wmsInfo.GetBoundingBoxesNames();
+		string[] boundingBoxesNames = wmsInfo.GetBoundingBoxesNames(wmsComponent.selectedLayers);
 
 		if( boundingBoxesNames.Length > 0 ){
-			wmsComponent.fixedQueryString = BuildWMSFixedQueryString( wmsInfo.layers, "1.1.0", wmsInfo.GetBoundingBox( wmsComponent.currentBoundingBoxIndex ).SRS );
+			wmsComponent.fixedQueryString = BuildWMSFixedQueryString( wmsInfo.layers, wmsComponent.selectedLayers, "1.1.0", wmsInfo.GetBoundingBox( wmsComponent.selectedLayers, wmsComponent.currentBoundingBoxIndex ).SRS );
 			
 			int newBoundingBoxIndex = 
 				EditorGUILayout.Popup (
@@ -171,7 +174,7 @@ public class WMSComponentInspector : Editor
 			wmsComponent.currentBoundingBoxIndex = newBoundingBoxIndex;
 
 			if( layerChanged || boundingBoxChanged || GUILayout.Button ("Reset bounding box") ){
-				WMSBoundingBox currentBoundingBox = wmsInfo.GetBoundingBox( wmsComponent.currentBoundingBoxIndex );
+				WMSBoundingBox currentBoundingBox = wmsInfo.GetBoundingBox( wmsComponent.selectedLayers, wmsComponent.currentBoundingBoxIndex );
 
 				wmsComponent.bottomLeftCoordinates = currentBoundingBox.bottomLeftCoordinates;
 				wmsComponent.topRightCoordinates = currentBoundingBox.topRightCoordinates;
@@ -215,12 +218,12 @@ public class WMSComponentInspector : Editor
 	}
 
 
-	private string BuildWMSFixedQueryString( WMSLayer[] layers, string wmsVersion, string SRS )
+	private string BuildWMSFixedQueryString( WMSLayer[] layers, List<string> selectedLayers, string wmsVersion, string SRS )
 	{
 		string layersQuery = "";
 		string stylesQuery = "";
 		foreach (WMSLayer layer in layers) {
-			if( layer.selected && layer.name != "" ){
+			if( layer.name != "" && selectedLayers.Contains(layer.name) ){
 				layersQuery += layer.name + ",";
 				stylesQuery += "default,";
 			}
@@ -273,9 +276,8 @@ public class WMSComponentInspector : Editor
 	public void Refresh()
 	{
 		WMSComponent wmsComponent = (WMSComponent)target;
-		if (wmsComponent.wmsRequest != null) {
-			wmsComponent.wmsRequest.UpdateStatus ();
-			Repaint ();
-		}
+		wmsComponent.wmsRequestID = wmsInfoRequester.RequestWMSInfo (wmsComponent.serverURL);
+		wmsInfoRequester.GetRequest (wmsComponent.wmsRequestID).UpdateStatus ();
+		Repaint ();
 	}
 }
