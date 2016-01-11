@@ -102,9 +102,9 @@ public class WMSComponentInspector : Editor
 				wmsInfoRequester.GetRequest (wmsComponent.wmsRequestID).status;
 			
 			if (requestStatus.state == WMSRequestState.OK) {
-				DisplayServerBookmarkButton (wmsComponent.serverURL);
-				if (bookmarks.ServerIsBookmarked (wmsComponent.serverURL)) {
-					DisplayRemoveServerFromBookmarksButton (wmsComponent.serverURL);
+				DisplayServerBookmarkButton (requestStatus.response.serverTitle, wmsComponent.serverURL);
+				if (bookmarks.ServerIsBookmarked (requestStatus.response.serverTitle)) {
+					DisplayRemoveServerFromBookmarksButton (requestStatus.response.serverTitle);
 				}
 			}
 		}
@@ -113,18 +113,14 @@ public class WMSComponentInspector : Editor
 
 	private void DisplayServerPopup(ref WMSComponent wmsComponent, ref bool serverChanged)
 	{
-		string[] serverURLs = bookmarks.ToArray ();
+		string[] serverTitles = bookmarks.ServerTitles();
 
-		for( int i=0; i<serverURLs.Length; i++ ){
-			serverURLs[i] = serverURLs[i].Replace ("/", "\\");
-		}
-
-		int newServerIndex = EditorGUILayout.Popup ("Bookmarked servers", wmsComponent.serverURLindex, serverURLs);
+		int newServerIndex = EditorGUILayout.Popup ("Bookmarked servers", wmsComponent.serverURLindex, serverTitles);
 		serverChanged = (newServerIndex != wmsComponent.serverURLindex);
 
 		if (serverChanged) {
 			wmsComponent.serverURLindex = newServerIndex;
-			wmsComponent.serverURL = serverURLs [wmsComponent.serverURLindex].Replace("\\", "/");
+			wmsComponent.serverURL = bookmarks.GetServerURL (serverTitles[wmsComponent.serverURLindex]);
 		}
 	}
 
@@ -243,18 +239,18 @@ public class WMSComponentInspector : Editor
 	}
 
 
-	private void DisplayServerBookmarkButton(string serverURL)
+	private void DisplayServerBookmarkButton(string serverTitle, string serverURL)
 	{
 		if (GUILayout.Button ("Bookmark server")){
-			bookmarks.BookmarkServer (serverURL);
+			bookmarks.BookmarkServer (serverTitle, serverURL);
 		}
 	}
 
 
-	private void DisplayRemoveServerFromBookmarksButton(string serverURL)
+	private void DisplayRemoveServerFromBookmarksButton(string serverTitle)
 	{
 		if (GUILayout.Button ("Remove server from bookmarks")){
-			bookmarks.RemoveServerFromBookmarks (serverURL);
+			bookmarks.RemoveServerFromBookmarks (serverTitle);
 		}
 	}
 		

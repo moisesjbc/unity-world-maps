@@ -5,39 +5,67 @@ using System.IO;
 using System.Linq;
 
 public class WMSServerBookmarks {
-	private List<string> serverURLs;
+	// [title] -> [url]
+	private Dictionary<string, string> servers_ = 
+		new Dictionary<string, string>();
+	private string[] keyValueSeparator_ = new string[]{" @*-*@ "};
 
 
 	public WMSServerBookmarks()
 	{
-		serverURLs = File.ReadAllLines ("Assets/WMSServerBookmarks").ToList();
+		string[] lines = File.ReadAllLines ("Assets/WMSServerBookmarks");
+
+		foreach (string line in lines) {
+			string serverTitle = line.Split (keyValueSeparator_, 2, System.StringSplitOptions.None) [0];
+			string serverURL = line.Split (keyValueSeparator_, 2, System.StringSplitOptions.None) [1];
+			servers_ [serverTitle] = serverURL;
+		}
 	}
 
 
 	~WMSServerBookmarks(){
-		File.WriteAllLines("Assets/WMSServerBookmarks", serverURLs.ToArray());
+		string[] lines = new string[servers_.Count];
+		int i = 0;
+		foreach(KeyValuePair<string, string> entry in servers_){
+			lines [i] = entry.Key + keyValueSeparator_[0] + entry.Value;
+			i++;
+		}
+
+		File.WriteAllLines("Assets/WMSServerBookmarks", lines);
 	}
 
 
-	public void BookmarkServer( string server )
+	public void BookmarkServer(string serverTitle, string serverURL)
 	{
-		serverURLs.Add (server);
+		servers_ [serverTitle] = serverURL;
 	}
 
 
-	public void RemoveServerFromBookmarks(string serverURL)
+	public void RemoveServerFromBookmarks(string serverTitle)
 	{
-		serverURLs.Remove (serverURL);
+		servers_.Remove (serverTitle);
 	}
 
 
-	public bool ServerIsBookmarked(string serverURL){
-		return (serverURLs.BinarySearch (serverURL) >= 0);
+	public bool ServerIsBookmarked(string serverTitle){
+		return servers_.ContainsKey(serverTitle);
 	}
 
 
-	public string[] ToArray()
+	public string[] ServerTitles()
 	{
-		return serverURLs.ToArray ();
+		string[] lines = new string[servers_.Count];
+		int i = 0;
+		foreach(KeyValuePair<string, string> entry in servers_){
+			lines [i] = entry.Key;
+			i++;
+		}
+		return lines;
+	}
+
+
+	public string GetServerURL(string serverTitle)
+	{
+		return servers_ [serverTitle];
 	}
 }
