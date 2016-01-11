@@ -50,6 +50,14 @@ public class QuadtreeLODNode {
 		material_ = new Material (Shader.Find ("Standard"));
 		gameObject_.GetComponent<Renderer>().material = material_;
 
+		// Copy given transform.
+		gameObject_.transform.parent = transform;
+
+		// Previous assignment alters local transformation, so we reset it.
+		gameObject_.transform.localPosition = Vector3.zero;
+		gameObject_.transform.localRotation = Quaternion.identity;
+		gameObject_.transform.localScale = Vector3.one;
+
 		visible_ = true;
 
 		children_ = new QuadtreeLODNode[]{ null, null, null, null };
@@ -84,8 +92,12 @@ public class QuadtreeLODNode {
 		// Make this mesh transform relative to parent.
 		gameObject_.transform.parent = parent.gameObject_.transform;
 
-		gameObject_.transform.localScale = new Vector3( 0.5f, 1.0f, 0.5f );
+		// Previous assignment alters local transformation, so we reset it.
+		gameObject_.transform.localRotation = Quaternion.identity;
 		gameObject_.transform.localPosition = localPosition;
+
+		// Make this mesh a 4 part of its parent.
+		gameObject_.transform.localScale = new Vector3( 0.5f, 1.0f, 0.5f );
 		
 		material_ = new Material (Shader.Find ("Standard"));
 		gameObject_.GetComponent<Renderer>().material = material_;
