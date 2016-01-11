@@ -3,7 +3,7 @@ using System.Collections;
 
 [ExecuteInEditMode]
 public class WMSComponent : OnlineTexturesRequester {
-	public string serverURL = "http://idecan1.grafcan.com/ServicioWMS/OrtoExpress";
+	public string serverURL = "http://129.206.228.72/cached/osm";
 	public string fixedQueryString;
 	public int currentBoundingBoxIndex = 0;
 	public WMSRequest wmsRequest = null;
