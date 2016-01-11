@@ -109,6 +109,6 @@ public class WMSRequest : ScriptableObject {
 		filepath = filepath.Replace (':', '-');
 		filepath = filepath.Replace ('?', '-');
 
-		return filepath;
+		return "Temp/" + filepath;
 	}
 }
