@@ -10,7 +10,6 @@ public class WMSInfoRequester {
 	public string RequestWMSInfo( string serverURL )
 	{
 		string requestID = GenerateRequestID (serverURL);
-		Debug.Log("RequestWMSInfo from [" + serverURL + "] - " + requestID);
 		if (!requests_.ContainsKey (requestID)){
 			requests_ [requestID] = new WMSRequest (serverURL);
 		}
@@ -20,7 +19,6 @@ public class WMSInfoRequester {
 
 	public WMSRequest GetRequest( string requestID )
 	{
-		Debug.Log ("RequestID: " + requestID);
 		return requests_ [requestID];
 	}
 		
