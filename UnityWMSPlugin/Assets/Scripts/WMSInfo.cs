@@ -76,12 +76,15 @@ public class WMSLayer
 public class WMSInfo
 {
 	[SerializeField]
+	public string serverTitle;
+	[SerializeField]
 	public WMSLayer[] layers = new WMSLayer[0]{};
 	[SerializeField]
 	private int currentLayerIndex = 0;
 
-	public WMSInfo( WMSLayer[] layers )
+	public WMSInfo( string serverTitle, WMSLayer[] layers )
 	{
+		this.serverTitle = serverTitle;
 		this.layers = layers;
 	}
 

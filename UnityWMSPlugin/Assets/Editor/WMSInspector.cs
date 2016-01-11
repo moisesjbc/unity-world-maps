@@ -55,6 +55,8 @@ public class WMSComponentInspector : Editor
 			}
 			return;
 		}
+			
+		EditorGUILayout.LabelField ("Server title: " + wmsInfo.serverTitle);
 		
 		DisplayLayersSelector (ref wmsComponent, wmsInfo, out layerChanged);
 

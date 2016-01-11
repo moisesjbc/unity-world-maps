@@ -13,11 +13,14 @@ public class WMSXMLParser {
 
 		XmlNode rootNode = xmlDocument.DocumentElement;
 
+		// Parse server general info.
+		string serverTitle = rootNode.SelectSingleNode("Service").SelectSingleNode ("Title").InnerText;
+
 		// Parse WMS layers.
 		List<WMSLayer> layers = new List<WMSLayer> ();
 		parseWMSLayers( rootNode.SelectSingleNode("Capability").SelectNodes ("Layer"), ref layers, null );
 
-		return new WMSInfo(layers.ToArray ());
+		return new WMSInfo( serverTitle, layers.ToArray ());
 	}
 
 
