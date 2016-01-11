@@ -121,9 +121,6 @@ public class WMSComponentInspector : Editor
 		serverChanged = (newServerIndex != wmsComponent.serverURLindex);
 
 		if (serverChanged) {
-			if (wmsComponent.wmsRequest.status.state == WMSRequestState.OK && File.Exists(WMSRequest.URLToFilePath(wmsComponent.wmsRequest.url))) {
-				WMSXMLParser.Update (wmsComponent.wmsRequest.status.response, WMSRequest.URLToFilePath(wmsComponent.wmsRequest.url));
-			}
 			wmsComponent.serverURLindex = newServerIndex;
 			wmsComponent.serverURL = serverURLs [wmsComponent.serverURLindex].Replace("\\", "/");
 		}

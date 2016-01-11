@@ -21,46 +21,6 @@ public class WMSXMLParser {
 	}
 
 
-	public static void Update(WMSInfo info, string filepath)
-	{
-		XmlDocument xmlDocument = new XmlDocument ();
-		xmlDocument.LoadXml (File.ReadAllText(filepath));
-
-		XmlNode rootNode = xmlDocument.DocumentElement;
-
-		updateWMSLayers (xmlDocument, rootNode.SelectSingleNode ("Capability").SelectNodes ("Layer"), info.layers.ToList() );
-
-		xmlDocument.Save (filepath);
-	
-		Debug.Log ("XML updated (" + filepath + ")");
-	}
-
-
-	private static void updateWMSLayers( XmlDocument xmlDocument, XmlNodeList layersNodes, List<WMSLayer> layers )
-	{
-		if (layersNodes.Count > 0) {
-			foreach (XmlNode layerNode in layersNodes) {
-				updateWMSLayer ( xmlDocument, layerNode, layers);
-			}
-		}
-	}
-
-
-	private static void updateWMSLayer( XmlDocument xmlDocument, XmlNode layerXmlNode, List<WMSLayer> layers )
-	{
-		if (layerXmlNode != null) {
-			if (layerXmlNode.Attributes ["name"] != null) {
-				// Update the "selected" layer attribute in XML.
-				XmlAttribute layerSelectedAttribute = xmlDocument.CreateAttribute("selected");
-				bool layerSelected = layers.Find (element => element.title == layerXmlNode.SelectSingleNode ("Title").InnerText).selected;
-				layerSelectedAttribute.Value = layerSelected ? "1" : "0";
-				layerXmlNode.Attributes.Append (layerSelectedAttribute);
-			}
-			updateWMSLayers (xmlDocument, layerXmlNode.SelectNodes ("Layer"), layers);
-		}
-	}
-
-
 	private static void parseWMSLayers( XmlNodeList layersNodes, ref List<WMSLayer> layers, WMSLayer parentLayer )
 	{
 		if (layersNodes.Count > 0) {
@@ -86,7 +46,6 @@ public class WMSXMLParser {
 			layer.boundingBoxes = parseWMSBoundingBoxes (layerXmlNode.SelectNodes ("BoundingBox"));
 			layer.parentLayer = parentLayer;
 
-			layer.selected = (layerXmlNode.Attributes ["selected"] != null && layerXmlNode.Attributes ["selected"].InnerText == "1");
 			if (layerXmlNode.SelectSingleNode ("Name") != null) {
 				layers.Add (layer);
 			}
