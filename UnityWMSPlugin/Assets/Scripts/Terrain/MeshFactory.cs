@@ -8,7 +8,7 @@ public class MeshFactory {
 	{
 		int N_VERTICES = meshVertexResolution * meshVertexResolution;
 		float DISTANCE_BETWEEN_VERTICES = meshSize / (float)(meshVertexResolution - 1.0f) ;
-		float DISTANCE_BETWEEN_UV = 1.0f / (float)meshVertexResolution;
+		float DISTANCE_BETWEEN_UV = 1.0f / (float)(meshVertexResolution - 1.0f);
 
 		Vector3[] vertices = new Vector3[N_VERTICES];
 		Vector2[] uv = new Vector2[N_VERTICES];
