@@ -73,22 +73,21 @@ public class WMSXMLParser {
 
 	private static void parseWMSLayer( XmlNode layerXmlNode, ref List<WMSLayer> layers, WMSLayer parentLayer )
 	{
-		if (layerXmlNode != null) {
+		if (layerXmlNode != null ) {
 			WMSLayer layer = new WMSLayer ();
 
 			layer.title = layerXmlNode.SelectSingleNode ("Title").InnerText;
 
-			if( layerXmlNode.SelectSingleNode ("Name") != null ){
+			if (layerXmlNode.SelectSingleNode ("Name") != null) {
 				layer.name = layerXmlNode.SelectSingleNode ("Name").InnerText;
-			}else{
+			} else {
 				layer.name = "";
 			}
 			layer.boundingBoxes = parseWMSBoundingBoxes (layerXmlNode.SelectNodes ("BoundingBox"));
 			layer.parentLayer = parentLayer;
 
 			layer.selected = (layerXmlNode.Attributes ["selected"] != null && layerXmlNode.Attributes ["selected"].InnerText == "1");
-
-			if (layerXmlNode.Attributes ["queryable"] != null && layerXmlNode.Attributes ["queryable"].InnerText == "1") {
+			if (layerXmlNode.SelectSingleNode ("Name") != null) {
 				layers.Add (layer);
 			}
 			parseWMSLayers (layerXmlNode.SelectNodes ("Layer"), ref layers, layer);
