@@ -20,11 +20,11 @@ public class WMSComponent : OnlineTexturesRequester {
 			
 		string fixedUrl = serverURL + fixedQueryString;
 		string bboxUrlQuery = 
-			"&BBOX=" + bottomLeftCoordinates.x + "," +
-			bottomLeftCoordinates.y + "," +
-			topRightCoordinates.x + "," +
-			topRightCoordinates.y;
-		
+			"&BBOX=" + bottomLeftCoordinates.x.ToString("F") + "," +
+			bottomLeftCoordinates.y.ToString("F") + "," +
+			topRightCoordinates.x.ToString("F") + "," +
+			topRightCoordinates.y.ToString("F");
+
 		return fixedUrl + bboxUrlQuery;
 	}
 
