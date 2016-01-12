@@ -105,8 +105,8 @@ public class WMSComponentInspector : Editor
 				Debug.Log ("Is bookmarked? [" + requestStatus.response.serverTitle + "]: " + bookmarks.ServerIsBookmarked (requestStatus.response.serverTitle));
 				if (!bookmarks.ServerIsBookmarked (requestStatus.response.serverTitle)) {
 					DisplayServerBookmarkButton (requestStatus.response.serverTitle, wmsComponent.serverURL);
-				} else {
-					DisplayRemoveServerFromBookmarksButton (requestStatus.response.serverTitle);
+				//} else {
+				//	RemoveServerFromBookmarksButton (requestStatus.response.serverTitle);
 				}
 			}
 		}
