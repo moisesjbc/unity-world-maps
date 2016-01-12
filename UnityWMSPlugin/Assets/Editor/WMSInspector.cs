@@ -102,8 +102,10 @@ public class WMSComponentInspector : Editor
 				wmsInfoRequester.GetRequest (wmsComponent.wmsRequestID).status;
 			
 			if (requestStatus.state == WMSRequestState.OK) {
-				DisplayServerBookmarkButton (requestStatus.response.serverTitle, wmsComponent.serverURL);
-				if (bookmarks.ServerIsBookmarked (requestStatus.response.serverTitle)) {
+				Debug.Log ("Is bookmarked? [" + requestStatus.response.serverTitle + "]: " + bookmarks.ServerIsBookmarked (requestStatus.response.serverTitle));
+				if (!bookmarks.ServerIsBookmarked (requestStatus.response.serverTitle)) {
+					DisplayServerBookmarkButton (requestStatus.response.serverTitle, wmsComponent.serverURL);
+				} else {
 					DisplayRemoveServerFromBookmarksButton (requestStatus.response.serverTitle);
 				}
 			}
