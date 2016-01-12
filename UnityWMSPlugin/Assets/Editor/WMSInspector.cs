@@ -28,6 +28,7 @@ public class WMSComponentInspector : Editor
 			wmsComponent.selectedLayers.Clear ();
 			wmsComponent.currentBoundingBoxIndex = 0;
 		}
+		wmsComponent.changedSinceLastRequest |= serverChanged;
 
 		WMSRequestStatus requestStatus = 
 			wmsInfoRequester.GetRequest (wmsComponent.wmsRequestID).status;
@@ -60,7 +61,11 @@ public class WMSComponentInspector : Editor
 		
 		DisplayLayersSelector (ref wmsComponent, wmsInfo, out layerChanged);
 
+		wmsComponent.changedSinceLastRequest |= layerChanged;
+
 		DisplayBoundingBoxSelector (ref wmsComponent, wmsInfo, layerChanged, out boundingBoxChanged);
+
+		wmsComponent.changedSinceLastRequest |= layerChanged | boundingBoxChanged;
 
 		Vector2 newBottomLeftCoordinates =
 			EditorGUILayout.Vector2Field (

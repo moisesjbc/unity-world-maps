@@ -3,6 +3,8 @@ using System.Collections;
 
 public abstract class OnlineTexturesRequester : OnlineResourcesManager {
 
+	public bool changedSinceLastRequest = false;
+
 	public string RequestTexture( string nodeID )
 	{
 		string requestID = GenerateRequestID(nodeID);
