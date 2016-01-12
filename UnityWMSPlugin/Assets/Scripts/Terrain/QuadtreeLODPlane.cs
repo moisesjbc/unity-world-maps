@@ -4,7 +4,7 @@ using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 
-
+[ExecuteInEditMode]
 public class QuadtreeLODPlane : MonoBehaviour {
 	public int vertexResolution = 20;
 	private bool visible_ = true;
@@ -151,7 +151,7 @@ public class QuadtreeLODPlane : MonoBehaviour {
 
 
 	void Update () {
-		if (visible_ || AreChildrenLoaded()) {
+		if (Application.isPlaying && visible_ || AreChildrenLoaded()) {
 			DistanceTestResult distanceTestResult = DoDistanceTest();
 			Vector3 meshSize = Vector3.Scale (GetComponent<MeshFilter>().mesh.bounds.size, gameObject.transform.lossyScale);
 
