@@ -177,11 +177,10 @@ public class QuadtreeLODPlane : MonoBehaviour {
 			}
 		}
 			
-		if (!Application.isPlaying && onlineTexturesRequester.changedSinceLastRequest) {
+		if (!Application.isPlaying && onlineTexturesRequester.FixedUrlChangedSinceLastRequest() ) {
 			Debug.LogWarning ("Requesting new texture!");
 			textureRequestId = onlineTexturesRequester.RequestTexture (nodeID);
 			textureLoaded = false;
-			onlineTexturesRequester.changedSinceLastRequest = false;
 		}
 
 		if (!textureLoaded) {

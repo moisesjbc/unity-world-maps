@@ -2,8 +2,8 @@
 using System.Collections;
 
 public abstract class OnlineTexturesRequester : OnlineResourcesManager {
-
-	public bool changedSinceLastRequest = false;
+	
+	private string lastRequestFixedUrl = "";
 
 	public string RequestTexture( string nodeID )
 	{
@@ -17,6 +17,7 @@ public abstract class OnlineTexturesRequester : OnlineResourcesManager {
 		#endif
 
 		string url = GenerateRequestURL (nodeID);
+		lastRequestFixedUrl = ExtractFixedURL (url);
 		requests_ [requestID] = new WWW (url);
 
 		return requestID;
@@ -56,6 +57,14 @@ public abstract class OnlineTexturesRequester : OnlineResourcesManager {
 	}
 
 
+	public bool FixedUrlChangedSinceLastRequest ()
+	{
+		return lastRequestFixedUrl != CurrentFixedUrl();
+	}
+
+
 	protected abstract string GenerateRequestID (string nodeID);
 	protected abstract string GenerateRequestURL (string nodeID);
+	protected abstract string ExtractFixedURL (string fullURL);
+	protected abstract string CurrentFixedUrl ();
 }

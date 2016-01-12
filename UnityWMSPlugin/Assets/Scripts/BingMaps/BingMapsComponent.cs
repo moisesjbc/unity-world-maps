@@ -22,4 +22,16 @@ public class BingMapsComponent : OnlineTexturesRequester {
 
 		return serverURL.Replace ("<id>", nodeID);
 	}
+
+
+	protected override string ExtractFixedURL (string fullURL)
+	{
+		return fullURL.Replace ("<id>", "");
+	}
+
+
+	protected override string CurrentFixedUrl ()
+	{
+		return serverURL;
+	}
 }
