@@ -87,4 +87,15 @@ public class WMSComponent : OnlineTexturesRequester {
 	{
 		return selectedLayers.Contains (layerName);
 	}
+
+
+	protected override string ExtractFixedURL (string fullURL)
+	{
+		return fullURL.Remove  (fullURL.IndexOf("&BBOX"));
+	}
+
+	protected override string CurrentFixedUrl ()
+	{
+		return serverURL + fixedQueryString;
+	}
 }
