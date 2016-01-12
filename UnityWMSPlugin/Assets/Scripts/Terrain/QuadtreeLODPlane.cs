@@ -56,7 +56,7 @@ public class QuadtreeLODPlane : MonoBehaviour {
 			gameObject.GetComponent<MeshFilter> ().mesh = MeshFactory.CreateMesh (mapSize, vertexResolution);
 
 			// Create material
-			gameObject.GetComponent<Renderer> ().material = new Material (Shader.Find ("Standard"));
+			gameObject.GetComponent<Renderer> ().sharedMaterial = new Material (Shader.Find ("Standard"));
 
 			GetComponent<QuadtreeLODPlane> ().SetVisible (true);
 		} else {
@@ -187,8 +187,20 @@ public class QuadtreeLODPlane : MonoBehaviour {
 			Texture2D texture = onlineTexturesRequester.GetTexture (textureRequestId);
 			if (texture != null) {
 				textureLoaded = true;
-				GetComponent<Renderer>().material.mainTexture = texture;
-				GetComponent<Renderer>().material.mainTexture.wrapMode = TextureWrapMode.Clamp;
+				Debug.Log ("GetComponent<MeshRenderer>(): " + GetComponent<MeshRenderer> ());
+
+				if (Application.isPlaying) {
+					var tempMaterial = new Material (GetComponent<MeshRenderer> ().material);
+					tempMaterial.mainTexture = texture;
+					tempMaterial.mainTexture.wrapMode = TextureWrapMode.Clamp;
+					GetComponent<MeshRenderer> ().material = tempMaterial;
+				} else {
+					var tempMaterial = new Material (GetComponent<MeshRenderer> ().sharedMaterial);
+					tempMaterial.mainTexture = texture;
+					tempMaterial.mainTexture.wrapMode = TextureWrapMode.Clamp;
+					GetComponent<MeshRenderer> ().sharedMaterial = tempMaterial;
+				}
+				
 			}
 		}
 	}
