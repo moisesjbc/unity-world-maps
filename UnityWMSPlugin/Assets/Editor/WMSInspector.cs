@@ -123,11 +123,10 @@ public class WMSComponentInspector : Editor
 		string[] serverTitles = bookmarks.ServerTitles();
 
 		int newServerIndex = EditorGUILayout.Popup ("Bookmarked servers", 0, serverTitles);
-		serverChanged = (newServerIndex != 0 && newServerIndex != wmsComponent.serverURLindex);
+		serverChanged = (newServerIndex != 0 && bookmarks.GetServerURL(serverTitles[newServerIndex]) != wmsComponent.serverURL);
 
 		if (serverChanged) {
-			wmsComponent.serverURLindex = newServerIndex;
-			wmsComponent.serverURL = bookmarks.GetServerURL (serverTitles[wmsComponent.serverURLindex]);
+			wmsComponent.serverURL = bookmarks.GetServerURL (serverTitles[newServerIndex]);
 		}
 	}
 

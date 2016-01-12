@@ -8,7 +8,6 @@ public class WMSComponent : OnlineTexturesRequester {
 	public string serverURL = "http://129.206.228.72/cached/osm";
 	public string fixedQueryString;
 	public int currentBoundingBoxIndex = 0;
-	public int serverURLindex = 0;
 	public string wmsRequestID = "";
 	public Vector2 bottomLeftCoordinates = new Vector2 ( 416000,3067000 );
 	public Vector2 topRightCoordinates = new Vector2 ( 466000,3117000 );
