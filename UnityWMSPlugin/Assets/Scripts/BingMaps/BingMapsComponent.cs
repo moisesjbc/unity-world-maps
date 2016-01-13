@@ -25,20 +25,8 @@ public class BingMapsComponent : OnlineTexturesRequester {
 	}
 
 
-	protected override string ExtractFixedURL (string fullURL)
-	{
-		int startPos = fullURL.IndexOf ("tiles/a") + "tiles/a".Length;
-		int endPos = fullURL.IndexOf (".jpeg?g");
-		if (startPos >= 0 && endPos > startPos) { 
-			return fullURL.Remove (startPos, endPos - startPos);
-		} else {
-			return fullURL;
-		}
-	}
-
-
 	protected override string CurrentFixedUrl ()
 	{
-		return ExtractFixedURL(serverURL);
+		return serverURL;
 	}
 }
