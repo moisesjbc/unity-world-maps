@@ -34,8 +34,41 @@ public class BingMapsInspector : Editor
 		bingMapsComponent.initialZoom = EditorGUILayout.IntField (zoomLabel, bingMapsComponent.initialZoom);
 		bingMapsComponent.ComputeInitialSector ();
 
+		if (GUILayout.Button ("Update preview (may take a while)")) {
+			bingMapsComponent.RequestTexturePreview ();
+		}
+
 		if (GUI.changed) {
 			EditorApplication.MarkSceneDirty ();
+		}
+	}
+
+
+	public void OnEnable()
+	{
+		EditorApplication.update += Refresh;
+	}
+
+
+
+	public void OnDisable()
+	{
+		EditorApplication.update -= Refresh;
+	}
+
+
+	public void Refresh()
+	{
+		BingMapsComponent bingMapsComponent = (BingMapsComponent)target;
+
+		Texture2D previewTexture = bingMapsComponent.GetTexturePreview ();
+		if (previewTexture != null) {
+			var tempMaterial = new Material (bingMapsComponent.gameObject.GetComponent<MeshRenderer> ().sharedMaterial);
+			tempMaterial.mainTexture = previewTexture;
+			tempMaterial.mainTexture.wrapMode = TextureWrapMode.Clamp;
+			bingMapsComponent.gameObject.GetComponent<MeshRenderer> ().sharedMaterial = tempMaterial;
+
+			Repaint ();
 		}
 	}
 }

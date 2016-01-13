@@ -5,6 +5,7 @@ public abstract class OnlineTexturesRequester : OnlineResourcesManager {
 	
 	private string lastRequestFixedUrl = "";
 
+
 	public string RequestTexture( string nodeID )
 	{
 		string requestID = GenerateRequestID(nodeID);
@@ -66,4 +67,16 @@ public abstract class OnlineTexturesRequester : OnlineResourcesManager {
 	protected abstract string GenerateRequestID (string nodeID);
 	protected abstract string GenerateRequestURL (string nodeID);
 	public abstract string CurrentFixedUrl ();
+
+
+	public void RequestTexturePreview ()
+	{
+		RequestTexture ("0");
+	}
+
+
+	public Texture2D GetTexturePreview()
+	{
+		return GetTexture (GenerateRequestID ("0"));
+	}
 }

@@ -1,7 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-[ExecuteInEditMode]
 public class BingMapsComponent : OnlineTexturesRequester {
 	private string serverURL = "http://ecn.t0.tiles.virtualearth.net/tiles/a";
 	public string initialSector = "0";
@@ -9,6 +8,7 @@ public class BingMapsComponent : OnlineTexturesRequester {
 	public float lattitude;
 	public float longitude;
 	public int initialZoom = 0;
+
 
 	protected override string GenerateRequestID( string nodeID )
 	{
