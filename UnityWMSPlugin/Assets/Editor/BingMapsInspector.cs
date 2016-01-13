@@ -13,7 +13,6 @@ public class BingMapsInspector : Editor
 		BingMapsComponent bingMapsComponent = (BingMapsComponent)target;
 		EditorUtility.SetDirty (bingMapsComponent);
 
-		bingMapsComponent.serverURL = 
-			EditorGUILayout.TextField ("Server URL: ", bingMapsComponent.serverURL);
+		EditorGUILayout.LabelField ("Server URL (fixed): " + bingMapsComponent.serverURL);
 	}
 }
