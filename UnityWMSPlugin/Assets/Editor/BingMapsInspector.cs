@@ -15,8 +15,8 @@ public class BingMapsInspector : Editor
 
 		EditorGUILayout.LabelField (bingMapsComponent.CurrentFixedUrl());
 
-		bingMapsComponent.longitude = EditorGUILayout.Slider("Longitude: ", bingMapsComponent.longitude, -180.0f, 180f);
 		bingMapsComponent.lattitude = EditorGUILayout.Slider ("Lattitude: ", bingMapsComponent.lattitude, -90.0f, 90.0f);
+		bingMapsComponent.longitude = EditorGUILayout.Slider("Longitude: ", bingMapsComponent.longitude, -180.0f, 180f);
 		bingMapsComponent.initialZoom = EditorGUILayout.IntSlider ("Zoom: ", bingMapsComponent.initialZoom, 0, 7);
 		bingMapsComponent.ComputeInitialSector ();
 
