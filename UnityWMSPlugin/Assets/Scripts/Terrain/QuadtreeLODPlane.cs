@@ -21,8 +21,6 @@ public class QuadtreeLODPlane : MonoBehaviour {
 	string textureRequestId;
 	bool textureLoaded = false;
 
-	float metersPerUnit = 0.0f;
-
 
 	public void Start()
 	{
@@ -66,10 +64,6 @@ public class QuadtreeLODPlane : MonoBehaviour {
 		Debug.Log ("[" + nodeID + "] Start() - depth (" + depth_ + ")");
 				
 		gameObject.tag = "MapSector";
-
-		// FIXME: Compute this instead of giving a arbitrary value.
-		metersPerUnit = 1000;
-		Debug.LogWarning ("[" + nodeID + "]: metersPerUnit: " + metersPerUnit);
 
 		textureRequestId = onlineTexturesRequester.RequestTexture (nodeID);
 		textureLoaded = false;
@@ -287,48 +281,5 @@ public class QuadtreeLODPlane : MonoBehaviour {
 		} else {
 			return false;
 		}
-	}
-
-
-	public bool ObserverOnSector( Vector3 observer, out float observerHeight )
-	{
-		if (visible_) {
-			// Compute if the XZ rect of the map sector contains the observer.
-			Vector3 sectorSize = Vector3.Scale (GetComponent<MeshFilter>().mesh.bounds.size, gameObject.transform.lossyScale);
-
-			Rect sectorRect = new Rect (
-				gameObject.transform.position.x - sectorSize.x / 2.0f,
-				gameObject.transform.position.z - sectorSize.z / 2.0f,
-				sectorSize.x,
-				sectorSize.z
-			);
-			//Debug.Log ( "sectorRect: " + sectorRect );
-
-			if (sectorRect.Contains (new Vector2 (observer.x, observer.z))) {
-				MeshCollider mapCollider = gameObject.GetComponent<MeshCollider> ();
-				if (mapCollider != null) {
-					Ray ray = new Ray (observer, Vector3.down);
-					RaycastHit hit;
-
-					if (mapCollider.Raycast (ray, out hit, 100.0f)) {
-						observerHeight = observer.y - hit.point.y;
-						return true;
-					}
-				}
-			}
-		} else {
-			if (AreChildrenLoaded ()) {
-				for (int i=0; i<children_.Length; i++) {
-					float heightOnChildren;
-					if (children_ [i].GetComponent<QuadtreeLODPlane>().ObserverOnSector (observer, out heightOnChildren)) {
-						observerHeight = heightOnChildren;
-						return true;
-					}
-				}
-			}
-		}
-
-		observerHeight = -1.0f;
-		return false;
 	}
 }
