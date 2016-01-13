@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
+[ExecuteInEditMode]
 public class BingMapsComponent : OnlineTexturesRequester {
 	public string serverURL = "http://ecn.t0.tiles.virtualearth.net/tiles/a<id>.jpeg?g=4756";
 
@@ -28,12 +29,16 @@ public class BingMapsComponent : OnlineTexturesRequester {
 	{
 		int startPos = fullURL.IndexOf ("tiles/a") + "tiles/a".Length;
 		int endPos = fullURL.IndexOf (".jpeg?g");
-		return fullURL.Remove (startPos, endPos - startPos);
+		if (startPos >= 0 && endPos > startPos) { 
+			return fullURL.Remove (startPos, endPos - startPos);
+		} else {
+			return fullURL;
+		}
 	}
 
 
 	protected override string CurrentFixedUrl ()
 	{
-		return serverURL;
+		return ExtractFixedURL(serverURL);
 	}
 }
