@@ -4,7 +4,8 @@ using System.Collections;
 [ExecuteInEditMode]
 public class BingMapsComponent : OnlineTexturesRequester {
 	public string serverURL = "http://ecn.t0.tiles.virtualearth.net/tiles/a<id>.jpeg?g=4756";
-
+	public float lattitude;
+	public float longitude;
 
 	protected override string GenerateRequestID( string nodeID )
 	{
