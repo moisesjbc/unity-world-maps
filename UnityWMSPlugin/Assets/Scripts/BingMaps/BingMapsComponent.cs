@@ -8,6 +8,7 @@ public class BingMapsComponent : OnlineTexturesRequester {
 	public string urlTail = ".jpeg?g=4756";
 	public float lattitude;
 	public float longitude;
+	public int initialZoom = 0;
 
 	protected override string GenerateRequestID( string nodeID )
 	{
@@ -20,17 +21,36 @@ public class BingMapsComponent : OnlineTexturesRequester {
 
 	public void ComputeInitialSector()
 	{
-		if (longitude <= 0.0f) {
-			if (lattitude <= 0.0f) {
-				initialSector = "2";
+		initialSector = "";
+		float minLongitude = -180f;
+		float maxLongitude = 180f;
+		float minLattitude = -90f;
+		float maxLattitude = 90f;
+
+		for( int i=0; i<initialZoom + 1; i++ ){
+			float middleLongitude = (maxLongitude + minLongitude) / 2.0f;
+			float middleLattitude = (maxLattitude + minLattitude) / 2.0f;
+			float halfLongitude = (maxLongitude - minLongitude) / 2.0f;
+			float halfLattitude = (maxLattitude - minLattitude) / 2.0f;
+
+			if (longitude <= middleLongitude) {
+				maxLongitude -= halfLongitude;
+				if (lattitude <= middleLattitude) {
+					initialSector += "2";
+					maxLattitude -= halfLattitude;
+				} else {
+					initialSector += "0";
+					minLattitude += halfLattitude;
+				}
 			} else {
-				initialSector = "0";
-			}
-		} else {
-			if (lattitude <= 0.0f) {
-				initialSector = "3";
-			} else {
-				initialSector = "1";
+				minLongitude += halfLongitude;
+				if (lattitude <= middleLattitude) {
+					initialSector += "3";
+					maxLattitude -= halfLattitude;
+				} else {
+					initialSector += "1";
+					minLattitude += halfLongitude;
+				}
 			}
 		}
 	}
