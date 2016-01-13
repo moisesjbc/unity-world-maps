@@ -28,7 +28,6 @@ public class BingMapsComponent : OnlineTexturesRequester {
 	{
 		int startPos = fullURL.IndexOf ("tiles/a") + "tiles/a".Length;
 		int endPos = fullURL.IndexOf (".jpeg?g");
-		Debug.Log ("ExtractFixedURL: " + fullURL.Remove (startPos, endPos - startPos));
 		return fullURL.Remove (startPos, endPos - startPos);
 	}
 
