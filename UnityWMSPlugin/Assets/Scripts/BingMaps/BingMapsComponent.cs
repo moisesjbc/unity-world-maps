@@ -49,7 +49,7 @@ public class BingMapsComponent : OnlineTexturesRequester {
 					maxLattitude -= halfLattitude;
 				} else {
 					initialSector += "1";
-					minLattitude += halfLongitude;
+					minLattitude += halfLattitude;
 				}
 			}
 		}
