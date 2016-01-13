@@ -65,5 +65,5 @@ public abstract class OnlineTexturesRequester : OnlineResourcesManager {
 
 	protected abstract string GenerateRequestID (string nodeID);
 	protected abstract string GenerateRequestURL (string nodeID);
-	protected abstract string CurrentFixedUrl ();
+	public abstract string CurrentFixedUrl ();
 }

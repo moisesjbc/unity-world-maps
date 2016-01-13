@@ -89,7 +89,7 @@ public class WMSComponent : OnlineTexturesRequester {
 	}
 
 
-	protected override string CurrentFixedUrl ()
+	public override string CurrentFixedUrl ()
 	{
 		return serverURL + fixedQueryString;
 	}
