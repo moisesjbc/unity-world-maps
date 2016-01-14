@@ -5,8 +5,8 @@ public class BingMapsComponent : OnlineTexturesRequester {
 	private string serverURL = "http://ecn.t0.tiles.virtualearth.net/tiles/a";
 	public string initialSector = "0";
 	public string urlTail = ".jpeg?g=4756";
-	public Lattitude dmsLattitude = new Lattitude();
-	public Longitude dmsLongitude = new Longitude();
+	public Lattitude dmsLattitude = new Lattitude(28, 7, 38, Lattitude.LattitudeSector.N);
+	public Longitude dmsLongitude = new Longitude(15, 25, 53, Longitude.LongitudeSector.O);
 	public float longitude;
 	public int initialZoom = 0;
 
