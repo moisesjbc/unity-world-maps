@@ -27,6 +27,7 @@ public class WMSComponentInspector : Editor
 		if (serverChanged) {
 			wmsComponent.selectedLayers.Clear ();
 			wmsComponent.currentBoundingBoxIndex = 0;
+			wmsComponent.RequestTexturePreview ();
 		}
 
 		WMSRequestStatus requestStatus = 
@@ -60,7 +61,15 @@ public class WMSComponentInspector : Editor
 		
 		DisplayLayersSelector (ref wmsComponent, wmsInfo, out layerChanged);
 
+		if (layerChanged) {
+			wmsComponent.RequestTexturePreview ();
+		}
+
 		DisplayBoundingBoxSelector (ref wmsComponent, wmsInfo, layerChanged, out boundingBoxChanged);
+
+		if (layerChanged) {
+			wmsComponent.RequestTexturePreview ();
+		}
 
 		Vector2 newBottomLeftCoordinates =
 			EditorGUILayout.Vector2Field (
@@ -271,8 +280,15 @@ public class WMSComponentInspector : Editor
 	public void Refresh()
 	{
 		WMSComponent wmsComponent = (WMSComponent)target;
-		wmsComponent.wmsRequestID = wmsInfoRequester.RequestWMSInfo (wmsComponent.serverURL);
-		wmsInfoRequester.GetRequest (wmsComponent.wmsRequestID).UpdateStatus ();
-		Repaint ();
+
+		Texture2D previewTexture = wmsComponent.GetTexturePreview ();
+		if (previewTexture != null) {
+			var tempMaterial = new Material (wmsComponent.gameObject.GetComponent<MeshRenderer> ().sharedMaterial);
+			tempMaterial.mainTexture = previewTexture;
+			tempMaterial.mainTexture.wrapMode = TextureWrapMode.Clamp;
+			wmsComponent.gameObject.GetComponent<MeshRenderer> ().sharedMaterial = tempMaterial;
+
+			Repaint ();
+		}
 	}
 }
