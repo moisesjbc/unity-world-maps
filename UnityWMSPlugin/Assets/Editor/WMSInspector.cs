@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using UnityEditor;
 using System;
 using System.IO;
+using System.Linq;
 
 [CustomEditor(typeof(WMSComponent))]
 public class WMSComponentInspector : Editor
@@ -26,7 +27,6 @@ public class WMSComponentInspector : Editor
 
 		if (serverChanged) {
 			wmsComponent.selectedLayers.Clear ();
-			wmsComponent.currentBoundingBoxIndex = 0;
 			wmsComponent.RequestTexturePreview ();
 		}
 
@@ -164,30 +164,27 @@ public class WMSComponentInspector : Editor
 		boundingBoxChanged = false;
 
 		if( layerChanged ){
-			wmsComponent.currentBoundingBoxIndex = 0;
 			boundingBoxChanged = true;
 		}
-		
-		string[] boundingBoxesNames = wmsInfo.GetBoundingBoxesNames(wmsComponent.selectedLayers);
+
+		List<string> boundingBoxesNames = wmsInfo.GetBoundingBoxesNames(wmsComponent.selectedLayers).ToList();
+		boundingBoxesNames.Insert (0, "Select bounding box from server");
 
 		wmsComponent.keepBoundingBoxRatio = 
 			EditorGUILayout.Toggle ("Keep bounding box ratio", wmsComponent.keepBoundingBoxRatio);
 
-		if( boundingBoxesNames.Length > 0 ){
-			wmsComponent.fixedQueryString = BuildWMSFixedQueryString( wmsInfo.layers, wmsComponent.selectedLayers, "1.1.0", wmsInfo.GetBoundingBox( wmsComponent.selectedLayers, wmsComponent.currentBoundingBoxIndex ).SRS );
-			
+		if( boundingBoxesNames.Count > 1 ){
 			int newBoundingBoxIndex = 
 				EditorGUILayout.Popup (
 					"Bounding Box",
-					wmsComponent.currentBoundingBoxIndex, 
-					boundingBoxesNames
-					);
+					0, 
+					boundingBoxesNames.ToArray()
+					) - 1;
 			
-			boundingBoxChanged = boundingBoxChanged || (newBoundingBoxIndex != wmsComponent.currentBoundingBoxIndex);
-			wmsComponent.currentBoundingBoxIndex = newBoundingBoxIndex;
+			boundingBoxChanged = boundingBoxChanged || (newBoundingBoxIndex != -1);
 
 			if( layerChanged || boundingBoxChanged || GUILayout.Button ("Reset bounding box") ){
-				WMSBoundingBox currentBoundingBox = wmsInfo.GetBoundingBox( wmsComponent.selectedLayers, wmsComponent.currentBoundingBoxIndex );
+				WMSBoundingBox currentBoundingBox = wmsInfo.GetBoundingBox( wmsComponent.selectedLayers, newBoundingBoxIndex );
 
 				wmsComponent.bottomLeftCoordinates = currentBoundingBox.bottomLeftCoordinates;
 				wmsComponent.topRightCoordinates = currentBoundingBox.topRightCoordinates;
