@@ -45,7 +45,6 @@ public class WMSRequest : ScriptableObject {
 			server + "?REQUEST=GetCapabilities&SERVICE=WMS" + "&VERSION=" + version;
 
 		if (RequestIsCached(url)) {
-			Debug.Log ("Request cached!");
 			ParseResponse (File.ReadAllText(URLToFilePath(url)));
 		} else {
 			www = new WWW (url);
