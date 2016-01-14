@@ -57,19 +57,17 @@ public class WMSComponentInspector : Editor
 			return;
 		}
 			
+		wmsComponent.SRS = "EPSG:32628";
 		EditorGUILayout.LabelField ("Server title: " + wmsInfo.serverTitle);
-		
+
 		DisplayLayersSelector (ref wmsComponent, wmsInfo, out layerChanged);
 
 		if (layerChanged) {
+			Debug.Log ("Layer changed");
 			wmsComponent.RequestTexturePreview ();
 		}
 
-		DisplayBoundingBoxSelector (ref wmsComponent, wmsInfo, layerChanged, out boundingBoxChanged);
-
-		if (layerChanged) {
-			wmsComponent.RequestTexturePreview ();
-		}
+		DisplayBoundingBoxSelector (ref wmsComponent, wmsInfo, out boundingBoxChanged);
 
 		Vector2 newBottomLeftCoordinates =
 			EditorGUILayout.Vector2Field (
@@ -90,7 +88,7 @@ public class WMSComponentInspector : Editor
 			newTopRightCoordinates,
 			wmsComponent.keepBoundingBoxRatio);
 
-		if(GUILayout.Button("Updated bounding box preview (may take a while)")){
+		if( boundingBoxChanged || GUILayout.Button("Updated bounding box preview (may take a while)")){
 			wmsComponent.RequestTexturePreview ();
 		}
 
@@ -159,13 +157,9 @@ public class WMSComponentInspector : Editor
 	}
 
 
-	private void DisplayBoundingBoxSelector( ref WMSComponent wmsComponent, WMSInfo wmsInfo, bool layerChanged, out bool boundingBoxChanged )
+	private void DisplayBoundingBoxSelector( ref WMSComponent wmsComponent, WMSInfo wmsInfo, out bool boundingBoxChanged )
 	{
 		boundingBoxChanged = false;
-
-		if( layerChanged ){
-			boundingBoxChanged = true;
-		}
 
 		List<string> boundingBoxesNames = wmsInfo.GetBoundingBoxesNames(wmsComponent.selectedLayers).ToList();
 		boundingBoxesNames.Insert (0, "Select bounding box from server");
@@ -181,9 +175,10 @@ public class WMSComponentInspector : Editor
 					boundingBoxesNames.ToArray()
 					) - 1;
 			
-			boundingBoxChanged = boundingBoxChanged || (newBoundingBoxIndex != -1);
+			boundingBoxChanged = (newBoundingBoxIndex != -1);
 
-			if( layerChanged || boundingBoxChanged || GUILayout.Button ("Reset bounding box") ){
+			if( boundingBoxChanged ){
+				wmsComponent.SRS = wmsInfo.GetBoundingBox (wmsComponent.selectedLayers, newBoundingBoxIndex).SRS;
 				WMSBoundingBox currentBoundingBox = wmsInfo.GetBoundingBox( wmsComponent.selectedLayers, newBoundingBoxIndex );
 
 				wmsComponent.bottomLeftCoordinates = currentBoundingBox.bottomLeftCoordinates;
@@ -231,32 +226,6 @@ public class WMSComponentInspector : Editor
 	}
 
 
-	private string BuildWMSFixedQueryString( WMSLayer[] layers, List<string> selectedLayers, string wmsVersion, string SRS )
-	{
-		string layersQuery = "";
-		string stylesQuery = "";
-		foreach (WMSLayer layer in layers) {
-			if( layer.name != "" && selectedLayers.Contains(layer.name) ){
-				layersQuery += layer.name + ",";
-				stylesQuery += "default,";
-			}
-		}
-		// Remove last character (',').
-		if (layersQuery.Length > 0) {
-			layersQuery = layersQuery.Remove(layersQuery.Length - 1);
-			stylesQuery = stylesQuery.Remove(stylesQuery.Length - 1);
-		}
-		return 
-			"?SERVICE=WMS" +
-			"&LAYERS=" + layersQuery +
-			"&REQUEST=GetMap&VERSION=" + wmsVersion +
-			"&FORMAT=image/jpeg" +
-			"&SRS=" + SRS +
-		    "&STYLES=" + stylesQuery +
-			"&WIDTH=128&HEIGHT=128&REFERER=CAPAWARE";
-	}
-
-
 	private void DisplayServerBookmarkButton(string serverTitle, string serverURL)
 	{
 		if (GUILayout.Button ("Bookmark server")){
@@ -291,6 +260,7 @@ public class WMSComponentInspector : Editor
 		WMSComponent wmsComponent = (WMSComponent)target;
 
 		Texture2D previewTexture = wmsComponent.GetTexturePreview ();
+		Debug.Log ("previewTexture != null: " + (previewTexture != null));
 		if (previewTexture != null) {
 			var tempMaterial = new Material (wmsComponent.gameObject.GetComponent<MeshRenderer> ().sharedMaterial);
 			tempMaterial.mainTexture = previewTexture;

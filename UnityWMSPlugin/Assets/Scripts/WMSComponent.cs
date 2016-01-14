@@ -5,12 +5,13 @@ using System.Linq;
 
 public class WMSComponent : OnlineTexturesRequester {
 	public string serverURL = "http://129.206.228.72/cached/osm";
-	public string fixedQueryString;
 	public string wmsRequestID = "";
 	public bool keepBoundingBoxRatio = false;
 	public Vector2 bottomLeftCoordinates = new Vector2 ( 416000,3067000 );
 	public Vector2 topRightCoordinates = new Vector2 ( 466000,3117000 );
 	public List<string> selectedLayers = new List<string>();
+	public string wmsVersion = "1.1.0";
+	public string SRS = "";
 
 
 	protected override string GenerateRequestURL (string nodeID)
@@ -19,7 +20,7 @@ public class WMSComponent : OnlineTexturesRequester {
 		Vector2 topRightCoordinates = this.topRightCoordinates;
 		GenerateWMSBoundingBox (nodeID, ref bottomLeftCoordinates, ref topRightCoordinates);
 			
-		string fixedUrl = serverURL + fixedQueryString;
+		string fixedUrl = serverURL + BuildWMSFixedQueryString();
 		string bboxUrlQuery = 
 			"&BBOX=" + bottomLeftCoordinates.x.ToString("F") + "," +
 			bottomLeftCoordinates.y.ToString("F") + "," +
@@ -90,6 +91,30 @@ public class WMSComponent : OnlineTexturesRequester {
 
 	public override string CurrentFixedUrl ()
 	{
-		return serverURL + fixedQueryString;
+		return serverURL + BuildWMSFixedQueryString();
+	}
+
+
+	private string BuildWMSFixedQueryString()
+	{
+		string layersQuery = "";
+		string stylesQuery = "";
+		foreach (string layerName in selectedLayers) {
+			layersQuery += layerName + ",";
+			stylesQuery += "default,";
+		}
+		// Remove last character (',').
+		if (layersQuery.Length > 0) {
+			layersQuery = layersQuery.Remove(layersQuery.Length - 1);
+			stylesQuery = stylesQuery.Remove(stylesQuery.Length - 1);
+		}
+		return 
+			"?SERVICE=WMS" +
+			"&LAYERS=" + layersQuery +
+			"&REQUEST=GetMap&VERSION=" + wmsVersion +
+			"&FORMAT=image/jpeg" +
+			"&SRS=" + SRS +
+			"&STYLES=" + stylesQuery +
+			"&WIDTH=128&HEIGHT=128&REFERER=CAPAWARE";
 	}
 }
