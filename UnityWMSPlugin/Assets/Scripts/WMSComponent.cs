@@ -3,7 +3,6 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 
-[ExecuteInEditMode]
 public class WMSComponent : OnlineTexturesRequester {
 	public string serverURL = "http://129.206.228.72/cached/osm";
 	public string fixedQueryString;
