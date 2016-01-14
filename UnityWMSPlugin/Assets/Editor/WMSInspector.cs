@@ -182,6 +182,11 @@ public class WMSComponentInspector : Editor
 
 				wmsComponent.bottomLeftCoordinates = currentBoundingBox.bottomLeftCoordinates;
 				wmsComponent.topRightCoordinates = currentBoundingBox.topRightCoordinates;
+			}else{
+				if( wmsComponent.selectedLayers.Count == 1 ){
+					// If we have one layer selected, use the SRS of its first bounding box.
+					wmsComponent.SRS = wmsInfo.GetBoundingBox (wmsComponent.selectedLayers, 0).SRS;
+				}
 			}
 		}
 	}

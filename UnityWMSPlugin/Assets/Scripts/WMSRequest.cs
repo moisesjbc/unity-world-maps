@@ -60,13 +60,7 @@ public class WMSRequest : ScriptableObject {
 		// TODO: Check download date.
 		return File.Exists (filepath);
 	}
-
-
-	public void OnEnable ()
-	{
-		Debug.LogWarning ("[OnEnable]: status.response == null?: " + (status.response == null) );
-	}
-
+		
 
 	public WMSRequestStatus UpdateStatus()
 	{
