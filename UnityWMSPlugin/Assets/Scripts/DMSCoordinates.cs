@@ -11,7 +11,7 @@ public class DMSCoordinates
 	{
 		return (float)degrees + (float)minutes / 60.0f + (float)seconds / 60.0f;
 	}
-};
+}
 
 
 public class Lattitude : DMSCoordinates

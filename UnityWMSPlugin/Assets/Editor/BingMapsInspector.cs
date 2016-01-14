@@ -29,8 +29,8 @@ public class BingMapsInspector : Editor
 
 		EditorGUILayout.LabelField (bingMapsComponent.CurrentFixedUrl());
 
-		bingMapsComponent.lattitude = EditorGUILayout.FloatField(lattitudeLabel, bingMapsComponent.lattitude);
-		bingMapsComponent.longitude = EditorGUILayout.FloatField(longitudeLabel, bingMapsComponent.longitude);
+		bingMapsComponent.dmsLattitude = (Lattitude)GenerateDMSCoordinatesField(lattitudeLabel, bingMapsComponent.dmsLattitude);
+		bingMapsComponent.dmsLongitude = (Longitude)GenerateDMSCoordinatesField(longitudeLabel, bingMapsComponent.dmsLongitude);
 		bingMapsComponent.initialZoom = EditorGUILayout.IntField (zoomLabel, bingMapsComponent.initialZoom);
 		bingMapsComponent.ComputeInitialSector ();
 
@@ -41,6 +41,19 @@ public class BingMapsInspector : Editor
 		if (GUI.changed) {
 			EditorApplication.MarkSceneDirty ();
 		}
+	}
+
+
+	private DMSCoordinates GenerateDMSCoordinatesField(string label, DMSCoordinates dmsCoordinates)
+	{
+		EditorGUILayout.LabelField (label);
+		EditorGUILayout.BeginHorizontal ();
+		dmsCoordinates.degrees = EditorGUILayout.IntField (dmsCoordinates.degrees);
+		dmsCoordinates.minutes = EditorGUILayout.IntField (dmsCoordinates.minutes);
+		dmsCoordinates.seconds = EditorGUILayout.IntField (dmsCoordinates.seconds);
+		EditorGUILayout.EndHorizontal ();
+
+		return dmsCoordinates;
 	}
 
 
