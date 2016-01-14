@@ -4,6 +4,9 @@ using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 
+// This [ExecuteInEditMode] is for Start to execute and then display the right mesh
+// created with MeshFactory. 
+[ExecuteInEditMode]
 public class QuadtreeLODPlane : MonoBehaviour {
 	public int vertexResolution = 20;
 	private bool visible_ = true;
@@ -145,7 +148,12 @@ public class QuadtreeLODPlane : MonoBehaviour {
 
 
 	void Update () {
-		if (Application.isPlaying && visible_ || AreChildrenLoaded()) {
+		// Don't Update in edit mode.
+		if( !Application.isPlaying ){
+			return;
+		}
+
+		if (visible_ || AreChildrenLoaded()) {
 			DistanceTestResult distanceTestResult = DoDistanceTest();
 			Vector3 meshSize = Vector3.Scale (GetComponent<MeshFilter>().mesh.bounds.size, gameObject.transform.lossyScale);
 
