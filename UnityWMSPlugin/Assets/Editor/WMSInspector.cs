@@ -82,11 +82,13 @@ public class WMSComponentInspector : Editor
 				"Top right coordinates",
 				wmsComponent.topRightCoordinates
 				);
-						
-		UpdateBoundingBox (ref wmsComponent.bottomLeftCoordinates,
-		                   ref wmsComponent.topRightCoordinates,
-		                   newBottomLeftCoordinates,
-		                   newTopRightCoordinates);
+				
+		UpdateBoundingBox (
+			ref wmsComponent.bottomLeftCoordinates,
+			ref wmsComponent.topRightCoordinates,
+			newBottomLeftCoordinates,
+			newTopRightCoordinates,
+			wmsComponent.keepBoundingBoxRatio);
 
 		if(GUILayout.Button("Updated bounding box preview (may take a while)")){
 			wmsComponent.RequestTexturePreview ();
@@ -168,6 +170,9 @@ public class WMSComponentInspector : Editor
 		
 		string[] boundingBoxesNames = wmsInfo.GetBoundingBoxesNames(wmsComponent.selectedLayers);
 
+		wmsComponent.keepBoundingBoxRatio = 
+			EditorGUILayout.Toggle ("Keep bounding box ratio", wmsComponent.keepBoundingBoxRatio);
+
 		if( boundingBoxesNames.Length > 0 ){
 			wmsComponent.fixedQueryString = BuildWMSFixedQueryString( wmsInfo.layers, wmsComponent.selectedLayers, "1.1.0", wmsInfo.GetBoundingBox( wmsComponent.selectedLayers, wmsComponent.currentBoundingBoxIndex ).SRS );
 			
@@ -195,31 +200,34 @@ public class WMSComponentInspector : Editor
 	                               ref Vector2 oldBottomLeftCoordinates, 
 	                               ref Vector2 oldTopRightCoordinates,
 	                               Vector2 newBottomLeftCoordinates, 
-	                               Vector2 newTopRightCoordinates )
+	                               Vector2 newTopRightCoordinates,
+								   bool keepRatio)
 	{
 		Vector2 auxBottomLeftCoordinates = newBottomLeftCoordinates;
 		Vector2 auxTopRightCoordinates = newTopRightCoordinates;
 
-		// Compute aspect ratio
-		float width = oldTopRightCoordinates.y - oldBottomLeftCoordinates.y;
-		if (width == 0.0f) {
-			width = 1.0f;
-		}
+		if (keepRatio) {
+			// Compute aspect ratio
+			float width = oldTopRightCoordinates.y - oldBottomLeftCoordinates.y;
+			if (width == 0.0f) {
+				width = 1.0f;
+			}
 
-		float height = oldTopRightCoordinates.y - oldBottomLeftCoordinates.y;
-		if (height == 0.0f) {
-			height = 1.0f;
-		}
+			float height = oldTopRightCoordinates.y - oldBottomLeftCoordinates.y;
+			if (height == 0.0f) {
+				height = 1.0f;
+			}
 
-		float boundigBoxRatio = width / height;
-		
-		// Update Y coordinates according to bounding box ratio (if X changed).
-		auxBottomLeftCoordinates.y += (newBottomLeftCoordinates.x - oldBottomLeftCoordinates.x) / boundigBoxRatio;
-		auxTopRightCoordinates.y += (newTopRightCoordinates.x - oldTopRightCoordinates.x) / boundigBoxRatio;
-		
-		// Update X coordinates according to bounding box ratio (if Y changed).
-		auxBottomLeftCoordinates.x += (newBottomLeftCoordinates.y - oldBottomLeftCoordinates.y) * boundigBoxRatio;
-		auxTopRightCoordinates.x += (newTopRightCoordinates.y - oldTopRightCoordinates.y) * boundigBoxRatio;
+			float boundigBoxRatio = width / height;
+			
+			// Update Y coordinates according to bounding box ratio (if X changed).
+			auxBottomLeftCoordinates.y += (newBottomLeftCoordinates.x - oldBottomLeftCoordinates.x) / boundigBoxRatio;
+			auxTopRightCoordinates.y += (newTopRightCoordinates.x - oldTopRightCoordinates.x) / boundigBoxRatio;
+			
+			// Update X coordinates according to bounding box ratio (if Y changed).
+			auxBottomLeftCoordinates.x += (newBottomLeftCoordinates.y - oldBottomLeftCoordinates.y) * boundigBoxRatio;
+			auxTopRightCoordinates.x += (newTopRightCoordinates.y - oldTopRightCoordinates.y) * boundigBoxRatio;
+		}
 		
 		oldBottomLeftCoordinates = auxBottomLeftCoordinates;
 		oldTopRightCoordinates = auxTopRightCoordinates;

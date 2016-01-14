@@ -9,6 +9,7 @@ public class WMSComponent : OnlineTexturesRequester {
 	public string fixedQueryString;
 	public int currentBoundingBoxIndex = 0;
 	public string wmsRequestID = "";
+	public bool keepBoundingBoxRatio = false;
 	public Vector2 bottomLeftCoordinates = new Vector2 ( 416000,3067000 );
 	public Vector2 topRightCoordinates = new Vector2 ( 466000,3117000 );
 	public List<string> selectedLayers = new List<string>();
