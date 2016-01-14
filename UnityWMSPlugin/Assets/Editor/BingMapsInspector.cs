@@ -35,6 +35,8 @@ public class BingMapsInspector : Editor
 		bingMapsComponent.ComputeInitialSector ();
 
 		if (GUILayout.Button ("Update preview (may take a while)")) {
+			Debug.Log("Decimal lattitude: " + bingMapsComponent.dmsLattitude.ToDecimalCoordinates());
+			Debug.Log("Decimal longitude: " + bingMapsComponent.dmsLongitude.ToDecimalCoordinates());
 			bingMapsComponent.RequestTexturePreview ();
 		}
 
