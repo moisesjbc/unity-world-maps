@@ -88,6 +88,10 @@ public class WMSComponentInspector : Editor
 		                   newBottomLeftCoordinates,
 		                   newTopRightCoordinates);
 
+		if(GUILayout.Button("Updated bounding box preview (may take a while)")){
+			wmsComponent.RequestTexturePreview ();
+		}
+
 		// Mark the target assert as changed ("dirty") so Unity save it to disk.
 		if (GUI.changed) {
 			EditorApplication.MarkSceneDirty ();
