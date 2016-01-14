@@ -261,6 +261,8 @@ public class WMSComponentInspector : Editor
 	public void Refresh()
 	{
 		WMSComponent wmsComponent = (WMSComponent)target;
+		wmsComponent.wmsRequestID = wmsInfoRequester.RequestWMSInfo (wmsComponent.serverURL);
+		wmsInfoRequester.GetRequest (wmsComponent.wmsRequestID).UpdateStatus ();
 
 		Texture2D previewTexture = wmsComponent.GetTexturePreview ();
 		if (previewTexture != null) {
