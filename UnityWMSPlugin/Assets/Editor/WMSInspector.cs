@@ -57,7 +57,6 @@ public class WMSComponentInspector : Editor
 			return;
 		}
 			
-		wmsComponent.SRS = "EPSG:32628";
 		EditorGUILayout.LabelField ("Server title: " + wmsInfo.serverTitle);
 
 		DisplayLayersSelector (ref wmsComponent, wmsInfo, out layerChanged);
