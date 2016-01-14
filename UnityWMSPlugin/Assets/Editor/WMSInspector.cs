@@ -63,7 +63,6 @@ public class WMSComponentInspector : Editor
 		DisplayLayersSelector (ref wmsComponent, wmsInfo, out layerChanged);
 
 		if (layerChanged) {
-			Debug.Log ("Layer changed");
 			wmsComponent.RequestTexturePreview ();
 		}
 
@@ -260,7 +259,6 @@ public class WMSComponentInspector : Editor
 		WMSComponent wmsComponent = (WMSComponent)target;
 
 		Texture2D previewTexture = wmsComponent.GetTexturePreview ();
-		Debug.Log ("previewTexture != null: " + (previewTexture != null));
 		if (previewTexture != null) {
 			var tempMaterial = new Material (wmsComponent.gameObject.GetComponent<MeshRenderer> ().sharedMaterial);
 			tempMaterial.mainTexture = previewTexture;

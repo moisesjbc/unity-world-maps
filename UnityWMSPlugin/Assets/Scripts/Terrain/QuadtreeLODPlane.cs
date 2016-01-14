@@ -45,7 +45,6 @@ public class QuadtreeLODPlane : MonoBehaviour {
 					throw new UnityException ("Terrain can't have both WMSComponent and BingMapsComponent componets!");
 				}
 			} else if (GetComponent<BingMapsComponent> () != null) {
-				Debug.Log ("BingMapsComponent!");
 				onlineTexturesRequester = this.GetComponent<BingMapsComponent> ();
 			} else {
 				throw new MissingComponentException ("Terrain must have a WMSComponent or BingMapsComponent");
@@ -64,7 +63,6 @@ public class QuadtreeLODPlane : MonoBehaviour {
 			GetComponent<QuadtreeLODPlane> ().SetVisible (false);
 			onlineTexturesRequester = transform.parent.GetComponent<QuadtreeLODPlane> ().onlineTexturesRequester;
 		}
-		Debug.Log ("[" + nodeID + "] Start() - depth (" + depth_ + ")");
 				
 		gameObject.tag = "MapSector";
 
@@ -190,7 +188,6 @@ public class QuadtreeLODPlane : MonoBehaviour {
 			Texture2D texture = onlineTexturesRequester.GetTexture (textureRequestId);
 			if (texture != null) {
 				textureLoaded = true;
-				Debug.Log ("GetComponent<MeshRenderer>(): " + GetComponent<MeshRenderer> ());
 
 				if (Application.isPlaying) {
 					var tempMaterial = new Material (GetComponent<MeshRenderer> ().material);
@@ -238,8 +235,6 @@ public class QuadtreeLODPlane : MonoBehaviour {
 
 	private void CreateChildren( Vector3 meshSize )
 	{
-		Debug.Log ("[" + nodeID + "] Creating children");
-
 		Vector3 S = new Vector3(
 			1.0f / gameObject.transform.lossyScale.x,
 			1.0f / gameObject.transform.lossyScale.y,
