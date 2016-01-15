@@ -24,7 +24,6 @@ public class BingMapsComponent : OnlineTexturesRequester {
 
 	public void ComputeInitialSector()
 	{
-		Debug.Log ("Computing sector");
 		float lattitude = dmsLattitude.ToDecimalCoordinates ();
 		float longitude = dmsLongitude.ToDecimalCoordinates ();
 

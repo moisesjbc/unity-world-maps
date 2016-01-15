@@ -3,7 +3,7 @@ using System.Collections;
 
 public class CameraMovement : MonoBehaviour 
 {
-	public float heightMovementFactor = 0.5f;
+	public float heightMovementFactor = 2.5f;
 	public float mouseSensitivy = 0.1f;
 
 	// Update is called once per frame
@@ -18,8 +18,8 @@ public class CameraMovement : MonoBehaviour
 
 		// X/Z movement
 		if( Input.GetMouseButton(0) ){
-			movement += -Input.GetAxis ("Mouse X") * Vector3.right * heightWeight * mouseSensitivy;
-			movement += -Input.GetAxis ("Mouse Y") * Vector3.up * heightWeight * mouseSensitivy;
+			movement += -Input.GetAxis ("Mouse X") * Vector3.right * 1.5f * heightWeight * mouseSensitivy;
+			movement += -Input.GetAxis ("Mouse Y") * Vector3.up * 1.5f * heightWeight * mouseSensitivy;
 		}
 
 		transform.Translate (movement);
