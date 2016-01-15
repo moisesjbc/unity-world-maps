@@ -22,8 +22,12 @@ public class BingMapsComponent : OnlineTexturesRequester {
 
 	public void ComputeInitialSector()
 	{
+		Debug.Log ("Computing sector");
 		float lattitude = dmsLattitude.ToDecimalCoordinates ();
 		float longitude = dmsLongitude.ToDecimalCoordinates ();
+
+		Debug.Log("Lattitude: (DMS) " + dmsLattitude.ToString() + " (DD) " + lattitude.ToString("F"));
+		Debug.Log("Longitude: (DMS) " + dmsLongitude.ToString() + " (DD) " + longitude.ToString("F"));
 
 		initialSector = "";
 		float minLongitude = -180f;
@@ -32,6 +36,7 @@ public class BingMapsComponent : OnlineTexturesRequester {
 		float maxLattitude = 90f;
 
 		for( int i=0; i<initialZoom + 1; i++ ){
+			Debug.Log ("Selecting subsector in sector LAT(" + minLattitude + ", " + maxLattitude + ") LON(" + minLongitude + ", " + maxLongitude + ")");
 			float middleLongitude = (maxLongitude + minLongitude) / 2.0f;
 			float middleLattitude = (maxLattitude + minLattitude) / 2.0f;
 			float halfLongitude = (maxLongitude - minLongitude) / 2.0f;
@@ -56,6 +61,7 @@ public class BingMapsComponent : OnlineTexturesRequester {
 					minLattitude += halfLattitude;
 				}
 			}
+			Debug.Log ("Selected subsector [" + i + "]: LAT(" + minLattitude + ", " + maxLattitude + ") LON(" + minLongitude + ", " + maxLongitude + ")");
 		}
 	}
 

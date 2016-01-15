@@ -22,6 +22,12 @@ public class DMSCoordinates
 	{
 		return degrees + minutes / 60.0f + seconds / 3600.0f;
 	}
+
+
+	public override string ToString()
+	{
+		return degrees.ToString("F") + "º " + minutes.ToString("F") + "' " + seconds.ToString("F") + "'' " + sector;
+	}
 }
 
 
