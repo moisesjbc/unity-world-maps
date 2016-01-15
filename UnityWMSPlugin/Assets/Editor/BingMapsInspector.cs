@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using UnityEditor;
 using System;
 using System.IO;
+using UnityEditor.SceneManagement;
 
 [CustomEditor(typeof(BingMapsComponent))]
 public class BingMapsInspector : Editor
@@ -25,7 +26,6 @@ public class BingMapsInspector : Editor
 	public override void OnInspectorGUI()
 	{
 		BingMapsComponent bingMapsComponent = (BingMapsComponent)target;
-		EditorUtility.SetDirty (bingMapsComponent);
 
 		EditorGUILayout.LabelField (bingMapsComponent.CurrentFixedUrl());
 
@@ -41,7 +41,7 @@ public class BingMapsInspector : Editor
 		}
 
 		if (GUI.changed) {
-			EditorApplication.MarkSceneDirty ();
+			EditorSceneManager.MarkSceneDirty (EditorSceneManager.GetActiveScene ());
 		}
 	}
 
