@@ -56,7 +56,7 @@ public class QuadtreeLODPlane : MonoBehaviour {
 			gameObject.GetComponent<MeshFilter> ().mesh = MeshFactory.CreateMesh (mapSize, vertexResolution);
 
 			// Create material
-			gameObject.GetComponent<Renderer> ().sharedMaterial = new Material (Shader.Find ("Standard"));
+			gameObject.GetComponent<Renderer> ().sharedMaterial = new Material (Shader.Find ("Sprites/Default"));
 
 			GetComponent<QuadtreeLODPlane> ().SetVisible (true);
 		} else {
