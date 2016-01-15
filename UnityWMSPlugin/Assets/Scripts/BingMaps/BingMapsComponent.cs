@@ -1,5 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System;
+using System.Text;
 
 public class BingMapsComponent : OnlineTexturesRequester {
 	private string serverURL = "http://ecn.t0.tiles.virtualearth.net/tiles/a";
@@ -26,43 +28,38 @@ public class BingMapsComponent : OnlineTexturesRequester {
 		float lattitude = dmsLattitude.ToDecimalCoordinates ();
 		float longitude = dmsLongitude.ToDecimalCoordinates ();
 
-		Debug.Log("Lattitude: (DMS) " + dmsLattitude.ToString() + " (DD) " + lattitude.ToString("F"));
-		Debug.Log("Longitude: (DMS) " + dmsLongitude.ToString() + " (DD) " + longitude.ToString("F"));
+		float sinLatitude = Mathf.Sin (lattitude * Mathf.PI / 180.0f);
 
-		initialSector = "";
-		float minLongitude = -180f;
-		float maxLongitude = 180f;
-		float minLattitude = -90f;
-		float maxLattitude = 90f;
+		int pixelX = (int)( ((longitude + 180) / 360) * 256 * Mathf.Pow (2, initialZoom + 1) );
+		int pixelY = (int)( (0.5f - Mathf.Log ((1 + sinLatitude) / (1 - sinLatitude)) / (4 * Mathf.PI)) * 256 * Mathf.Pow (2, initialZoom + 1) );
 
-		for( int i=0; i<initialZoom + 1; i++ ){
-			Debug.Log ("Selecting subsector in sector LAT(" + minLattitude + ", " + maxLattitude + ") LON(" + minLongitude + ", " + maxLongitude + ")");
-			float middleLongitude = (maxLongitude + minLongitude) / 2.0f;
-			float middleLattitude = (maxLattitude + minLattitude) / 2.0f;
-			float halfLongitude = (maxLongitude - minLongitude) / 2.0f;
-			float halfLattitude = (maxLattitude - minLattitude) / 2.0f;
+		int tileX = Mathf.FloorToInt (pixelX / 256);
+		int tileY = Mathf.FloorToInt (pixelY / 256);
 
-			if (longitude <= middleLongitude) {
-				maxLongitude -= halfLongitude;
-				if (lattitude <= middleLattitude) {
-					initialSector += "2";
-					maxLattitude -= halfLattitude;
-				} else {
-					initialSector += "0";
-					minLattitude += halfLattitude;
-				}
-			} else {
-				minLongitude += halfLongitude;
-				if (lattitude <= middleLattitude) {
-					initialSector += "3";
-					maxLattitude -= halfLattitude;
-				} else {
-					initialSector += "1";
-					minLattitude += halfLattitude;
-				}
+		initialSector = TileXYToQuadKey (tileX, tileY, initialZoom + 1);
+	}
+
+
+	// Function taken from "Bing Maps Tile System": https://msdn.microsoft.com/en-us/library/bb259689.aspx
+	public static string TileXYToQuadKey(int tileX, int tileY, int levelOfDetail)
+	{
+		StringBuilder quadKey = new StringBuilder();
+		for (int i = levelOfDetail; i > 0; i--)
+		{
+			char digit = '0';
+			int mask = 1 << (i - 1);
+			if ((tileX & mask) != 0)
+			{
+				digit++;
 			}
-			Debug.Log ("Selected subsector [" + i + "]: LAT(" + minLattitude + ", " + maxLattitude + ") LON(" + minLongitude + ", " + maxLongitude + ")");
+			if ((tileY & mask) != 0)
+			{
+				digit++;
+				digit++;
+			}
+			quadKey.Append(digit);
 		}
+		return quadKey.ToString();
 	}
 
 
