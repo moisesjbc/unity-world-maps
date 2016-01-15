@@ -18,8 +18,8 @@ public class BingMapsInspector : Editor
 	const int MIN_ZOOM = 0;
 	const int MAX_ZOOM = 7;
 
-	static string lattitudeLabel = "Lattitude (" + MIN_LATTITUDE + ", " + MAX_LATTITUDE + "): ";
-	static string longitudeLabel = "Longitude (" + MIN_LONGITUDE + ", " + MAX_LONGITUDE + "): ";
+	static string lattitudeLabel = "Lattitude (DMS): ";
+	static string longitudeLabel = "Longitude (DMS): ";
 	static string zoomLabel = "Zoom (" + MIN_ZOOM + ", " + MAX_ZOOM + ")";
 
 
