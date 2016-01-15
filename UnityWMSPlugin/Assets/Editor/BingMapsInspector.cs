@@ -29,6 +29,7 @@ public class BingMapsInspector : Editor
 
 		EditorGUILayout.LabelField (bingMapsComponent.CurrentFixedUrl());
 
+		bingMapsComponent.mapType = (BingMapsType)EditorGUILayout.EnumPopup ("Map type: ", bingMapsComponent.mapType);
 		bingMapsComponent.dmsLattitude = (Lattitude)GenerateDMSCoordinatesField(lattitudeLabel, bingMapsComponent.dmsLattitude);
 		bingMapsComponent.dmsLongitude = (Longitude)GenerateDMSCoordinatesField(longitudeLabel, bingMapsComponent.dmsLongitude);
 		bingMapsComponent.initialZoom = EditorGUILayout.IntField (zoomLabel, bingMapsComponent.initialZoom);
@@ -65,7 +66,6 @@ public class BingMapsInspector : Editor
 	{
 		EditorApplication.update += Refresh;
 	}
-
 
 
 	public void OnDisable()

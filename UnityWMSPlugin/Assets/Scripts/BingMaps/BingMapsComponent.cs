@@ -3,8 +3,15 @@ using System.Collections;
 using System;
 using System.Text;
 
+public enum BingMapsType
+{
+	AERIAL,
+	ROADS
+}
+
 public class BingMapsComponent : OnlineTexturesRequester {
-	private string serverURL = "http://ecn.t0.tiles.virtualearth.net/tiles/a";
+	private string serverURL = "http://ecn.t0.tiles.virtualearth.net/tiles/";
+	public BingMapsType mapType = BingMapsType.AERIAL;
 	public string initialSector = "0";
 	public string urlTail = ".jpeg?g=4756";
 	public Lattitude dmsLattitude = new Lattitude(28, 7, 38, Lattitude.LattitudeSector.N);
@@ -74,6 +81,15 @@ public class BingMapsComponent : OnlineTexturesRequester {
 
 	public override string CurrentFixedUrl ()
 	{
-		return serverURL + initialSector + "<id>" + urlTail;
+		string mapTypeStr = "a";
+		switch (mapType) {
+			case BingMapsType.AERIAL:
+				mapTypeStr = "a";
+			break;
+			case BingMapsType.ROADS:
+				mapTypeStr = "r";
+			break;
+		}
+		return serverURL + mapTypeStr + initialSector + "<id>" + urlTail;
 	}
 }
