@@ -6,7 +6,7 @@ public class BingMapsComponent : OnlineTexturesRequester {
 	public string initialSector = "0";
 	public string urlTail = ".jpeg?g=4756";
 	public Lattitude dmsLattitude = new Lattitude(28, 7, 38, Lattitude.LattitudeSector.N);
-	public Longitude dmsLongitude = new Longitude(15, 25, 53, Longitude.LongitudeSector.O);
+	public Longitude dmsLongitude = new Longitude(15, 25, 53, Longitude.LongitudeSector.W);
 	public float longitude;
 	public int initialZoom = 0;
 

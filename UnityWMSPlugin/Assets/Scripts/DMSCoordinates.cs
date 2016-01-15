@@ -49,9 +49,9 @@ public class Lattitude : DMSCoordinates
 
 public class Longitude : DMSCoordinates
 {
-	public enum LongitudeSector {O, E};
+	public enum LongitudeSector {W, E};
 
-	public Longitude(int degrees = 0, int minutes = 0, int seconds = 0, LongitudeSector sector = LongitudeSector.O) :
+	public Longitude(int degrees = 0, int minutes = 0, int seconds = 0, LongitudeSector sector = LongitudeSector.W) :
 		base(degrees, minutes, seconds)
 	{
 		this.sector = sector;
@@ -60,7 +60,7 @@ public class Longitude : DMSCoordinates
 	public override float ToDecimalCoordinates()
 	{
 		float decimalCoordinates = Mathf.Abs(base.ToDecimalCoordinates ());
-		if ((LongitudeSector)sector == LongitudeSector.O) {
+		if ((LongitudeSector)sector == LongitudeSector.W) {
 			decimalCoordinates = -decimalCoordinates;
 		}
 		return decimalCoordinates;
