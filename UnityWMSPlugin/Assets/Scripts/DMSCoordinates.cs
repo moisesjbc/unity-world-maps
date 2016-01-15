@@ -4,13 +4,13 @@ using System.Collections;
 
 public class DMSCoordinates 
 {
-	public int degrees;
-	public int minutes;
-	public int seconds;
+	public float degrees;
+	public float minutes;
+	public float seconds;
 	public Enum sector;
 
 
-	public DMSCoordinates(int degrees = 0, int minutes = 0, int seconds = 0)
+	public DMSCoordinates(float degrees = 0.0f, float minutes = 0.0f, float seconds = 0.0f)
 	{
 		this.degrees = degrees;
 		this.minutes = minutes;
@@ -20,7 +20,7 @@ public class DMSCoordinates
 
 	public virtual float ToDecimalCoordinates()
 	{
-		return (float)degrees + (float)minutes / 60.0f + (float)seconds / 3600.0f;
+		return degrees + minutes / 60.0f + seconds / 3600.0f;
 	}
 }
 
@@ -29,7 +29,7 @@ public class Lattitude : DMSCoordinates
 {
 	public enum LattitudeSector {N, S};
 
-	public Lattitude(int degrees = 0, int minutes = 0, int seconds = 0, LattitudeSector sector = LattitudeSector.N) :
+	public Lattitude(float degrees = 0, float minutes = 0, float seconds = 0, LattitudeSector sector = LattitudeSector.N) :
 		base(degrees, minutes, seconds)
 	{
 		this.sector = sector;
@@ -51,7 +51,7 @@ public class Longitude : DMSCoordinates
 {
 	public enum LongitudeSector {W, E};
 
-	public Longitude(int degrees = 0, int minutes = 0, int seconds = 0, LongitudeSector sector = LongitudeSector.W) :
+	public Longitude(float degrees = 0, float minutes = 0, float seconds = 0, LongitudeSector sector = LongitudeSector.W) :
 		base(degrees, minutes, seconds)
 	{
 		this.sector = sector;

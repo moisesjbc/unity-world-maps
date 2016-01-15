@@ -51,9 +51,9 @@ public class BingMapsInspector : Editor
 	{
 		EditorGUILayout.LabelField (label);
 		EditorGUILayout.BeginHorizontal ();
-		dmsCoordinates.degrees = EditorGUILayout.IntField (dmsCoordinates.degrees);
-		dmsCoordinates.minutes = EditorGUILayout.IntField (dmsCoordinates.minutes);
-		dmsCoordinates.seconds = EditorGUILayout.IntField (dmsCoordinates.seconds);
+		dmsCoordinates.degrees = EditorGUILayout.FloatField (dmsCoordinates.degrees);
+		dmsCoordinates.minutes = EditorGUILayout.FloatField (dmsCoordinates.minutes);
+		dmsCoordinates.seconds = EditorGUILayout.FloatField (dmsCoordinates.seconds);
 		dmsCoordinates.sector = EditorGUILayout.EnumPopup (dmsCoordinates.sector);
 		EditorGUILayout.EndHorizontal ();
 
