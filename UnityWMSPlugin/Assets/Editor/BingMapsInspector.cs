@@ -41,6 +41,7 @@ public class BingMapsInspector : Editor
 		}
 
 		if (GUI.changed) {
+			EditorUtility.SetDirty (bingMapsComponent);
 			EditorSceneManager.MarkSceneDirty (EditorSceneManager.GetActiveScene ());
 		}
 	}
