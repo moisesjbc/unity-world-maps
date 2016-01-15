@@ -20,7 +20,6 @@ public class DMSCoordinates
 
 	public virtual float ToDecimalCoordinates()
 	{
-		Debug.Log ((float)degrees + " + " + ((float)minutes / 60.0f) + " + " + ((float)seconds / 3600.0f) + " = " + ((float)degrees + (float)minutes / 60.0f + (float)seconds / 3600.0f));
 		return (float)degrees + (float)minutes / 60.0f + (float)seconds / 3600.0f;
 	}
 }
