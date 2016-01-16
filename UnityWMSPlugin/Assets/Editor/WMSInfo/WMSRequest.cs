@@ -38,9 +38,12 @@ public class WMSRequest {
 		url = 
 			server + "?REQUEST=GetCapabilities&SERVICE=WMS" + "&VERSION=" + version;
 
+		Debug.Log ("New WMSRequest");
 		if (RequestIsCached(url)) {
+			Debug.Log ("1");
 			ParseResponse (File.ReadAllText(URLToFilePath(url)));
 		} else {
+			Debug.Log ("2");
 			www = new WWW (url);
 		}
 	}
@@ -57,6 +60,7 @@ public class WMSRequest {
 
 	public WMSRequestStatus UpdateStatus()
 	{
+		Debug.Log ("UpdateStatus - " + status.state);
 		if (status.state == WMSRequestState.DOWNLOADING) {
 			if (www.isDone) {
 				ParseResponse (www.text);
@@ -69,6 +73,7 @@ public class WMSRequest {
 	private void ParseResponse(string text)
 	{
 		try{
+			Debug.Log("Parsing response");
 			status.response = WMSXMLParser.GetWMSInfo (text);
 			if (status.response != null) {
 				status.state = WMSRequestState.OK;

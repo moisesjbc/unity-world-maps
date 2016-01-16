@@ -246,4 +246,25 @@ public class WMSComponentInspector : Editor
 			bookmarks.RemoveServerFromBookmarks (serverTitle);
 		}
 	}
+
+
+	public void OnEnable()
+	{
+		EditorApplication.update += Refresh;
+	}
+
+
+	public void OnDisable()
+	{
+		EditorApplication.update -= Refresh;
+	}
+
+
+	public void Refresh()
+	{
+		WMSComponent wmsComponent = (WMSComponent)target;
+		wmsComponent.wmsRequestID =
+			wmsInfoRequester.RequestWMSInfo (wmsComponent.serverURL);
+		wmsInfoRequester.GetRequest (wmsComponent.wmsRequestID).UpdateStatus ();
+	}
 }
