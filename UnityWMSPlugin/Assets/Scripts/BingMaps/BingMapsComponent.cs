@@ -9,7 +9,7 @@ public enum BingMapsType
 	ROADS
 }
 
-public class BingMapsComponent : OnlineTexturesRequester {
+public class BingMapsComponent : OnlineTexture {
 	private string serverURL = "http://ecn.t0.tiles.virtualearth.net/tiles/";
 	public BingMapsType mapType = BingMapsType.AERIAL;
 	public string initialSector = "0";
@@ -18,15 +18,6 @@ public class BingMapsComponent : OnlineTexturesRequester {
 	public Longitude dmsLongitude = new Longitude(15, 25, 53, Longitude.LongitudeSector.W);
 	public float longitude;
 	public int initialZoom = 0;
-
-
-	protected override string GenerateRequestID( string nodeID )
-	{
-		return 
-			"bing-texture-" +
-			nodeID +
-			".jpg";
-	}
 
 
 	public void ComputeInitialSector()
@@ -79,15 +70,15 @@ public class BingMapsComponent : OnlineTexturesRequester {
 	}
 
 
-	public override string CurrentFixedUrl ()
+	public string CurrentFixedUrl ()
 	{
 		string mapTypeStr = "a";
 		switch (mapType) {
 			case BingMapsType.AERIAL:
 				mapTypeStr = "a";
 			break;
-			case BingMapsType.ROADS:
-				mapTypeStr = "r";
+		case BingMapsType.ROADS:
+			mapTypeStr = "r";
 			break;
 		}
 		return serverURL + mapTypeStr + initialSector + "<id>" + urlTail;

@@ -246,35 +246,4 @@ public class WMSComponentInspector : Editor
 			bookmarks.RemoveServerFromBookmarks (serverTitle);
 		}
 	}
-		
-
-	public void OnEnable()
-	{
-		EditorApplication.update += Refresh;
-	}
-
-
-
-	public void OnDisable()
-	{
-		EditorApplication.update -= Refresh;
-	}
-
-
-	public void Refresh()
-	{
-		WMSComponent wmsComponent = (WMSComponent)target;
-		wmsComponent.wmsRequestID = wmsInfoRequester.RequestWMSInfo (wmsComponent.serverURL);
-		wmsInfoRequester.GetRequest (wmsComponent.wmsRequestID).UpdateStatus ();
-
-		Texture2D previewTexture = wmsComponent.GetTexturePreview ();
-		if (previewTexture != null) {
-			var tempMaterial = new Material (wmsComponent.gameObject.GetComponent<MeshRenderer> ().sharedMaterial);
-			tempMaterial.mainTexture = previewTexture;
-			tempMaterial.mainTexture.wrapMode = TextureWrapMode.Clamp;
-			wmsComponent.gameObject.GetComponent<MeshRenderer> ().sharedMaterial = tempMaterial;
-
-			Repaint ();
-		}
-	}
 }

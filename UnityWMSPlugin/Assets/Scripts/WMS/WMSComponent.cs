@@ -3,7 +3,8 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 
-public class WMSComponent : OnlineTexturesRequester {
+[ExecuteInEditMode]
+public class WMSComponent : OnlineTexture {
 	public string serverURL = "http://129.206.228.72/cached/osm";
 	public string wmsRequestID = "";
 	public bool keepBoundingBoxRatio = false;
@@ -31,19 +32,42 @@ public class WMSComponent : OnlineTexturesRequester {
 	}
 
 
-	protected override string GenerateRequestID(string nodeID)
-	{
-		Vector2 bottomLeftCoordinates = this.bottomLeftCoordinates;
-		Vector2 topRightCoordinates = this.topRightCoordinates;
-		GenerateWMSBoundingBox (nodeID, ref bottomLeftCoordinates, ref topRightCoordinates);
+	public void SetLayerSelected( string layerName, bool layerSelected ){
+		if (layerSelected && !selectedLayers.Contains (layerName)) {
+			selectedLayers.Add (layerName);
+		} else if (!layerSelected && selectedLayers.Contains (layerName)) {
+			selectedLayers.Remove (layerName);
+		}
+	}
 
+
+	public bool LayerSelected( string layerName )
+	{
+		return selectedLayers.Contains (layerName);
+	}
+
+
+	private string BuildWMSFixedQueryString()
+	{
+		string layersQuery = "";
+		string stylesQuery = "";
+		foreach (string layerName in selectedLayers) {
+			layersQuery += layerName + ",";
+			stylesQuery += "default,";
+		}
+		// Remove last character (',').
+		if (layersQuery.Length > 0) {
+			layersQuery = layersQuery.Remove(layersQuery.Length - 1);
+			stylesQuery = stylesQuery.Remove(stylesQuery.Length - 1);
+		}
 		return 
-			"texture-" + 
-			bottomLeftCoordinates.x + "-" + 
-			bottomLeftCoordinates.y + "-" +
-			topRightCoordinates.x + "-" + 
-			topRightCoordinates.y +
-			".jpg";
+			"?SERVICE=WMS" +
+			"&LAYERS=" + layersQuery +
+			"&REQUEST=GetMap&VERSION=" + wmsVersion +
+			"&FORMAT=image/jpeg" +
+			"&SRS=" + SRS +
+			"&STYLES=" + stylesQuery +
+			"&WIDTH=128&HEIGHT=128&REFERER=CAPAWARE";
 	}
 
 
@@ -71,50 +95,5 @@ public class WMSComponent : OnlineTexturesRequester {
 				topRightCoordinates = new Vector2( x1, cy );
 			}
 		}
-	}
-
-
-	public void SetLayerSelected( string layerName, bool layerSelected ){
-		if (layerSelected && !selectedLayers.Contains (layerName)) {
-			selectedLayers.Add (layerName);
-		} else if (!layerSelected && selectedLayers.Contains (layerName)) {
-			selectedLayers.Remove (layerName);
-		}
-	}
-
-
-	public bool LayerSelected( string layerName )
-	{
-		return selectedLayers.Contains (layerName);
-	}
-
-
-	public override string CurrentFixedUrl ()
-	{
-		return serverURL + BuildWMSFixedQueryString();
-	}
-
-
-	private string BuildWMSFixedQueryString()
-	{
-		string layersQuery = "";
-		string stylesQuery = "";
-		foreach (string layerName in selectedLayers) {
-			layersQuery += layerName + ",";
-			stylesQuery += "default,";
-		}
-		// Remove last character (',').
-		if (layersQuery.Length > 0) {
-			layersQuery = layersQuery.Remove(layersQuery.Length - 1);
-			stylesQuery = stylesQuery.Remove(stylesQuery.Length - 1);
-		}
-		return 
-			"?SERVICE=WMS" +
-			"&LAYERS=" + layersQuery +
-			"&REQUEST=GetMap&VERSION=" + wmsVersion +
-			"&FORMAT=image/jpeg" +
-			"&SRS=" + SRS +
-			"&STYLES=" + stylesQuery +
-			"&WIDTH=128&HEIGHT=128&REFERER=CAPAWARE";
 	}
 }

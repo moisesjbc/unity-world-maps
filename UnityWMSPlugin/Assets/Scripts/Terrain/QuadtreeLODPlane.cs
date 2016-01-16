@@ -11,7 +11,7 @@ public class QuadtreeLODPlane : MonoBehaviour {
 	public int vertexResolution = 20;
 	private bool visible_ = true;
 
-	private OnlineTexturesRequester onlineTexturesRequester;
+	private OnlineTexture onlineTexture;
 
 	private string nodeID = "0";
 
@@ -19,9 +19,6 @@ public class QuadtreeLODPlane : MonoBehaviour {
 
 	private int depth_ = 0;
 	const int MAX_DEPTH = 7;
-
-	string textureRequestId;
-	bool textureLoaded = false;
 
 
 	public void Start()
@@ -39,13 +36,13 @@ public class QuadtreeLODPlane : MonoBehaviour {
 			float mapSize = Mathf.Max (meshSize.x, meshSize.z);
 
 			if (GetComponent<WMSComponent> () != null) {
-				onlineTexturesRequester = this.GetComponent<WMSComponent> ();
+				onlineTexture = this.GetComponent<WMSComponent> ();
 
 				if (GetComponent<BingMapsComponent> () != null) {
 					throw new UnityException ("Terrain can't have both WMSComponent and BingMapsComponent componets!");
 				}
 			} else if (GetComponent<BingMapsComponent> () != null) {
-				onlineTexturesRequester = this.GetComponent<BingMapsComponent> ();
+				onlineTexture = this.GetComponent<BingMapsComponent> ();
 			} else {
 				throw new MissingComponentException ("Terrain must have a WMSComponent or BingMapsComponent");
 			}
@@ -61,13 +58,10 @@ public class QuadtreeLODPlane : MonoBehaviour {
 			GetComponent<QuadtreeLODPlane> ().SetVisible (true);
 		} else {
 			GetComponent<QuadtreeLODPlane> ().SetVisible (false);
-			onlineTexturesRequester = transform.parent.GetComponent<QuadtreeLODPlane> ().onlineTexturesRequester;
+			onlineTexture = transform.parent.GetComponent<QuadtreeLODPlane> ().onlineTexture;
 		}
 				
 		gameObject.tag = "MapSector";
-
-		textureRequestId = onlineTexturesRequester.RequestTexture (nodeID);
-		textureLoaded = false;
 	}
 
 
@@ -176,27 +170,6 @@ public class QuadtreeLODPlane : MonoBehaviour {
 				}
 			}
 		}
-
-
-		if (!textureLoaded) {
-			Texture2D texture = onlineTexturesRequester.GetTexture (textureRequestId);
-			if (texture != null) {
-				textureLoaded = true;
-
-				if (Application.isPlaying) {
-					var tempMaterial = new Material (GetComponent<MeshRenderer> ().material);
-					tempMaterial.mainTexture = texture;
-					tempMaterial.mainTexture.wrapMode = TextureWrapMode.Clamp;
-					GetComponent<MeshRenderer> ().material = tempMaterial;
-				} else {
-					var tempMaterial = new Material (GetComponent<MeshRenderer> ().sharedMaterial);
-					tempMaterial.mainTexture = texture;
-					tempMaterial.mainTexture.wrapMode = TextureWrapMode.Clamp;
-					GetComponent<MeshRenderer> ().sharedMaterial = tempMaterial;
-				}
-				
-			}
-		}
 	}
 
 
@@ -271,7 +244,7 @@ public class QuadtreeLODPlane : MonoBehaviour {
 	private bool AreChildrenLoaded(){
 		if (children_ [0] != null) {
 			for (int i = 0; i < 4; i++) {
-				if (children_ [i].GetComponent<QuadtreeLODPlane>().textureLoaded == false) {
+				if (children_ [i].GetComponent<QuadtreeLODPlane>().onlineTexture.textureLoaded == false) {
 					return false;
 				}
 			}
