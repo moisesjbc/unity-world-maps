@@ -1,13 +1,18 @@
 ﻿using UnityEngine;
 using System.Collections;
+using UnityEditor;
 
 [ExecuteInEditMode]
 public abstract class OnlineTexture : MonoBehaviour {
 	public bool textureLoaded = false;
+	private WWW request_;
+
 
 	public void RequestTexture( string nodeID )
 	{
-		StartCoroutine (RequestTexture_ (nodeID));
+		textureLoaded = false;
+		string url = GenerateRequestURL (nodeID);
+		request_ = new WWW (url);
 	}
 
 
@@ -17,26 +22,26 @@ public abstract class OnlineTexture : MonoBehaviour {
 	}
 
 
-	public IEnumerator RequestTexture_( string nodeID )
+	// Make this update with editor.
+	void OnEnable(){
+		EditorApplication.update += Update;
+	}
+		
+
+	public void Update()
 	{
-		textureLoaded = false;
-		string url = GenerateRequestURL (nodeID);
-		WWW request = new WWW (url);
-
-		Debug.Log ("RequestTexture_ - 1");
-		yield return request;
-		Debug.Log ("RequestTexture_ - 2");
-
-		if (Application.isPlaying) {
-			var tempMaterial = new Material (GetComponent<MeshRenderer> ().material);
-			tempMaterial.mainTexture = request.texture;
-			tempMaterial.mainTexture.wrapMode = TextureWrapMode.Clamp;
-			GetComponent<MeshRenderer> ().material = tempMaterial;
-		} else {
-			var tempMaterial = new Material (GetComponent<MeshRenderer> ().sharedMaterial);
-			tempMaterial.mainTexture = request.texture;
-			tempMaterial.mainTexture.wrapMode = TextureWrapMode.Clamp;
-			GetComponent<MeshRenderer> ().sharedMaterial = tempMaterial;
+		if (textureLoaded == false && request_ != null && request_.isDone) {
+			if (Application.isPlaying) {
+				var tempMaterial = new Material (GetComponent<MeshRenderer> ().material);
+				tempMaterial.mainTexture = request_.texture;
+				tempMaterial.mainTexture.wrapMode = TextureWrapMode.Clamp;
+				GetComponent<MeshRenderer> ().material = tempMaterial;
+			} else {
+				var tempMaterial = new Material (GetComponent<MeshRenderer> ().sharedMaterial);
+				tempMaterial.mainTexture = request_.texture;
+				tempMaterial.mainTexture.wrapMode = TextureWrapMode.Clamp;
+				GetComponent<MeshRenderer> ().sharedMaterial = tempMaterial;
+			}
 		}
 	}
 
