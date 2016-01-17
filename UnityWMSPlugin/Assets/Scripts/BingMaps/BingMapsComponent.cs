@@ -83,4 +83,20 @@ public class BingMapsComponent : OnlineTexture {
 		}
 		return serverURL + mapTypeStr + initialSector + "<id>" + urlTail;
 	}
+
+
+	public override void CopyTo(OnlineTexture copy)
+	{
+		BingMapsComponent target = (BingMapsComponent)copy;
+		target.serverURL = serverURL;
+		target.mapType = mapType;
+		target.initialSector = initialSector;
+		target.urlTail = urlTail;
+		target.dmsLattitude = dmsLattitude;
+		target.dmsLongitude = dmsLongitude;
+		target.longitude = longitude;
+		target.initialZoom = initialZoom;
+		target.textureLoaded = textureLoaded;
+		target.request_ = request_;
+	}
 }

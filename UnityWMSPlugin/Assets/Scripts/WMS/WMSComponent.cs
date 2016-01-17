@@ -96,4 +96,20 @@ public class WMSComponent : OnlineTexture {
 			}
 		}
 	}
+
+
+	public override void CopyTo(OnlineTexture copy)
+	{
+		WMSComponent target = (WMSComponent)copy;
+		target.serverURL = serverURL;
+		target.wmsRequestID = wmsRequestID;
+		target.keepBoundingBoxRatio = keepBoundingBoxRatio;
+		target.bottomLeftCoordinates = bottomLeftCoordinates;
+		target.topRightCoordinates = topRightCoordinates;
+		target.selectedLayers = selectedLayers;
+		target.wmsVersion = wmsVersion;
+		target.SRS = SRS;
+		target.textureLoaded = textureLoaded;
+		target.request_ = request_;
+	}
 }

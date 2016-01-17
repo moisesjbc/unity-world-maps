@@ -4,6 +4,7 @@ using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 
+
 // This [ExecuteInEditMode] is for Start to execute and then display the right mesh
 // created with MeshFactory. 
 [ExecuteInEditMode]
@@ -58,10 +59,14 @@ public class QuadtreeLODPlane : MonoBehaviour {
 			GetComponent<QuadtreeLODPlane> ().SetVisible (true);
 		} else {
 			GetComponent<QuadtreeLODPlane> ().SetVisible (false);
-			onlineTexture = transform.parent.GetComponent<QuadtreeLODPlane> ().onlineTexture;
+			transform.parent.GetComponent<QuadtreeLODPlane> ().onlineTexture.CopyTo (onlineTexture);
 		}
 				
 		gameObject.tag = "MapSector";
+
+		if (Application.isPlaying) {
+			onlineTexture.RequestTexture (nodeID);
+		}
 	}
 
 
@@ -101,6 +106,12 @@ public class QuadtreeLODPlane : MonoBehaviour {
 		childGameObject.GetComponent<QuadtreeLODPlane> ().nodeID = nodeID;
 		childGameObject.GetComponent<QuadtreeLODPlane>().children_ = new GameObject[]{ null, null, null, null };
 
+
+		if (gameObject.GetComponent<WMSComponent> () != null) {
+			childGameObject.GetComponent<QuadtreeLODPlane>().onlineTexture = childGameObject.AddComponent<WMSComponent> ();
+		} else {
+			childGameObject.GetComponent<QuadtreeLODPlane>().onlineTexture = childGameObject.AddComponent<BingMapsComponent> ();
+		}
 
 		return childGameObject;
 	}

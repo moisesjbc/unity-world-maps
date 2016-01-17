@@ -5,7 +5,7 @@ using UnityEditor;
 [ExecuteInEditMode]
 public abstract class OnlineTexture : MonoBehaviour {
 	public bool textureLoaded = false;
-	private WWW request_;
+	protected WWW request_;
 
 
 	public void Start()
@@ -35,6 +35,11 @@ public abstract class OnlineTexture : MonoBehaviour {
 	void OnEnable(){
 		EditorApplication.update += Update;
 	}
+
+
+	void OnDisable(){
+		EditorApplication.update -= Update;
+	}
 		
 
 	public void Update()
@@ -51,9 +56,11 @@ public abstract class OnlineTexture : MonoBehaviour {
 				tempMaterial.mainTexture.wrapMode = TextureWrapMode.Clamp;
 				GetComponent<MeshRenderer> ().sharedMaterial = tempMaterial;
 			}
+			textureLoaded = true;
 		}
 	}
 
 
 	protected abstract string GenerateRequestURL (string nodeID);
+	public abstract void CopyTo(OnlineTexture copy);
 }
