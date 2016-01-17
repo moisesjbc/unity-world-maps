@@ -27,9 +27,8 @@ public class BingMapsInspector : Editor
 	{
 		BingMapsComponent bingMapsComponent = (BingMapsComponent)target;
 
-		EditorGUILayout.LabelField (bingMapsComponent.CurrentFixedUrl());
+		bingMapsComponent.serverURL = EditorGUILayout.TextField (bingMapsComponent.serverURL);
 
-		bingMapsComponent.mapType = (BingMapsType)EditorGUILayout.EnumPopup ("Map type: ", bingMapsComponent.mapType);
 		bingMapsComponent.dmsLattitude = (Lattitude)GenerateDMSCoordinatesField(lattitudeLabel, bingMapsComponent.dmsLattitude);
 		bingMapsComponent.dmsLongitude = (Longitude)GenerateDMSCoordinatesField(longitudeLabel, bingMapsComponent.dmsLongitude);
 		bingMapsComponent.initialZoom = EditorGUILayout.IntField (zoomLabel, bingMapsComponent.initialZoom);

@@ -10,10 +10,8 @@ public enum BingMapsType
 }
 
 public class BingMapsComponent : OnlineTexture {
-	private string serverURL = "http://ecn.t0.tiles.virtualearth.net/tiles/";
-	public BingMapsType mapType = BingMapsType.AERIAL;
+	public string serverURL = "http://ecn.{subdomain}.tiles.virtualearth.net/tiles/r{quadkey}.jpeg?g=4892&mkt={culture}&shading=hill";
 	public string initialSector = "0";
-	public string urlTail = ".jpeg?g=4756";
 	public Lattitude dmsLattitude = new Lattitude(28, 7, 38, Lattitude.LattitudeSector.N);
 	public Longitude dmsLongitude = new Longitude(15, 25, 53, Longitude.LongitudeSector.W);
 	public float longitude;
@@ -60,28 +58,35 @@ public class BingMapsComponent : OnlineTexture {
 	}
 
 
+	public void ValidateServerURL()
+	{
+		if( serverURL.IndexOf("{quadkey}" ) < 0 ){
+			throw new UnityException ("BingMaps inspector - missing {quadkey} in server URL");
+		}
+		if( serverURL.IndexOf("{subdomain}" ) < 0 ){
+			throw new UnityException ("BingMaps inspector - missing {subdomain} in server URL");
+		}
+	}
+
+
 	protected override string GenerateRequestURL( string nodeID )
 	{
 		// Children node numbering differs between QuadtreeLODNoDe and Bing maps, so we
 		// correct it here.
 		nodeID = nodeID.Substring(1).Replace('1','9').Replace('2','1').Replace('9','2');
 
-		return CurrentFixedUrl().Replace ("<id>", nodeID);
+		ValidateServerURL ();
+
+		string url = CurrentFixedUrl ();
+		url = url.Replace ("{quadkey}", initialSector + nodeID);
+		url = url.Replace ("{subdomain}", "t0");
+		return url;
 	}
 
 
 	public string CurrentFixedUrl ()
 	{
-		string mapTypeStr = "a";
-		switch (mapType) {
-			case BingMapsType.AERIAL:
-				mapTypeStr = "a";
-			break;
-		case BingMapsType.ROADS:
-			mapTypeStr = "r";
-			break;
-		}
-		return serverURL + mapTypeStr + initialSector + "<id>" + urlTail;
+		return serverURL;
 	}
 
 
@@ -89,9 +94,7 @@ public class BingMapsComponent : OnlineTexture {
 	{
 		BingMapsComponent target = (BingMapsComponent)copy;
 		target.serverURL = serverURL;
-		target.mapType = mapType;
 		target.initialSector = initialSector;
-		target.urlTail = urlTail;
 		target.dmsLattitude = dmsLattitude;
 		target.dmsLongitude = dmsLongitude;
 		target.longitude = longitude;
