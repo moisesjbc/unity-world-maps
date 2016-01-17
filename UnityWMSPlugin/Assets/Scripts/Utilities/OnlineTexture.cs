@@ -8,6 +8,15 @@ public abstract class OnlineTexture : MonoBehaviour {
 	private WWW request_;
 
 
+	public void Start()
+	{
+		// When in edit mode, start downloading a texture preview.
+		if (!Application.isPlaying) {
+			RequestTexturePreview ();
+		}
+	}
+
+
 	public void RequestTexture( string nodeID )
 	{
 		textureLoaded = false;
