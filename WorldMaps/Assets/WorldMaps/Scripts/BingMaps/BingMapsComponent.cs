@@ -102,4 +102,11 @@ public class BingMapsComponent : OnlineTexture {
 		target.textureLoaded = textureLoaded;
 		target.request_ = request_;
 	}
+
+
+	public override bool ValidateDownloadedTexture( out string errorMessage )
+	{
+		errorMessage = "";
+		return true;
+	}
 }

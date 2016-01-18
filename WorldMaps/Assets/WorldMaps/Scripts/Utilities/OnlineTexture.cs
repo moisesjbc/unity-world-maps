@@ -46,16 +46,21 @@ public abstract class OnlineTexture : MonoBehaviour {
 	public void Update()
 	{
 		if (textureLoaded == false && request_ != null && request_.isDone) {
-			if (Application.isPlaying) {
-				var tempMaterial = new Material (GetComponent<MeshRenderer> ().material);
-				tempMaterial.mainTexture = request_.texture;
-				tempMaterial.mainTexture.wrapMode = TextureWrapMode.Clamp;
-				GetComponent<MeshRenderer> ().material = tempMaterial;
+			string errorMessage = "";
+			if (ValidateDownloadedTexture (out errorMessage)) {
+				if (Application.isPlaying) {
+					var tempMaterial = new Material (GetComponent<MeshRenderer> ().material);
+					tempMaterial.mainTexture = request_.texture;
+					tempMaterial.mainTexture.wrapMode = TextureWrapMode.Clamp;
+					GetComponent<MeshRenderer> ().material = tempMaterial;
+				} else {
+					var tempMaterial = new Material (GetComponent<MeshRenderer> ().sharedMaterial);
+					tempMaterial.mainTexture = request_.texture;
+					tempMaterial.mainTexture.wrapMode = TextureWrapMode.Clamp;
+					GetComponent<MeshRenderer> ().sharedMaterial = tempMaterial;
+				}
 			} else {
-				var tempMaterial = new Material (GetComponent<MeshRenderer> ().sharedMaterial);
-				tempMaterial.mainTexture = request_.texture;
-				tempMaterial.mainTexture.wrapMode = TextureWrapMode.Clamp;
-				GetComponent<MeshRenderer> ().sharedMaterial = tempMaterial;
+				Debug.LogErrorFormat ("Errors when downloading texture [{0}]:\n {1}", request_.url, errorMessage);
 			}
 			textureLoaded = true;
 		}
@@ -64,4 +69,5 @@ public abstract class OnlineTexture : MonoBehaviour {
 
 	protected abstract string GenerateRequestURL (string nodeID);
 	public abstract void CopyTo(OnlineTexture copy);
+	public abstract bool ValidateDownloadedTexture( out string errorMessage );
 }

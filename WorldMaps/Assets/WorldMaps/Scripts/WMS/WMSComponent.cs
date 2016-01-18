@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Xml;
 
 [ExecuteInEditMode]
 public class WMSComponent : OnlineTexture {
@@ -111,5 +112,19 @@ public class WMSComponent : OnlineTexture {
 		target.SRS = SRS;
 		target.textureLoaded = textureLoaded;
 		target.request_ = request_;
+	}
+
+
+	public override bool ValidateDownloadedTexture( out string errorMessage )
+	{
+		if (request_.text == "" ) {
+			errorMessage = "";
+			return true;
+		}else{
+			XmlDocument xmlDocument = new XmlDocument ();
+			xmlDocument.LoadXml (request_.text);
+			errorMessage = xmlDocument.DocumentElement.InnerText;
+			return false;
+		}
 	}
 }
