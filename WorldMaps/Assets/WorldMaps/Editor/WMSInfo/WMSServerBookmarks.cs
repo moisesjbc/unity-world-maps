@@ -15,6 +15,8 @@ public class WMSServerBookmarks {
 	{
 		string[] lines = File.ReadAllLines ("Assets/WorldMaps/WMSServerBookmarks");
 
+		Debug.Log (lines);
+
 		foreach (string line in lines) {
 			string serverTitle = line.Split (keyValueSeparator_, 2, System.StringSplitOptions.None) [0];
 			string serverURL = line.Split (keyValueSeparator_, 2, System.StringSplitOptions.None) [1];
@@ -31,7 +33,7 @@ public class WMSServerBookmarks {
 			i++;
 		}
 
-		File.WriteAllLines("Assets/WMSServerBookmarks", lines);
+		File.WriteAllLines("Assets/WorldMaps/WMSServerBookmarks", lines);
 	}
 
 
