@@ -33,14 +33,14 @@
 
 In order to use BingMaps you need one or two things:
 
-- According to your user case, **you may need to get permission from Microsoft** to use its API.
+- According to your user case, **you may need to get permission from Microsoft** to use its API (See [Microsoft® Bing™ Maps Platform APIs’ Terms Of Use](https://www.microsoft.com/maps/product/terms.html)).
 - **Generating and using a BingMaps key**.
 
 1. Get a BingMaps key by following the steps listed in ["Creating a Bing Maps Key"](https://msdn.microsoft.com/es-es/library/ff428642.aspx)
 2. Visit <http://dev.virtualearth.net/REST/V1/Imagery/Metadata/Road?mapVersion=v1&output=xml&key=BingMapsKey>, **replacing BingMapsKey with your Bing Maps key**.
 3. Visiting previous URL should return an XML file. Copy the image url returned in \<ImageUrl\>.
 
-#### Adding a BingMaps to the scene
+#### Adding a BingMaps map to the scene
 
 1. Drag the prefab WorldMaps/Prefabs/BingMapsTerrain.prefab and drop it into the scene.
 
