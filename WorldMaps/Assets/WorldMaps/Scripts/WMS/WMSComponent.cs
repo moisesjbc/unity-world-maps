@@ -118,7 +118,6 @@ public class WMSComponent : OnlineTexture {
 	public override bool ValidateDownloadedTexture( out string errorMessage )
 	{
 		// TODO: Extract possible errors from XML.
-		errorMessage = "";
-		return true;
+		return base.ValidateDownloadedTexture(out errorMessage);
 	}
 }

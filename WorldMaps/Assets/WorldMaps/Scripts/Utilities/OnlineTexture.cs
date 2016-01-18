@@ -69,5 +69,14 @@ public abstract class OnlineTexture : MonoBehaviour {
 
 	protected abstract string GenerateRequestURL (string nodeID);
 	public abstract void CopyTo(OnlineTexture copy);
-	public abstract bool ValidateDownloadedTexture( out string errorMessage );
+	public virtual bool ValidateDownloadedTexture( out string errorMessage )
+	{
+		if (request_.error != null) {
+			errorMessage = request_.error;
+			return false;
+		} else {
+			errorMessage = "";
+			return true;
+		}
+	}
 }
