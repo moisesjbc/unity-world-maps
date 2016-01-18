@@ -18,8 +18,8 @@ public class BingMapsInspector : Editor
 	const int MIN_ZOOM = 0;
 	const int MAX_ZOOM = 7;
 
-	static string lattitudeLabel = "Lattitude (DMS): ";
-	static string longitudeLabel = "Longitude (DMS): ";
+	static string lattitudeLabel = "Lattitude (float): ";
+	static string longitudeLabel = "Longitude (float): ";
 	static string zoomLabel = "Zoom (" + MIN_ZOOM + ", " + MAX_ZOOM + ")";
 
 
@@ -34,14 +34,12 @@ public class BingMapsInspector : Editor
 
 		EditorGUILayout.LabelField ("Server template URL");
 		bingMapsComponent.serverURL = EditorGUILayout.TextField (bingMapsComponent.serverURL);
-		bingMapsComponent.dmsLattitude = (Lattitude)GenerateDMSCoordinatesField(lattitudeLabel, bingMapsComponent.dmsLattitude);
-		bingMapsComponent.dmsLongitude = (Longitude)GenerateDMSCoordinatesField(longitudeLabel, bingMapsComponent.dmsLongitude);
+		bingMapsComponent.latitude = EditorGUILayout.FloatField(lattitudeLabel, bingMapsComponent.latitude);
+		bingMapsComponent.longitude = EditorGUILayout.FloatField(longitudeLabel, bingMapsComponent.longitude);
 		bingMapsComponent.initialZoom = EditorGUILayout.IntField (zoomLabel, bingMapsComponent.initialZoom);
 		bingMapsComponent.ComputeInitialSector ();
 
 		if (GUILayout.Button ("Update preview (may take a while)")) {
-			Debug.Log("Decimal lattitude: " + bingMapsComponent.dmsLattitude.ToDecimalCoordinates());
-			Debug.Log("Decimal longitude: " + bingMapsComponent.dmsLongitude.ToDecimalCoordinates());
 			bingMapsComponent.RequestTexturePreview ();
 		}
 
@@ -49,19 +47,5 @@ public class BingMapsInspector : Editor
 			EditorUtility.SetDirty (bingMapsComponent);
 			EditorSceneManager.MarkSceneDirty (EditorSceneManager.GetActiveScene ());
 		}
-	}
-
-
-	private DMSCoordinates GenerateDMSCoordinatesField(string label, DMSCoordinates dmsCoordinates)
-	{
-		EditorGUILayout.LabelField (label);
-		EditorGUILayout.BeginHorizontal ();
-		dmsCoordinates.degrees = EditorGUILayout.FloatField (dmsCoordinates.degrees);
-		dmsCoordinates.minutes = EditorGUILayout.FloatField (dmsCoordinates.minutes);
-		dmsCoordinates.seconds = EditorGUILayout.FloatField (dmsCoordinates.seconds);
-		dmsCoordinates.sector = EditorGUILayout.EnumPopup (dmsCoordinates.sector);
-		EditorGUILayout.EndHorizontal ();
-
-		return dmsCoordinates;
 	}
 }

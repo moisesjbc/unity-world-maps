@@ -12,18 +12,14 @@ public enum BingMapsType
 public class BingMapsComponent : OnlineTexture {
 	public string serverURL = "http://ecn.{subdomain}.tiles.virtualearth.net/tiles/r{quadkey}.jpeg?g=4892&mkt={culture}&shading=hill";
 	public string initialSector = "0";
-	public Lattitude dmsLattitude = new Lattitude(28, 7, 38, Lattitude.LattitudeSector.N);
-	public Longitude dmsLongitude = new Longitude(15, 25, 53, Longitude.LongitudeSector.W);
-	public float longitude;
+	public float latitude = 28.127222f;
+	public float longitude = -15.431389f;
 	public int initialZoom = 0;
 
 
 	public void ComputeInitialSector()
 	{
-		float lattitude = dmsLattitude.ToDecimalCoordinates ();
-		float longitude = dmsLongitude.ToDecimalCoordinates ();
-
-		float sinLatitude = Mathf.Sin (lattitude * Mathf.PI / 180.0f);
+		float sinLatitude = Mathf.Sin (latitude * Mathf.PI / 180.0f);
 
 		int pixelX = (int)( ((longitude + 180) / 360) * 256 * Mathf.Pow (2, initialZoom + 1) );
 		int pixelY = (int)( (0.5f - Mathf.Log ((1 + sinLatitude) / (1 - sinLatitude)) / (4 * Mathf.PI)) * 256 * Mathf.Pow (2, initialZoom + 1) );
@@ -95,8 +91,7 @@ public class BingMapsComponent : OnlineTexture {
 		BingMapsComponent target = (BingMapsComponent)copy;
 		target.serverURL = serverURL;
 		target.initialSector = initialSector;
-		target.dmsLattitude = dmsLattitude;
-		target.dmsLongitude = dmsLongitude;
+		target.latitude = latitude;
 		target.longitude = longitude;
 		target.initialZoom = initialZoom;
 		target.textureLoaded = textureLoaded;
