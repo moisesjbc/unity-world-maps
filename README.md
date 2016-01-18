@@ -4,11 +4,16 @@
 
 **World Maps** is a Unity package which allows users to add real world LOD maps to their scenes. Just drop the right plane prefab into the scene and configure it so its textures are retrieved from a [WMS](https://en.wikipedia.org/wiki/Web_Map_Service) or a [BingMaps](https://en.wikipedia.org/wiki/Bing_Maps) server.
 
-## Adding world maps to the scene
+## Adding world maps to the sceen
 
 ### Adding a WMS map to the scene
 
-**Note**: only WMS 1.1.0 has been tested.
+#### Important notes
+
+- Only WMS 1.1.0 has been tested.
+- Some WMS servers include restrictions about its use. Check them before using such servers in your projects.
+
+#### Procedure
 
 1. Drag the prefab WorldMaps/Prefabs/WCSTerrain.prefab and drop it into the scene. A plane with a red question mark should appear.
 
@@ -25,7 +30,7 @@
 
 5. Enjoy the new scene with your map!
 
-(\*) **Important:** Some WMS servers include restrictions about its use. Check them before using such servers in your projects.
+(\*) **Important:** Remember that some WMS servers include restrictions about its use. Check them before using such servers in your projects.
 
 ### Adding a BingMaps map to the scene
 
