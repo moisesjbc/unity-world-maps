@@ -21,6 +21,7 @@ public abstract class OnlineTexture : MonoBehaviour {
 	{
 		textureLoaded = false;
 		string url = GenerateRequestURL (nodeID);
+		Debug.LogFormat ("Requesting texture [{0}]", url);
 		request_ = new WWW (url);
 	}
 
