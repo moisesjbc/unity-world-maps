@@ -27,19 +27,29 @@
 
 (\*) **Important:** Some WMS servers include restrictions about its use. Check them before using such servers in your projects.
 
+### Adding a BingMaps map to the scene
 
-## Using the BingMaps component
+#### Requirements - Getting a BingMaps key
 
 In order to use BingMaps you need one or two things:
 
-- According to your specific app, **you may need to get permission from Microsoft** to use its API.
-- Generating and using a BingMaps key.
-
-For configuring the BingMaps module, do the following:
+- According to your user case, **you may need to get permission from Microsoft** to use its API.
+- **Generating and using a BingMaps key**.
 
 1. Get a BingMaps key by following the steps listed in ["Creating a Bing Maps Key"](https://msdn.microsoft.com/es-es/library/ff428642.aspx)
 2. Visit <http://dev.virtualearth.net/REST/V1/Imagery/Metadata/Road?mapVersion=v1&output=xml&key=BingMapsKey>, **replacing BingMapsKey with your Bing Maps key**.
 3. Visiting previous URL should return an XML file. Copy the image url returned in \<ImageUrl\>.
-4. Paste the URL into the "Server URL" text field in BingMaps inspector.
-4. Press "Update preview" to check that everything is OK.
 
+#### Adding a BingMaps to the scene
+
+1. Drag the prefab WorldMaps/Prefabs/BingMapsTerrain.prefab and drop it into the scene.
+
+  ![](Images/Tutorial/BingMaps/DroppingBingMapsPrefabIntoScene.png)
+  
+2. With the plane selected, a BingMapsComponent inspector should appear on the right. 
+
+  ![](Images/Tutorial/BingMaps/BingMapsInspector.png)
+  
+  1. Paste the URL retrieved in previous section "Requirements - Getting a BingMaps key" into the "Server URL" text field.
+  2. Set both the latitude and the longitude of the point for wich you want to get a map, as well as a zoom level.
+  3. Press "Update preview" to update the scene view with the BingMaps texture and check that everything is OK.
