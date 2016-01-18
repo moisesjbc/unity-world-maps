@@ -89,7 +89,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   vertexResolution: 10
-  texturesRequester: {fileID: 0}
 --- !u!114 &11455338
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -101,14 +100,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c36d84c73ddeffd46848cec5ca01f232, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  serverURL: http://idecan1.grafcan.com/ServicioWMS/OrtoExpress
-  fixedQueryString: 
-  currentBoundingBoxIndex: 0
-  serverURLindex: 0
-  wmsRequestID: http://idecan1.grafcan.com/ServicioWMS/OrtoExpress
-  bottomLeftCoordinates: {x: 416000, y: 3067000}
-  topRightCoordinates: {x: 466000, y: 3117000}
-  selectedLayers: []
+  textureLoaded: 0
+  serverURL: http://129.206.228.72/cached/osm
+  wmsRequestID: http://129.206.228.72/cached/osm
+  keepBoundingBoxRatio: 0
+  bottomLeftCoordinates: {x: -20037508, y: -20037508}
+  topRightCoordinates: {x: 20037508, y: 20037508}
+  selectedLayers:
+  - osm_auto:all
+  wmsVersion: 1.1.0
+  SRS: EPSG:900913
 --- !u!1001 &100100000
 Prefab:
   m_ObjectHideFlags: 1

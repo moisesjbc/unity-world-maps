@@ -89,7 +89,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   vertexResolution: 10
-  texturesRequester: {fileID: 0}
 --- !u!114 &11477264
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -101,7 +100,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 92368e6c973170d4eab8cede14682edb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  serverURL: http://ecn.t0.tiles.virtualearth.net/tiles/a<id>.jpeg?g=4756
+  textureLoaded: 0
+  serverURL: http://ecn.{subdomain}.tiles.virtualearth.net/tiles/r{quadkey}.jpeg?g=4756
+  initialSector: 0
+  latitude: 28.127222
+  longitude: -15.431389
+  initialZoom: 0
 --- !u!1001 &100100000
 Prefab:
   m_ObjectHideFlags: 1
