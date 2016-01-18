@@ -15,6 +15,11 @@ public class WMSComponentInspector : Editor
 
 	public override void OnInspectorGUI()
 	{
+		if (Application.isPlaying) {
+			EditorGUILayout.LabelField ("Currently play mode editting is not allowed");
+			return;
+		}
+
 		WMSComponent wmsComponent = (WMSComponent)target;
 
 		bool serverChanged = false;

@@ -25,6 +25,11 @@ public class BingMapsInspector : Editor
 
 	public override void OnInspectorGUI()
 	{
+		if (Application.isPlaying) {
+			EditorGUILayout.LabelField ("Currently play mode editting is not allowed");
+			return;
+		}
+
 		BingMapsComponent bingMapsComponent = (BingMapsComponent)target;
 
 		bingMapsComponent.serverURL = EditorGUILayout.TextField (bingMapsComponent.serverURL);
