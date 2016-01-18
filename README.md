@@ -25,7 +25,7 @@
 
 5. Enjoy the new scene with your map!
 
-(\*) **Important:** Some WMS servers include restrictions about its use. Check them before such servers in your projects.
+(\*) **Important:** Some WMS servers include restrictions about its use. Check them before using such servers in your projects.
 
 
 ## Using the BingMaps component
