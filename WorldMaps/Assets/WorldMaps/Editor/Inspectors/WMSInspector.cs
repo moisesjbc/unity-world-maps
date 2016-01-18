@@ -51,6 +51,7 @@ public class WMSComponentInspector : Editor
 					EditorUtility.SetDirty (wmsComponent);
 					EditorSceneManager.MarkSceneDirty (EditorSceneManager.GetActiveScene ());
 				}
+				EditorGUILayout.EndVertical ();
 				return;
 			}
 
