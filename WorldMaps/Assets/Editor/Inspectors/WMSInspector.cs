@@ -155,17 +155,17 @@ public class WMSComponentInspector : Editor
 		EditorGUILayout.LabelField ("SRS", wmsComponent.SRS);
 
 		wmsComponent.keepBoundingBoxRatio = 
-			EditorGUILayout.Toggle ("Keep bounding box ratio", wmsComponent.keepBoundingBoxRatio);
+			EditorGUILayout.Toggle ("Keep ratio", wmsComponent.keepBoundingBoxRatio);
 
 		Vector2 newBottomLeftCoordinates =
 			EditorGUILayout.Vector2Field (
-				"Bottom left coordinates",
+				"Bottom left coords.",
 				wmsComponent.bottomLeftCoordinates
 			);
 
 		Vector2 newTopRightCoordinates =
 			EditorGUILayout.Vector2Field (
-				"Top right coordinates",
+				"Top right coords.",
 				wmsComponent.topRightCoordinates
 			);
 
@@ -194,7 +194,7 @@ public class WMSComponentInspector : Editor
 		if( boundingBoxesNames.Count > 1 ){
 			int newBoundingBoxIndex = 
 				EditorGUILayout.Popup (
-					"Bounding boxes from server",
+					"BBs from server",
 					0, 
 					boundingBoxesNames.ToArray()
 					) - 1;
