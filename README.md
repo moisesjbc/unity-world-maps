@@ -50,6 +50,6 @@ In order to use BingMaps you need one or two things:
 
   ![](Images/Tutorial/BingMaps/BingMapsInspector.png)
   
-  1. Paste the URL retrieved in previous section "Requirements - Getting a BingMaps key" into the "Server URL" text field.
+  1. Paste the URL retrieved in previous section "Requirements - Getting a BingMaps key" into the "Server template URL" text field.
   2. Set both the latitude and the longitude of the point for wich you want to get a map, as well as a zoom level.
   3. Press "Update preview" to update the scene view with the BingMaps texture and check that everything is OK.
