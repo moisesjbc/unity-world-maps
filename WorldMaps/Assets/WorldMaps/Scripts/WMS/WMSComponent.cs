@@ -54,7 +54,7 @@ public class WMSComponent : OnlineTexture {
 		string stylesQuery = "";
 		foreach (string layerName in selectedLayers) {
 			layersQuery += layerName + ",";
-			stylesQuery += "default,";
+			stylesQuery += ",";
 		}
 		// Remove last character (',').
 		if (layersQuery.Length > 0) {
