@@ -39,10 +39,8 @@ public class WMSRequest {
 			server + "?REQUEST=GetCapabilities&SERVICE=WMS" + "&VERSION=" + version;
 
 		if (RequestIsCached(url)) {
-			Debug.Log ("1");
 			ParseResponse (File.ReadAllText(URLToFilePath(url)));
 		} else {
-			Debug.Log ("2");
 			www = new WWW (url);
 		}
 	}
