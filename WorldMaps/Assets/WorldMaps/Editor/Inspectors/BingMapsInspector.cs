@@ -32,6 +32,7 @@ public class BingMapsInspector : Editor
 
 		BingMapsComponent bingMapsComponent = (BingMapsComponent)target;
 
+		EditorGUILayout.LabelField ("Server URL");
 		bingMapsComponent.serverURL = EditorGUILayout.TextField (bingMapsComponent.serverURL);
 		bingMapsComponent.dmsLattitude = (Lattitude)GenerateDMSCoordinatesField(lattitudeLabel, bingMapsComponent.dmsLattitude);
 		bingMapsComponent.dmsLongitude = (Longitude)GenerateDMSCoordinatesField(longitudeLabel, bingMapsComponent.dmsLongitude);
