@@ -13,7 +13,7 @@ public class WMSServerBookmarks {
 
 	public WMSServerBookmarks()
 	{
-		string[] lines = File.ReadAllLines ("Assets/WMSServerBookmarks");
+		string[] lines = File.ReadAllLines ("Assets/WorldMaps/WMSServerBookmarks");
 
 		foreach (string line in lines) {
 			string serverTitle = line.Split (keyValueSeparator_, 2, System.StringSplitOptions.None) [0];
