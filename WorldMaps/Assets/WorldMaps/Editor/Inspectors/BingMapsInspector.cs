@@ -34,6 +34,10 @@ public class BingMapsInspector : Editor
 
 		EditorGUILayout.LabelField ("Server template URL");
 		bingMapsComponent.serverURL = EditorGUILayout.TextField (bingMapsComponent.serverURL);
+		if (bingMapsComponent.serverURL == BingMapsComponent.testServerURL) {
+			EditorGUILayout.HelpBox("This is a test server URL. When building your app, please generate a new server URL by following the instructions on this URL: https://github.com/moisesjbc/unity-world-maps", MessageType.Warning);
+		}
+
 		bingMapsComponent.latitude = EditorGUILayout.FloatField(lattitudeLabel, bingMapsComponent.latitude);
 		bingMapsComponent.longitude = EditorGUILayout.FloatField(longitudeLabel, bingMapsComponent.longitude);
 		bingMapsComponent.initialZoom = EditorGUILayout.IntField (zoomLabel, bingMapsComponent.initialZoom);

@@ -10,7 +10,8 @@ public enum BingMapsType
 }
 
 public class BingMapsComponent : OnlineTexture {
-	public string serverURL = "http://ecn.{subdomain}.tiles.virtualearth.net/tiles/r{quadkey}.jpeg?g=4892&mkt={culture}&shading=hill";
+	public static string testServerURL = "http://ecn.{subdomain}.tiles.virtualearth.net/tiles/r{quadkey}.jpeg?g=4892&mkt={culture}&shading=hill";
+	public string serverURL = BingMapsComponent.testServerURL;
 	public string initialSector = "0";
 	public float latitude = 28.127222f;
 	public float longitude = -15.431389f;
