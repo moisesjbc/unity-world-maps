@@ -117,14 +117,8 @@ public class WMSComponent : OnlineTexture {
 
 	public override bool ValidateDownloadedTexture( out string errorMessage )
 	{
-		if (request_.text == "" ) {
-			errorMessage = "";
-			return true;
-		}else{
-			XmlDocument xmlDocument = new XmlDocument ();
-			xmlDocument.LoadXml (request_.text);
-			errorMessage = xmlDocument.DocumentElement.InnerText;
-			return false;
-		}
+		// TODO: Extract possible errors from XML.
+		errorMessage = "";
+		return true;
 	}
 }
