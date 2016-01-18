@@ -66,8 +66,10 @@ public class WMSComponentInspector : Editor
 		if (layerChanged) {
 			wmsComponent.RequestTexturePreview ();
 		}
-
+			
 		DisplayBoundingBoxSelector (ref wmsComponent, wmsInfo, out boundingBoxChanged);
+
+		EditorGUILayout.LabelField ("SRS", wmsComponent.SRS);
 
 		Vector2 newBottomLeftCoordinates =
 			EditorGUILayout.Vector2Field (
