@@ -4,6 +4,10 @@
 
 **World Maps** is a Unity package which allows users to add real world LOD maps to their scenes. Just drop the right plane prefab into the scene and configure it so its textures are retrieved from a [WMS](https://en.wikipedia.org/wiki/Web_Map_Service) or a [BingMaps](https://en.wikipedia.org/wiki/Bing_Maps) server.
 
+## Sample scene
+
+To take a look at the possibilities of this package. Just open the scene WorldMaps/Scenes/SampleScene.unity
+
 ## Adding world maps to the sceen
 
 ### Adding a WMS map to the scene
