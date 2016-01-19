@@ -80,8 +80,8 @@ public class WMSRequest {
 			}
 		}catch( Exception e ){
 			status.state = WMSRequestState.ERROR;
-			status.errorMessage = "ERROR parsing WMS response: " + e.Message;
-			Debug.LogError (status.errorMessage);
+			status.errorMessage = "ERROR parsing WMS response: " + e.Message + "\n\nResponse from server:\n" + text;
+			throw new UnityException( status.errorMessage );
 		}
 	}
 

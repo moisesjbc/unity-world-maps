@@ -11,7 +11,6 @@ public class WMSInfoRequester {
 	{
 		string requestID = GenerateRequestID (serverURL);
 		if (!requests_.ContainsKey (requestID)){
-			Debug.Log ("Requesting WMS info: " + serverURL);
 			requests_ [requestID] = new WMSRequest (serverURL);
 		}
 		return requestID;

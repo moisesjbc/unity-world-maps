@@ -21,7 +21,6 @@ public abstract class OnlineTexture : MonoBehaviour {
 	{
 		textureLoaded = false;
 		string url = GenerateRequestURL (nodeID);
-		Debug.LogFormat ("Requesting texture [{0}]", url);
 		request_ = new WWW (url);
 	}
 
@@ -60,7 +59,7 @@ public abstract class OnlineTexture : MonoBehaviour {
 					GetComponent<MeshRenderer> ().sharedMaterial = tempMaterial;
 				}
 			} else {
-				Debug.LogErrorFormat ("Errors when downloading texture [{0}]:\n {1}", request_.url, errorMessage);
+				throw new UnityException ("Errors when downloading texture [" + request_.url + "]:\n" + errorMessage);
 			}
 			textureLoaded = true;
 		}
