@@ -32,6 +32,7 @@ public class WMSComponentInspector : Editor
 			DisplayServerSelector (ref wmsComponent, out serverChanged);
 
 			if (serverChanged) {
+				wmsComponent.selectedLayers.Clear ();
 				RequestWMSInfo (ref wmsComponent);
 			}
 
@@ -86,7 +87,6 @@ public class WMSComponentInspector : Editor
 	private void RequestWMSInfo(ref WMSComponent wmsComponent)
 	{
 		wmsComponent.wmsRequestID = wmsInfoRequester.RequestWMSInfo (wmsComponent.serverURL);
-		wmsComponent.selectedLayers.Clear ();
 		wmsComponent.RequestTexturePreview ();
 	}
 
@@ -296,5 +296,6 @@ public class WMSComponentInspector : Editor
 	{
 		WMSComponent wmsComponent = (WMSComponent)target;
 		wmsInfoRequester.GetRequest (wmsComponent.wmsRequestID).UpdateStatus ();
+		Repaint ();
 	}
 }
