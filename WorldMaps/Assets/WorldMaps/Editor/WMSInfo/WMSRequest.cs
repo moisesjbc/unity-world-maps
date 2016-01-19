@@ -60,6 +60,7 @@ public class WMSRequest {
 		if (status.state == WMSRequestState.DOWNLOADING) {
 			if (www.isDone) {
 				ParseResponse (www.text);
+				Debug.LogError (status.errorMessage);
 			}
 		}
 		return status;
