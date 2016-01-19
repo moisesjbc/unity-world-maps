@@ -29,7 +29,7 @@ public class WMSComponentInspector : Editor
 
 		// If no WMS request has been sent, send a first one.
 		if (wmsComponent.wmsRequestID == "" ) {
-			wmsComponent.wmsRequestID = wmsInfoRequester.RequestWMSInfo (wmsComponent.serverURL);
+			RequestWMSInfo (ref wmsComponent);
 		}
 
 		EditorGUILayout.BeginVertical (EditorStyles.helpBox);
@@ -87,6 +87,12 @@ public class WMSComponentInspector : Editor
 			EditorUtility.SetDirty (wmsComponent);
 			EditorSceneManager.MarkSceneDirty (EditorSceneManager.GetActiveScene ());
 		}
+	}
+
+
+	private void RequestWMSInfo(ref WMSComponent wmsComponent)
+	{
+		wmsComponent.wmsRequestID = wmsInfoRequester.RequestWMSInfo (wmsComponent.serverURL);
 	}
 
 
@@ -292,8 +298,7 @@ public class WMSComponentInspector : Editor
 	public void Refresh()
 	{
 		WMSComponent wmsComponent = (WMSComponent)target;
-		wmsComponent.wmsRequestID =
-			wmsInfoRequester.RequestWMSInfo (wmsComponent.serverURL);
+		RequestWMSInfo (ref wmsComponent);
 		wmsInfoRequester.GetRequest (wmsComponent.wmsRequestID).UpdateStatus ();
 	}
 }
