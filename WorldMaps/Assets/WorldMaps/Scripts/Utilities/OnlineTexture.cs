@@ -47,6 +47,7 @@ public abstract class OnlineTexture : MonoBehaviour {
 		if (textureLoaded == false && request_ != null && request_.isDone) {
 			string errorMessage = "";
 			if (ValidateDownloadedTexture (out errorMessage)) {
+				textureLoaded = true;
 				if (Application.isPlaying) {
 					var tempMaterial = new Material (GetComponent<MeshRenderer> ().material);
 					tempMaterial.mainTexture = request_.texture;
@@ -59,9 +60,10 @@ public abstract class OnlineTexture : MonoBehaviour {
 					GetComponent<MeshRenderer> ().sharedMaterial = tempMaterial;
 				}
 			} else {
-				throw new UnityException ("Errors when downloading texture [" + request_.url + "]:\n" + errorMessage);
+				string requestedURL = request_.url;
+				request_ = null;
+				throw new UnityException ("Errors when downloading texture [" + requestedURL + "]:\n" + errorMessage);
 			}
-			textureLoaded = true;
 		}
 	}
 
