@@ -13,6 +13,7 @@ public class WMSComponentInspector : Editor
 	private static WMSServerBookmarks bookmarks = new WMSServerBookmarks();
 	private static WMSInfoRequester wmsInfoRequester = new WMSInfoRequester();
 
+
 	public override void OnInspectorGUI()
 	{
 		if (Application.isPlaying) {
@@ -26,7 +27,10 @@ public class WMSComponentInspector : Editor
 		bool layerChanged = false;
 		bool boundingBoxChanged = false;
 
-		wmsComponent.wmsRequestID = wmsInfoRequester.RequestWMSInfo (wmsComponent.serverURL);
+		// If no WMS request has been sent, send a first one.
+		if (wmsComponent.wmsRequestID == "" ) {
+			wmsComponent.wmsRequestID = wmsInfoRequester.RequestWMSInfo (wmsComponent.serverURL);
+		}
 
 		EditorGUILayout.BeginVertical (EditorStyles.helpBox);
 			EditorGUILayout.LabelField ("Server");
