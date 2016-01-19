@@ -59,8 +59,12 @@ public class WMSRequest {
 	{
 		if (status.state == WMSRequestState.DOWNLOADING) {
 			if (www.isDone) {
+				if (www.error != null) {
+					status.state = WMSRequestState.ERROR;
+					status.errorMessage = "Couldn't get WMS info from server: " + www.error;
+					throw new UnityException (status.errorMessage);
+				}
 				ParseResponse (www.text);
-				Debug.LogError (status.errorMessage);
 			}
 		}
 		return status;
@@ -77,7 +81,8 @@ public class WMSRequest {
 				File.WriteAllText(URLToFilePath(url), text);
 			} else {
 				status.state = WMSRequestState.ERROR;
-				status.errorMessage = "ERROR: Unknown";
+				status.errorMessage = "ERROR parsing WMS response: Unknown";
+				throw new UnityException( status.errorMessage );
 			}
 		}catch( Exception e ){
 			status.state = WMSRequestState.ERROR;

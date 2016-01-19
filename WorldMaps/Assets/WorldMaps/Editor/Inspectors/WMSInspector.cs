@@ -27,14 +27,12 @@ public class WMSComponentInspector : Editor
 		bool layerChanged = false;
 		bool boundingBoxChanged = false;
 
-
 		EditorGUILayout.BeginVertical (EditorStyles.helpBox);
 			EditorGUILayout.LabelField ("Server");
 			DisplayServerSelector (ref wmsComponent, out serverChanged);
 
 			if (serverChanged) {
-				wmsComponent.selectedLayers.Clear ();
-				wmsComponent.RequestTexturePreview ();
+				RequestWMSInfo (ref wmsComponent);
 			}
 
 			WMSRequestStatus requestStatus = 
@@ -88,6 +86,8 @@ public class WMSComponentInspector : Editor
 	private void RequestWMSInfo(ref WMSComponent wmsComponent)
 	{
 		wmsComponent.wmsRequestID = wmsInfoRequester.RequestWMSInfo (wmsComponent.serverURL);
+		wmsComponent.selectedLayers.Clear ();
+		wmsComponent.RequestTexturePreview ();
 	}
 
 
@@ -295,7 +295,6 @@ public class WMSComponentInspector : Editor
 	public void Refresh()
 	{
 		WMSComponent wmsComponent = (WMSComponent)target;
-		RequestWMSInfo (ref wmsComponent);
 		wmsInfoRequester.GetRequest (wmsComponent.wmsRequestID).UpdateStatus ();
 	}
 }

@@ -10,7 +10,7 @@ public class WMSInfoRequester {
 	public string RequestWMSInfo( string serverURL )
 	{
 		string requestID = GenerateRequestID (serverURL);
-		if (!requests_.ContainsKey (requestID)){
+		if (!requests_.ContainsKey (requestID) || requests_[requestID].status.state == WMSRequestState.ERROR){
 			requests_ [requestID] = new WMSRequest (serverURL);
 		}
 		return requestID;
