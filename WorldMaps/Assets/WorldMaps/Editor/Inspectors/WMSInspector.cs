@@ -27,10 +27,6 @@ public class WMSComponentInspector : Editor
 		bool layerChanged = false;
 		bool boundingBoxChanged = false;
 
-		// If no WMS request has been sent, send a first one.
-		if (wmsComponent.wmsRequestID == "" ) {
-			RequestWMSInfo (ref wmsComponent);
-		}
 
 		EditorGUILayout.BeginVertical (EditorStyles.helpBox);
 			EditorGUILayout.LabelField ("Server");
@@ -285,6 +281,8 @@ public class WMSComponentInspector : Editor
 
 	public void OnEnable()
 	{
+		WMSComponent wmsComponent = (WMSComponent)target;
+		RequestWMSInfo (ref wmsComponent);
 		EditorApplication.update += Refresh;
 	}
 
