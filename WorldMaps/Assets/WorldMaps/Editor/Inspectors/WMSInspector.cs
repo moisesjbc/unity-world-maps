@@ -42,9 +42,10 @@ public class WMSComponentInspector : Editor
 				
 			if (requestStatus.state != WMSRequestState.OK) {
 				if( requestStatus.state == WMSRequestState.DOWNLOADING ){
-					EditorGUILayout.LabelField("Downloading WMS info ...");
+					EditorGUILayout.HelpBox("Downloading WMS info ...", MessageType.Info);
 				}else if( requestStatus.state == WMSRequestState.ERROR ){
-					EditorGUILayout.LabelField(requestStatus.errorMessage);
+					Debug.LogError (requestStatus.errorMessage);
+					EditorGUILayout.HelpBox("ERROR downloading WMS info (see console for more info)", MessageType.Error);
 				}
 
 				if (GUI.changed) {
