@@ -48,6 +48,12 @@ public class WMSComponent : OnlineTexture {
 	}
 
 
+	public int SelectedLayersNumber()
+	{
+		return selectedLayers.Count;
+	}
+
+
 	private string BuildWMSFixedQueryString()
 	{
 		string layersQuery = "";

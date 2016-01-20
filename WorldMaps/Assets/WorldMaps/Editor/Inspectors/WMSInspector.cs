@@ -143,11 +143,16 @@ public class WMSComponentInspector : Editor
 			if( layers[i].name != "" ){
 				bool newToggleValue = 
 					EditorGUILayout.Toggle (layers[i].title, (wmsComponent.LayerSelected(layers[i].name)));
-
+				
 				layerChanged |= (newToggleValue != wmsComponent.LayerSelected(layers[i].name));
 				wmsComponent.SetLayerSelected (layers[i].name, newToggleValue);
 			}
 		}
+
+		if (wmsComponent.SelectedLayersNumber () == 0) {
+			EditorGUILayout.HelpBox ("No layers selected", MessageType.Warning);
+		}
+
 		EditorGUILayout.EndVertical ();
 	}
 
