@@ -103,6 +103,7 @@ public class QuadtreeLODPlane : MonoBehaviour {
 			childGameObject.GetComponent<Renderer>().material.color = color;
 		#endif
 		childGameObject.GetComponent<QuadtreeLODPlane>().depth_ = this.depth_ + 1;
+		childGameObject.GetComponent<QuadtreeLODPlane>().vertexResolution = this.vertexResolution + 1;
 		childGameObject.GetComponent<QuadtreeLODPlane> ().nodeID = nodeID;
 		childGameObject.GetComponent<QuadtreeLODPlane>().children_ = new GameObject[]{ null, null, null, null };
 
