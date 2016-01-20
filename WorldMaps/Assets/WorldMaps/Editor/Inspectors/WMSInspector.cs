@@ -56,6 +56,7 @@ public class WMSComponentInspector : Editor
 
 			WMSInfo wmsInfo = requestStatus.response;
 			EditorGUILayout.LabelField ("Server title: " + wmsInfo.serverTitle);
+			EditorGUILayout.LabelField ("Server abstract: " + wmsInfo.serverAbstract);
 		EditorGUILayout.EndVertical ();
 
 		if (wmsInfo.GetLayerTitles ().Length <= 0) {
