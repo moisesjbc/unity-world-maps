@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System;
 using System.Collections;
+using System.IO;
 
 
 public enum RequestStatus
@@ -21,9 +22,13 @@ class ServerTransaction <ResponseType>
 	public string errorLog = null;
 
 
-	public ServerTransaction(string url)
+	public ServerTransaction(string url, ParsingFunction parsingFunction)
 	{
-		request = new WWW (url);
+		if (RequestIsCached (url)) {
+			ParseResponse (File.ReadAllText (URLToFilePath (url)), parsingFunction);
+		} else {
+			request = new WWW (url);
+		}
 	}
 
 
@@ -34,7 +39,9 @@ class ServerTransaction <ResponseType>
 		if (requestStatus == RequestStatus.DOWNLOADING) {
 			if (request.isDone) {
 				if (request.error == null) {
-					if (this.ParseResponse (ParseResponse)) {
+					if (this.ParseResponse (request.text, ParseResponse)) {
+						// Cache the result
+						File.WriteAllText (URLToFilePath (request.url), request.text);
 						return RequestStatus.OK;
 					} else {
 						return RequestStatus.ERROR;
@@ -66,10 +73,10 @@ class ServerTransaction <ResponseType>
 	}
 
 
-	public bool ParseResponse( ParsingFunction parsingFunction )
+	public bool ParseResponse( string responseText, ParsingFunction parsingFunction )
 	{
 		try{
-			response = parsingFunction (request.text);
+			response = parsingFunction (responseText);
 			return true;
 		}catch( Exception e ){
 			// Parsing error
@@ -77,5 +84,28 @@ class ServerTransaction <ResponseType>
 			Debug.LogError (this.errorLog);
 			return false;
 		}
+	}
+
+
+	public static string URLToFilePath(string url)
+	{
+		string filepath = url;
+
+		filepath = filepath.Replace ('/', '-');
+		filepath = filepath.Replace ('.', '-');
+		filepath = filepath.Replace ('\\', '-');
+		filepath = filepath.Replace (':', '-');
+		filepath = filepath.Replace ('?', '-');
+
+		return "Temp/" + filepath;
+	}
+
+
+	public static bool RequestIsCached(string url)
+	{
+		string filepath = URLToFilePath(url);
+
+		// TODO: Check download date.
+		return File.Exists (filepath);
 	}
 }

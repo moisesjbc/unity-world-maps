@@ -15,7 +15,7 @@ public abstract class ServerInfoRequester <ResponseType>
 	{
 		string requestID = GenerateRequestID (serverURL);
 		if (!transactions.ContainsKey (requestID) || transactions[requestID].errorLog != null){
-			transactions [requestID] = new ServerTransaction<ResponseType> (serverURL + BuildQueryString());
+			transactions [requestID] = new ServerTransaction<ResponseType> (serverURL + BuildQueryString(), ParseResponse);
 		}
 		return requestID;
 	}
