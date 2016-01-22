@@ -78,7 +78,7 @@ public class WMSComponent : OnlineTexture {
 	}
 
 
-	private void GenerateWMSBoundingBox(string nodeID, ref Vector2 bottomLeftCoordinates, ref Vector2 topRightCoordinates)
+	public static void GenerateWMSBoundingBox(string nodeID, ref Vector2 bottomLeftCoordinates, ref Vector2 topRightCoordinates)
 	{
 		for (int i = 1; i < nodeID.Length; i++) {
 			float x0 = bottomLeftCoordinates.x;
