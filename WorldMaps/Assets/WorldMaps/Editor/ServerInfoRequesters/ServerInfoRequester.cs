@@ -24,13 +24,11 @@ class ServerTransaction <ResponseType>
 	public RequestStatus Update( ParsingFunction ParseResponse )
 	{
 		RequestStatus requestStatus = GetRequestStatus ();
-		Debug.Log ("Update() - " + requestStatus);
 
 		if (requestStatus == RequestStatus.DOWNLOADING) {
 			if (request.isDone) {
 				if (request.error == null) {
 					try{
-						Debug.Log("response: " + request.text);
 						response = ParseResponse (request.text);
 						return RequestStatus.OK;
 					}catch( Exception e ){
