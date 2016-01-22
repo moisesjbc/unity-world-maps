@@ -127,6 +127,10 @@ public class QuadtreeLODPlane : MonoBehaviour {
 
 	public void SetVisible( bool visible )
 	{
+		if (visible != gameObject.GetComponent<MeshRenderer> ().enabled) {
+			Debug.Log("Changing visibility of [" + nodeID + "] to " + visible); 
+		}
+
 		// Set node visibility.
 		gameObject.GetComponent<MeshRenderer> ().enabled = visible;
 
