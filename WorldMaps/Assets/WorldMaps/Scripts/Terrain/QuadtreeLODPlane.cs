@@ -54,9 +54,6 @@ public class QuadtreeLODPlane : MonoBehaviour {
 
 			// Create material
 			gameObject.GetComponent<Renderer> ().sharedMaterial = new Material (Shader.Find ("Sprites/Default"));
-		} else {
-			GetComponent<QuadtreeLODPlane> ().SetVisible (false);
-			transform.parent.GetComponent<QuadtreeLODPlane> ().onlineTexture.CopyTo (onlineTexture);
 		}
 				
 		gameObject.tag = "MapSector";
@@ -110,6 +107,8 @@ public class QuadtreeLODPlane : MonoBehaviour {
 		} else {
 			childGameObject.GetComponent<QuadtreeLODPlane>().onlineTexture = childGameObject.AddComponent<BingMapsComponent> ();
 		}
+		onlineTexture.CopyTo (childGameObject.GetComponent<QuadtreeLODPlane>().onlineTexture);
+		childGameObject.GetComponent<QuadtreeLODPlane>().SetVisible (false);
 
 		return childGameObject;
 	}
