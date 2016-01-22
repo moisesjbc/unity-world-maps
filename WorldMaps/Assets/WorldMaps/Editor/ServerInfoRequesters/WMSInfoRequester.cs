@@ -2,29 +2,15 @@
 using System.Collections;
 using System.Collections.Generic;
 
-public class WMSInfoRequester {
-	Dictionary<string, WMSRequest> requests_ = 
-		new Dictionary<string, WMSRequest>();
-
-
-	public string RequestWMSInfo( string serverURL )
+public class WMSInfoRequester : ServerInfoRequester<WMSInfo> {
+	protected override WMSInfo ParseResponse( string responseText )
 	{
-		string requestID = GenerateRequestID (serverURL);
-		if (!requests_.ContainsKey (requestID) || requests_[requestID].status.state == WMSRequestState.ERROR){
-			requests_ [requestID] = new WMSRequest (serverURL);
-		}
-		return requestID;
+		return WMSXMLParser.GetWMSInfo (responseText);
 	}
 
 
-	public WMSRequest GetRequest( string requestID )
+	protected override string BuildQueryString()
 	{
-		return requests_ [requestID];
-	}
-		
-
-	protected string GenerateRequestID( string serverURL )
-	{
-		return serverURL;
+		return "?REQUEST=GetCapabilities&SERVICE=WMS&VERSION=1.1.0";
 	}
 }

@@ -36,13 +36,13 @@ public class WMSComponentInspector : Editor
 				RequestWMSInfo (ref wmsComponent);
 			}
 
-			WMSRequestStatus requestStatus = 
-				wmsInfoRequester.GetRequest (wmsComponent.wmsRequestID).status;
+			RequestStatus requestStatus = 
+				wmsInfoRequester.GetRequestStatus (wmsComponent.wmsRequestID);
 				
-			if (requestStatus.state != WMSRequestState.OK) {
-				if( requestStatus.state == WMSRequestState.DOWNLOADING ){
+			if (requestStatus != RequestStatus.OK) {
+				if( requestStatus == RequestStatus.DOWNLOADING ){
 					EditorGUILayout.HelpBox("Downloading WMS info ...", MessageType.Info);
-				}else if( requestStatus.state == WMSRequestState.ERROR ){
+				}else if( requestStatus == RequestStatus.ERROR ){
 					EditorGUILayout.HelpBox("ERROR downloading WMS info (see console for more info)", MessageType.Error);
 				}
 
@@ -54,7 +54,7 @@ public class WMSComponentInspector : Editor
 				return;
 			}
 
-			WMSInfo wmsInfo = requestStatus.response;
+			WMSInfo wmsInfo = wmsInfoRequester.GetResponse (wmsComponent.wmsRequestID);
 			EditorGUILayout.LabelField ("Server title: " + wmsInfo.serverTitle);
 			EditorGUILayout.LabelField ("Server abstract: " + wmsInfo.serverAbstract);
 		EditorGUILayout.EndVertical ();
@@ -103,16 +103,14 @@ public class WMSComponentInspector : Editor
 		serverChanged |= (newServerURL != wmsComponent.serverURL);
 		wmsComponent.serverURL = newServerURL;
 
-		if (wmsComponent.wmsRequestID != "") {
-			WMSRequestStatus requestStatus = 
-				wmsInfoRequester.GetRequest (wmsComponent.wmsRequestID).status;
+		if ( (wmsComponent.wmsRequestID != "") && (wmsInfoRequester.GetRequestStatus(wmsComponent.wmsRequestID) == RequestStatus.OK)){
+			WMSInfo wmsInfo = 
+				wmsInfoRequester.GetResponse (wmsComponent.wmsRequestID);
 			
-			if (requestStatus.state == WMSRequestState.OK) {
-				if (!bookmarks.ServerIsBookmarked (requestStatus.response.serverTitle)) {
-					DisplayServerBookmarkButton (requestStatus.response.serverTitle, wmsComponent.serverURL);
-				//} else {
-				//	RemoveServerFromBookmarksButton (requestStatus.response.serverTitle);
-				}
+			if (!bookmarks.ServerIsBookmarked (wmsInfo.serverTitle)) {
+				DisplayServerBookmarkButton (wmsInfo.serverTitle, wmsComponent.serverURL);
+			//} else {
+			//	RemoveServerFromBookmarksButton (requestStatus.response.serverTitle);
 			}
 		}
 	}
@@ -301,7 +299,7 @@ public class WMSComponentInspector : Editor
 	public void Refresh()
 	{
 		WMSComponent wmsComponent = (WMSComponent)target;
-		wmsInfoRequester.GetRequest (wmsComponent.wmsRequestID).UpdateStatus ();
+		wmsInfoRequester.Update(wmsComponent.wmsRequestID);
 		Repaint ();
 	}
 }

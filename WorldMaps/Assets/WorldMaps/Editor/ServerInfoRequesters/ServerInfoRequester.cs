@@ -23,21 +23,43 @@ class ServerTransaction <ResponseType>
 
 	public RequestStatus Update( ParsingFunction ParseResponse )
 	{
-		if (request.isDone) {
-			if (request.error == null) {
-				try{
-					response = ParseResponse (request.text);
-					return RequestStatus.OK;
-				}catch( Exception e ){
-					// Parsing error
-					this.errorLog = "Couldn't parse response from server: " + e.Message;
+		RequestStatus requestStatus = GetRequestStatus ();
+		Debug.Log ("Update() - " + requestStatus);
+
+		if (requestStatus == RequestStatus.DOWNLOADING) {
+			if (request.isDone) {
+				if (request.error == null) {
+					try{
+						Debug.Log("response: " + request.text);
+						response = ParseResponse (request.text);
+						return RequestStatus.OK;
+					}catch( Exception e ){
+						// Parsing error
+						this.errorLog = "Couldn't parse response from server: " + e.Message;
+						Debug.LogError (this.errorLog);
+						return RequestStatus.ERROR;
+					}
+				} else {
+					// Connection error
+					this.errorLog = "Couldn't get info from server: " + request.error;
+					Debug.LogError (this.errorLog);
 					return RequestStatus.ERROR;
 				}
-			} else {
-				// Connection error
-				this.errorLog = "Couldn't get info from server: " + request.error;
-				return RequestStatus.ERROR;
 			}
+			return RequestStatus.DOWNLOADING;
+		} else {
+			// Status other than "downloading" remain the same when updating.
+			return requestStatus;
+		}
+	}
+
+
+	public RequestStatus GetRequestStatus()
+	{
+		if (response != null) {
+			return RequestStatus.OK;
+		} else if (errorLog != null) {
+			return RequestStatus.ERROR;
 		} else {
 			return RequestStatus.DOWNLOADING;
 		}
@@ -64,7 +86,7 @@ public abstract class ServerInfoRequester <ResponseType>
 	{
 		string requestID = GenerateRequestID (serverURL);
 		if (!transactions.ContainsKey (requestID) || transactions[requestID].errorLog != null){
-			transactions [requestID] = new ServerTransaction<ResponseType> (serverURL);
+			transactions [requestID] = new ServerTransaction<ResponseType> (serverURL + BuildQueryString());
 		}
 		return requestID;
 	}
@@ -76,12 +98,16 @@ public abstract class ServerInfoRequester <ResponseType>
 	}
 
 
-	/*
-	public WMSRequest GetRequest( string requestID )
+	public RequestStatus GetRequestStatus (string requestID)
 	{
-		return requests_ [requestID];
+		return transactions [requestID].GetRequestStatus();
 	}
-	*/
+
+
+	public ResponseType GetResponse( string requestID )
+	{
+		return transactions [requestID].response;
+	}
 		
 
 	protected string GenerateRequestID( string serverURL )
@@ -91,4 +117,5 @@ public abstract class ServerInfoRequester <ResponseType>
 
 
 	protected abstract ResponseType ParseResponse( string responseText );
+	protected abstract string BuildQueryString();
 }
