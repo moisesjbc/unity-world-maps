@@ -87,7 +87,7 @@ public class WMSComponentInspector : Editor
 
 	private void RequestWMSInfo(ref WMSComponent wmsComponent)
 	{
-		wmsComponent.wmsRequestID = wmsInfoRequester.RequestWMSInfo (wmsComponent.serverURL);
+		wmsComponent.wmsRequestID = wmsInfoRequester.RequestServerInfo (wmsComponent.serverURL);
 		wmsComponent.RequestTexturePreview ();
 	}
 

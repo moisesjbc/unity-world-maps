@@ -11,7 +11,7 @@ public abstract class ServerInfoRequester <ResponseType>
 		new Dictionary<string, ServerTransaction<ResponseType>>();
 
 
-	public string RequestWMSInfo( string serverURL )
+	public string RequestServerInfo( string serverURL )
 	{
 		string requestID = GenerateRequestID (serverURL);
 		if (!transactions.ContainsKey (requestID) || transactions[requestID].errorLog != null){
