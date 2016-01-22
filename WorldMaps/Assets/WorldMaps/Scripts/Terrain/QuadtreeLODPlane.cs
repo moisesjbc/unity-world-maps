@@ -177,12 +177,14 @@ public class QuadtreeLODPlane : MonoBehaviour {
 
 				// Make this node invisible and children visible.
 				if (AreChildrenLoaded ()) {
+					Debug.LogWarning ("Subdividing node [" + nodeID + "]");
 					SetVisible (false);
 					for (int i = 0; i < children_.Length; i++) {
 						children_ [i].GetComponent<QuadtreeLODPlane>().SetVisible (true);
 					}
 				}
 			}else if ( !Visible() && AreChildrenLoaded () && distanceTestResult == DistanceTestResult.JOIN ) {
+				Debug.LogWarning ("Joinning node [" + nodeID + "]");
 				SetVisible (true);
 				for (int i = 0; i < children_.Length; i++) {
 					children_ [i].GetComponent<QuadtreeLODPlane>().SetVisible (false);
