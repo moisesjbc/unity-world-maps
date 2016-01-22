@@ -10,7 +10,6 @@ using System.Collections.Generic;
 [ExecuteInEditMode]
 public class QuadtreeLODPlane : MonoBehaviour {
 	public int vertexResolution = 20;
-	private bool visible_ = true;
 
 	private OnlineTexture onlineTexture;
 
@@ -132,7 +131,6 @@ public class QuadtreeLODPlane : MonoBehaviour {
 	public void SetVisible( bool visible )
 	{
 		// Set node visibility.
-		visible_ = visible;
 		gameObject.GetComponent<MeshRenderer> ().enabled = visible;
 
 		// Enable or disable collider according to new visibility value.
@@ -157,12 +155,12 @@ public class QuadtreeLODPlane : MonoBehaviour {
 			return;
 		}
 
-		if (visible_ || AreChildrenLoaded()) {
+		if (Visible() || AreChildrenLoaded()) {
 			DistanceTestResult distanceTestResult = DoDistanceTest();
 			Vector3 meshSize = Vector3.Scale (GetComponent<MeshFilter>().mesh.bounds.size, gameObject.transform.lossyScale);
 
 			// Subdivide the plane if camera is closer than a threshold.
-			if (visible_ && distanceTestResult == DistanceTestResult.SUBDIVIDE ) {
+			if (Visible() && distanceTestResult == DistanceTestResult.SUBDIVIDE ) {
 				// Create children if they don't exist.
 				if (depth_ < MAX_DEPTH && children_ [0] == null) {
 					CreateChildren (meshSize);
@@ -175,7 +173,7 @@ public class QuadtreeLODPlane : MonoBehaviour {
 						children_ [i].GetComponent<QuadtreeLODPlane>().SetVisible (true);
 					}
 				}
-			}else if ( !visible_ && AreChildrenLoaded () && distanceTestResult == DistanceTestResult.JOIN ) {
+			}else if ( !Visible() && AreChildrenLoaded () && distanceTestResult == DistanceTestResult.JOIN ) {
 				SetVisible (true);
 				for (int i = 0; i < children_.Length; i++) {
 					children_ [i].GetComponent<QuadtreeLODPlane>().SetVisible (false);
@@ -264,5 +262,11 @@ public class QuadtreeLODPlane : MonoBehaviour {
 		} else {
 			return false;
 		}
+	}
+
+
+	public bool Visible()
+	{
+		return gameObject.GetComponent<MeshRenderer> ().enabled;
 	}
 }
