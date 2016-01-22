@@ -155,6 +155,14 @@ public class QuadtreeLODPlane : MonoBehaviour {
 			return;
 		}
 
+		if (Visible () && children_ [0] != null) {
+			for (int i = 0; i < 4; i++) {
+				if (children_ [i].GetComponent<QuadtreeLODPlane> ().Visible ()) {
+					Debug.LogError ("Both " + nodeID + " and " + children_ [i].GetComponent<QuadtreeLODPlane> ().nodeID + "] are visible");
+				}
+			}
+		}
+
 		if (Visible() || AreChildrenLoaded()) {
 			DistanceTestResult distanceTestResult = DoDistanceTest();
 			Vector3 meshSize = Vector3.Scale (GetComponent<MeshFilter>().mesh.bounds.size, gameObject.transform.lossyScale);
