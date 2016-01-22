@@ -12,13 +12,14 @@ public class QuadtreeLODPlane : MonoBehaviour {
 	public int vertexResolution = 20;
 	private bool visible_ = true;
 
-	private OnlineTexture onlineTexture;
+	private OnlineTexture onlineTexture = null;
+	private WCSHeightMap onlineHeightMap = null;
 
-	private string nodeID = "0";
+	public string nodeID = "0";
 
 	GameObject[] children_ = new GameObject[]{ null, null, null, null };
 
-	private int depth_ = 0;
+	public int depth_ = 0;
 	const int MAX_DEPTH = 7;
 
 
@@ -47,6 +48,7 @@ public class QuadtreeLODPlane : MonoBehaviour {
 			} else {
 				throw new MissingComponentException ("Terrain must have a WMSComponent or BingMapsComponent");
 			}
+			onlineHeightMap = GetComponent<WCSHeightMap> ();
 
 			nodeID = "0";
 
@@ -60,12 +62,19 @@ public class QuadtreeLODPlane : MonoBehaviour {
 		} else {
 			GetComponent<QuadtreeLODPlane> ().SetVisible (false);
 			transform.parent.GetComponent<QuadtreeLODPlane> ().onlineTexture.CopyTo (onlineTexture);
+			if (transform.parent.GetComponent<QuadtreeLODPlane> ().onlineHeightMap != null) {
+				transform.parent.GetComponent<QuadtreeLODPlane> ().onlineHeightMap.CopyTo (onlineHeightMap);
+			}
 		}
-				
+							
 		gameObject.tag = "MapSector";
 
 		if (Application.isPlaying) {
+			Debug.Log ("Requesting texture and height map for this node");
 			onlineTexture.RequestTexture (nodeID);
+			if (onlineHeightMap != null) {
+				onlineHeightMap.RequestHeightMap (nodeID, vertexResolution);
+			}
 		}
 	}
 
@@ -103,15 +112,21 @@ public class QuadtreeLODPlane : MonoBehaviour {
 			childGameObject.GetComponent<Renderer>().material.color = color;
 		#endif
 		childGameObject.GetComponent<QuadtreeLODPlane>().depth_ = this.depth_ + 1;
-		childGameObject.GetComponent<QuadtreeLODPlane>().vertexResolution = this.vertexResolution;
+		childGameObject.GetComponent<QuadtreeLODPlane> ().vertexResolution = this.vertexResolution;
 		childGameObject.GetComponent<QuadtreeLODPlane> ().nodeID = nodeID;
 		childGameObject.GetComponent<QuadtreeLODPlane>().children_ = new GameObject[]{ null, null, null, null };
+
+		childGameObject.GetComponent<QuadtreeLODPlane> ().SetVisible (false);
 
 
 		if (gameObject.GetComponent<WMSComponent> () != null) {
 			childGameObject.GetComponent<QuadtreeLODPlane>().onlineTexture = childGameObject.AddComponent<WMSComponent> ();
 		} else {
 			childGameObject.GetComponent<QuadtreeLODPlane>().onlineTexture = childGameObject.AddComponent<BingMapsComponent> ();
+		}
+			
+		if (gameObject.GetComponent<WCSHeightMap> () != null) {
+			childGameObject.GetComponent<QuadtreeLODPlane>().onlineHeightMap = childGameObject.AddComponent<WCSHeightMap> ();
 		}
 
 		return childGameObject;
@@ -133,13 +148,13 @@ public class QuadtreeLODPlane : MonoBehaviour {
 	{
 		// Set node visibility.
 		visible_ = visible;
-		gameObject.GetComponent<MeshRenderer> ().enabled = visible;
+		gameObject.GetComponent<Renderer> ().enabled = visible;
 
 		// Enable or disable collider according to new visibility value.
-		Collider collider = gameObject.GetComponent<Collider>();
-		if ( collider != null ) {
-			collider.enabled = visible;
-		}
+		//Collider collider = gameObject.GetComponent<Collider>();
+		//if ( collider != null ) {
+		//	collider.enabled = visible;
+		//}
 
 		// No matter which visibility is applied to this node, children
 		// visibility must be set to false.
@@ -253,10 +268,19 @@ public class QuadtreeLODPlane : MonoBehaviour {
 	}
 
 
+	public bool Loaded()
+	{
+		return ( 
+			onlineTexture != null && onlineTexture.textureLoaded &&
+			(onlineHeightMap == null || onlineHeightMap.heightMapLoaded)
+		);
+	}
+
+
 	private bool AreChildrenLoaded(){
 		if (children_ [0] != null) {
 			for (int i = 0; i < 4; i++) {
-				if (children_ [i].GetComponent<QuadtreeLODPlane>().onlineTexture.textureLoaded == false) {
+				if (children_ [i].GetComponent<QuadtreeLODPlane>().Loaded() == false){
 					return false;
 				}
 			}
