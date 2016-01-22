@@ -89,6 +89,7 @@ public class WMSComponentInspector : Editor
 	{
 		wmsComponent.wmsRequestID = wmsInfoRequester.RequestServerInfo (wmsComponent.serverURL);
 		wmsComponent.RequestTexturePreview ();
+		EditorApplication.update += Refresh;
 	}
 
 
@@ -280,13 +281,12 @@ public class WMSComponentInspector : Editor
 			bookmarks.RemoveServerFromBookmarks (serverTitle);
 		}
 	}
-
+		
 
 	public void OnEnable()
 	{
 		WMSComponent wmsComponent = (WMSComponent)target;
 		RequestWMSInfo (ref wmsComponent);
-		EditorApplication.update += Refresh;
 	}
 
 
@@ -299,7 +299,10 @@ public class WMSComponentInspector : Editor
 	public void Refresh()
 	{
 		WMSComponent wmsComponent = (WMSComponent)target;
-		wmsInfoRequester.Update(wmsComponent.wmsRequestID);
-		Repaint ();
+		if (wmsInfoRequester.Update (wmsComponent.wmsRequestID) != RequestStatus.DOWNLOADING) {
+			// Stop refreshing when server download stops.
+			EditorApplication.update -= Refresh;
+			Repaint ();
+		}
 	}
 }
