@@ -34,13 +34,9 @@ class ServerTransaction <ResponseType>
 		if (requestStatus == RequestStatus.DOWNLOADING) {
 			if (request.isDone) {
 				if (request.error == null) {
-					try{
-						response = ParseResponse (request.text);
+					if (this.ParseResponse (ParseResponse)) {
 						return RequestStatus.OK;
-					}catch( Exception e ){
-						// Parsing error
-						this.errorLog = "Couldn't parse response from server: " + e.Message;
-						Debug.LogError (this.errorLog);
+					} else {
 						return RequestStatus.ERROR;
 					}
 				} else {
@@ -66,6 +62,20 @@ class ServerTransaction <ResponseType>
 			return RequestStatus.ERROR;
 		} else {
 			return RequestStatus.DOWNLOADING;
+		}
+	}
+
+
+	public bool ParseResponse( ParsingFunction parsingFunction )
+	{
+		try{
+			response = parsingFunction (request.text);
+			return true;
+		}catch( Exception e ){
+			// Parsing error
+			this.errorLog = "Couldn't parse response from server: " + e.Message;
+			Debug.LogError (this.errorLog);
+			return false;
 		}
 	}
 }
