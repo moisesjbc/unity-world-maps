@@ -105,7 +105,7 @@ public class WMSComponent : OnlineTexture {
 	}
 
 
-	public override void CopyTo(OnlineTexture copy)
+	protected override void InnerCopyTo(OnlineTexture copy)
 	{
 		WMSComponent target = (WMSComponent)copy;
 		target.serverURL = serverURL;
@@ -116,8 +116,6 @@ public class WMSComponent : OnlineTexture {
 		target.selectedLayers = selectedLayers;
 		target.wmsVersion = wmsVersion;
 		target.SRS = SRS;
-		target.textureLoaded = textureLoaded;
-		target.request_ = request_;
 	}
 
 

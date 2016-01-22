@@ -69,7 +69,18 @@ public abstract class OnlineTexture : MonoBehaviour {
 
 
 	protected abstract string GenerateRequestURL (string nodeID);
-	public abstract void CopyTo(OnlineTexture copy);
+	public void CopyTo(OnlineTexture copy)
+	{
+		copy.request_ = request_;
+		// This forces inherited component to reload the texture.
+		copy.textureLoaded = false;
+
+		InnerCopyTo (copy);
+	}
+
+	protected abstract void InnerCopyTo (OnlineTexture copy);
+
+
 	public virtual bool ValidateDownloadedTexture( out string errorMessage )
 	{
 		if (request_.error != null) {

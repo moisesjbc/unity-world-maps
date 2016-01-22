@@ -87,7 +87,7 @@ public class BingMapsComponent : OnlineTexture {
 	}
 
 
-	public override void CopyTo(OnlineTexture copy)
+	protected override void InnerCopyTo(OnlineTexture copy)
 	{
 		BingMapsComponent target = (BingMapsComponent)copy;
 		target.serverURL = serverURL;
@@ -95,7 +95,5 @@ public class BingMapsComponent : OnlineTexture {
 		target.latitude = latitude;
 		target.longitude = longitude;
 		target.initialZoom = initialZoom;
-		target.textureLoaded = textureLoaded;
-		target.request_ = request_;
 	}
 }
