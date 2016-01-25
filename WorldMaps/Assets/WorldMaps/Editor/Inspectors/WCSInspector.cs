@@ -25,8 +25,32 @@ public class WCSComponentInspector : Editor
 		bool serverChanged = false;
 		bool coverageChanged = false;
 
+		WCSServerInfo wcsServerInfo = DisplayServerSelectionPanel (ref wcsComponent, out serverChanged);
 
-		DisplayServerSelectionPanel (ref wcsComponent, out serverChanged);
+		if (wcsServerInfo != null) {
+			DisplayCoverageSelectionPanel (ref wcsComponent, wcsServerInfo.coverages, out coverageChanged);
+		}
+
+		if (GUI.changed) {
+			EditorUtility.SetDirty (wcsComponent);
+			EditorSceneManager.MarkSceneDirty (EditorSceneManager.GetActiveScene ());
+		}
+	}
+
+
+	private WCSServerInfo DisplayServerSelectionPanel (ref WCSHeightMap wcsComponent, out bool serverChanged)
+	{
+		serverChanged = false;
+
+		EditorGUILayout.BeginVertical (EditorStyles.helpBox);
+
+		EditorGUILayout.LabelField ("Server selection");
+
+		string newServerURL = EditorGUILayout.TextField ("Server URL: ", wcsComponent.serverURL);
+		if (newServerURL != wcsComponent.serverURL) {
+			serverChanged = true;
+			wcsComponent.serverURL = newServerURL;
+		}
 
 		if (serverChanged) {
 			//wcsComponent.selectedLayers.Clear ();
@@ -47,41 +71,19 @@ public class WCSComponentInspector : Editor
 				EditorUtility.SetDirty (wcsComponent);
 				EditorSceneManager.MarkSceneDirty (EditorSceneManager.GetActiveScene ());
 			}
-			return;
+			EditorGUILayout.EndVertical ();
+
+			return null;
 		}
 
 
 		WCSServerInfo wcsServerInfo = wcsServerInfoRequester.GetResponse (wcsComponent.wcsRequestID);
 
-		EditorGUILayout.BeginVertical (EditorStyles.helpBox);
-			EditorGUILayout.LabelField ("Server info");
-			EditorGUILayout.LabelField ("Server label : " + wcsServerInfo.label );
+		EditorGUILayout.LabelField ("Server label : " + wcsServerInfo.label );
+	
 		EditorGUILayout.EndVertical ();
 
-		DisplayCoverageSelectionPanel (ref wcsComponent, wcsServerInfo.coverages, out coverageChanged);
-
-		if (GUI.changed) {
-			EditorUtility.SetDirty (wcsComponent);
-			EditorSceneManager.MarkSceneDirty (EditorSceneManager.GetActiveScene ());
-		}
-	}
-
-
-	private void DisplayServerSelectionPanel (ref WCSHeightMap wcsComponent, out bool serverChanged)
-	{
-		serverChanged = false;
-
-		EditorGUILayout.BeginVertical (EditorStyles.helpBox);
-
-		EditorGUILayout.LabelField ("Server selection");
-
-		string newServerURL = EditorGUILayout.TextField ("Server URL: ", wcsComponent.serverURL);
-		if (newServerURL != wcsComponent.serverURL) {
-			serverChanged = true;
-			wcsComponent.serverURL = newServerURL;
-		}
-
-		EditorGUILayout.EndVertical ();
+		return wcsServerInfo;
 	}
 
 
