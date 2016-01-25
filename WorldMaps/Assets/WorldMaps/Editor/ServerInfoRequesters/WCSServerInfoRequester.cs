@@ -5,6 +5,7 @@ using System.Collections.Generic;
 public class WCSServerInfoRequester : ServerInfoRequester<WCSServerInfo> {
 	protected override WCSServerInfo ParseResponse( string responseText )
 	{
+		Debug.Log (responseText);
 		return WCSServerInfoXMLParser.GetWCSServerInfo (responseText);
 	}
 

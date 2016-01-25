@@ -7,11 +7,17 @@ public class WCSServerInfoXMLParser {
 		XmlDocument xmlDocument = new XmlDocument ();
 		xmlDocument.LoadXml (xmlString);
 
-		//XmlNode rootNode = xmlDocument.DocumentElement;
+		XmlNode rootNode = xmlDocument.DocumentElement;
 
 		// Parse server general info.
-		//string serverTitle = rootNode.SelectSingleNode("Service").SelectSingleNode ("Title").InnerText;
+		string serverLabel = rootNode.SelectSingleNode(LocalName("Service")).SelectSingleNode (LocalName("label")).InnerText;
 
-		return new WCSServerInfo( "<server label>" );
+		return new WCSServerInfo( serverLabel );
+	}
+
+
+	private static string LocalName(string name)
+	{
+		return "//*[local-name()='" + name + "']";
 	}
 }
