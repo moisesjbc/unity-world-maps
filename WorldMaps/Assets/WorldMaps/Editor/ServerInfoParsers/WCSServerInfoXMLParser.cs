@@ -9,15 +9,12 @@ public class WCSServerInfoXMLParser {
 
 		XmlNode rootNode = xmlDocument.DocumentElement;
 
+		XmlNamespaceManager namespacesManager = new XmlNamespaceManager(xmlDocument.NameTable);
+		namespacesManager.AddNamespace("wcs", "http://www.opengis.net/wcs");
+
 		// Parse server general info.
-		string serverLabel = rootNode.SelectSingleNode(LocalName("Service")).SelectSingleNode (LocalName("label")).InnerText;
+		string serverLabel = rootNode.SelectSingleNode ("wcs:Service", namespacesManager).SelectSingleNode ("wcs:label", namespacesManager).InnerText;
 
 		return new WCSServerInfo( serverLabel );
-	}
-
-
-	private static string LocalName(string name)
-	{
-		return "//*[local-name()='" + name + "']";
 	}
 }
