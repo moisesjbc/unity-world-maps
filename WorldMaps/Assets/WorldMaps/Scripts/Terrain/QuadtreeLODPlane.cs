@@ -126,14 +126,6 @@ public class QuadtreeLODPlane : MonoBehaviour {
 
 	public void SetVisible( bool visible )
 	{
-		// No matter which visibility is applied to this node, children
-		// visibility must be set to false.
-		if (children_ != null) {
-			for( int i = 0; i < children_.Length; i++ ){
-				children_[i].GetComponent<QuadtreeLODPlane>().SetVisible (false);
-			}
-		}
-
 		if (visible != gameObject.GetComponent<MeshRenderer> ().enabled) {
 			Debug.Log("Changing visibility of [" + nodeID + "] to " + visible); 
 		}
@@ -141,10 +133,19 @@ public class QuadtreeLODPlane : MonoBehaviour {
 		// Set node visibility.
 		gameObject.GetComponent<MeshRenderer> ().enabled = visible;
 
+
 		// Enable or disable collider according to new visibility value.
 		Collider collider = gameObject.GetComponent<Collider>();
 		if ( collider != null ) {
 			collider.enabled = visible;
+		}
+
+		// No matter which visibility is applied to this node, children
+		// visibility must be set to false.
+		if (children_ != null) {
+			for( int i = 0; i < children_.Length; i++ ){
+				children_[i].GetComponent<QuadtreeLODPlane>().SetVisible (false);
+			}
 		}
 	}
 
@@ -182,7 +183,7 @@ public class QuadtreeLODPlane : MonoBehaviour {
 						children_ [i].GetComponent<QuadtreeLODPlane>().SetVisible (true);
 					}
 				}
-			}else if ( !Visible() && AreChildrenLoaded () && distanceTestResult == DistanceTestResult.JOIN ) {
+			}else if ( !Visible() && AreChildrenLoaded () && ParentOfVisibleNodes() && distanceTestResult == DistanceTestResult.JOIN ) {
 				Debug.LogWarning ("Joinning node [" + nodeID + "]");
 				SetVisible (true);
 				for (int i = 0; i < children_.Length; i++) {
@@ -279,5 +280,19 @@ public class QuadtreeLODPlane : MonoBehaviour {
 	public bool Visible()
 	{
 		return gameObject.GetComponent<MeshRenderer> ().enabled;
+	}
+
+
+	public bool ParentOfVisibleNodes()
+	{
+		if (children_ == null) {
+			return false;
+		}
+		for (int i = 0; i < children_.Length; i++) {
+			if (children_ [i].GetComponent<QuadtreeLODPlane> ().Visible () == false) {
+				return false;
+			}
+		}
+		return true;
 	}
 }
