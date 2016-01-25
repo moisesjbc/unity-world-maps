@@ -57,64 +57,10 @@ public class WCSComponentInspector : Editor
 			EditorGUILayout.LabelField ("Server label : " + wcsServerInfo.label );
 		EditorGUILayout.EndVertical ();
 
-		/*
-		bool serverChanged = false;
-		bool layerChanged = false;
-		bool boundingBoxChanged = false;
-
-		EditorGUILayout.BeginVertical (EditorStyles.helpBox);
-			EditorGUILayout.LabelField ("Server");
-			DisplayServerSelector (ref wmsComponent, out serverChanged);
-
-			
-
-			RequestStatus requestStatus = 
-				wmsInfoRequester.GetRequestStatus (wmsComponent.wmsRequestID);
-				
-			if (requestStatus != RequestStatus.OK) {
-				if( requestStatus == RequestStatus.DOWNLOADING ){
-					EditorGUILayout.HelpBox("Downloading WMS info ...", MessageType.Info);
-				}else if( requestStatus == RequestStatus.ERROR ){
-					EditorGUILayout.HelpBox("ERROR downloading WMS info (see console for more info)", MessageType.Error);
-				}
-
-				if (GUI.changed) {
-					EditorUtility.SetDirty (wmsComponent);
-					EditorSceneManager.MarkSceneDirty (EditorSceneManager.GetActiveScene ());
-				}
-				EditorGUILayout.EndVertical ();
-				return;
-			}
-
-			WMSInfo wmsInfo = wmsInfoRequester.GetResponse (wmsComponent.wmsRequestID);
-			EditorGUILayout.LabelField ("Server title: " + wmsInfo.serverTitle);
-			EditorGUILayout.LabelField ("Server abstract: " + wmsInfo.serverAbstract);
-		EditorGUILayout.EndVertical ();
-
-		if (wmsInfo.GetLayerTitles ().Length <= 0) {
-			EditorGUILayout.LabelField("No layers");
-
-			if (GUI.changed) {
-				EditorUtility.SetDirty (wmsComponent);
-				EditorSceneManager.MarkSceneDirty (EditorSceneManager.GetActiveScene ());
-			}
-			return;
-		}
-			
-		DisplayLayersSelector (ref wmsComponent, wmsInfo, out layerChanged);
-
-		if (layerChanged) {
-			wmsComponent.RequestTexturePreview ();
-		}
-
-		DisplayBoundingBoxPanel (ref wmsComponent, ref wmsInfo, out boundingBoxChanged);
-
-		// Mark the target assert as changed ("dirty") so Unity save it to disk.
 		if (GUI.changed) {
-			EditorUtility.SetDirty (wmsComponent);
+			EditorUtility.SetDirty (wcsComponent);
 			EditorSceneManager.MarkSceneDirty (EditorSceneManager.GetActiveScene ());
 		}
-		*/
 	}
 
 
