@@ -29,6 +29,7 @@ public class WCSComponentInspector : Editor
 
 		if (wcsServerInfo != null) {
 			DisplayCoverageSelectionPanel (ref wcsComponent, wcsServerInfo.coverages, out coverageChanged);
+			DisplayBoundingBoxPanel (ref wcsComponent);
 		}
 
 		if (GUI.changed) {
@@ -109,6 +110,19 @@ public class WCSComponentInspector : Editor
 		}
 
 		EditorGUILayout.LabelField ("Selected coverage: " + wcsComponent.coverageLabel);
+
+		EditorGUILayout.EndVertical ();
+	}
+
+
+	void DisplayBoundingBoxPanel (ref WCSHeightMap wcsComponent)
+	{
+		EditorGUILayout.BeginVertical (EditorStyles.helpBox);
+
+		EditorGUILayout.LabelField ("Bounding box selection");
+
+		wcsComponent.bottomLeftCoordinates = EditorGUILayout.Vector2Field("Bottom left coordinates: ", wcsComponent.bottomLeftCoordinates);
+		wcsComponent.topRightCoordinates = EditorGUILayout.Vector2Field("Top right coordinates: ", wcsComponent.topRightCoordinates);
 
 		EditorGUILayout.EndVertical ();
 	}
