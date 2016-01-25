@@ -126,10 +126,6 @@ public class QuadtreeLODPlane : MonoBehaviour {
 
 	public void SetVisible( bool visible )
 	{
-		if (visible != gameObject.GetComponent<MeshRenderer> ().enabled) {
-			Debug.Log("Changing visibility of [" + nodeID + "] to " + visible); 
-		}
-
 		// Set node visibility.
 		gameObject.GetComponent<MeshRenderer> ().enabled = visible;
 
@@ -156,14 +152,6 @@ public class QuadtreeLODPlane : MonoBehaviour {
 			return;
 		}
 
-		if (Visible () && children_ != null) {
-			for (int i = 0; i < 4; i++) {
-				if (children_ [i].GetComponent<QuadtreeLODPlane> ().Visible ()) {
-					Debug.LogError ("Both " + nodeID + " and " + children_ [i].GetComponent<QuadtreeLODPlane> ().nodeID + "] are visible");
-				}
-			}
-		}
-
 		if (Visible() || AreChildrenLoaded()) {
 			DistanceTestResult distanceTestResult = DoDistanceTest();
 			Vector3 meshSize = Vector3.Scale (GetComponent<MeshFilter>().mesh.bounds.size, gameObject.transform.lossyScale);
@@ -177,14 +165,12 @@ public class QuadtreeLODPlane : MonoBehaviour {
 
 				// Make this node invisible and children visible.
 				if (AreChildrenLoaded ()) {
-					Debug.LogWarning ("Subdividing node [" + nodeID + "]");
 					SetVisible (false);
 					for (int i = 0; i < children_.Length; i++) {
 						children_ [i].GetComponent<QuadtreeLODPlane>().SetVisible (true);
 					}
 				}
 			}else if ( !Visible() && AreChildrenLoaded () && ParentOfVisibleNodes() && distanceTestResult == DistanceTestResult.JOIN ) {
-				Debug.LogWarning ("Joinning node [" + nodeID + "]");
 				SetVisible (true);
 				for (int i = 0; i < children_.Length; i++) {
 					children_ [i].GetComponent<QuadtreeLODPlane>().SetVisible (false);
