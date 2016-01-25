@@ -10,14 +10,13 @@ using System.Collections.Generic;
 [ExecuteInEditMode]
 public class QuadtreeLODPlane : MonoBehaviour {
 	public int vertexResolution = 20;
-	private bool visible_ = true;
 
 	private OnlineTexture onlineTexture = null;
 	private WCSHeightMap onlineHeightMap = null;
 
 	public string nodeID = "0";
 
-	GameObject[] children_ = new GameObject[]{ null, null, null, null };
+	GameObject[] children_ = null;
 
 	public int depth_ = 0;
 	const int MAX_DEPTH = 7;
@@ -57,14 +56,6 @@ public class QuadtreeLODPlane : MonoBehaviour {
 
 			// Create material
 			gameObject.GetComponent<Renderer> ().sharedMaterial = new Material (Shader.Find ("Sprites/Default"));
-
-			GetComponent<QuadtreeLODPlane> ().SetVisible (true);
-		} else {
-			GetComponent<QuadtreeLODPlane> ().SetVisible (false);
-			transform.parent.GetComponent<QuadtreeLODPlane> ().onlineTexture.CopyTo (onlineTexture);
-			if (transform.parent.GetComponent<QuadtreeLODPlane> ().onlineHeightMap != null) {
-				transform.parent.GetComponent<QuadtreeLODPlane> ().onlineHeightMap.CopyTo (onlineHeightMap);
-			}
 		}
 							
 		gameObject.tag = "MapSector";
@@ -112,21 +103,20 @@ public class QuadtreeLODPlane : MonoBehaviour {
 			childGameObject.GetComponent<Renderer>().material.color = color;
 		#endif
 		childGameObject.GetComponent<QuadtreeLODPlane>().depth_ = this.depth_ + 1;
-		childGameObject.GetComponent<QuadtreeLODPlane> ().vertexResolution = this.vertexResolution;
+		childGameObject.GetComponent<QuadtreeLODPlane>().vertexResolution = this.vertexResolution;
 		childGameObject.GetComponent<QuadtreeLODPlane> ().nodeID = nodeID;
-		childGameObject.GetComponent<QuadtreeLODPlane>().children_ = new GameObject[]{ null, null, null, null };
-
-		childGameObject.GetComponent<QuadtreeLODPlane> ().SetVisible (false);
-
 
 		if (gameObject.GetComponent<WMSComponent> () != null) {
 			childGameObject.GetComponent<QuadtreeLODPlane>().onlineTexture = childGameObject.AddComponent<WMSComponent> ();
 		} else {
 			childGameObject.GetComponent<QuadtreeLODPlane>().onlineTexture = childGameObject.AddComponent<BingMapsComponent> ();
 		}
+		onlineTexture.CopyTo (childGameObject.GetComponent<QuadtreeLODPlane>().onlineTexture);
+		childGameObject.GetComponent<QuadtreeLODPlane>().SetVisible (false);
 			
 		if (gameObject.GetComponent<WCSHeightMap> () != null) {
 			childGameObject.GetComponent<QuadtreeLODPlane>().onlineHeightMap = childGameObject.AddComponent<WCSHeightMap> ();
+			gameObject.GetComponent<WCSHeightMap> ().CopyTo(childGameObject.GetComponent<QuadtreeLODPlane>().onlineHeightMap);
 		}
 
 		return childGameObject;
@@ -147,8 +137,8 @@ public class QuadtreeLODPlane : MonoBehaviour {
 	public void SetVisible( bool visible )
 	{
 		// Set node visibility.
-		visible_ = visible;
-		gameObject.GetComponent<Renderer> ().enabled = visible;
+		gameObject.GetComponent<MeshRenderer> ().enabled = visible;
+
 
 		// Enable or disable collider according to new visibility value.
 		//Collider collider = gameObject.GetComponent<Collider>();
@@ -158,7 +148,7 @@ public class QuadtreeLODPlane : MonoBehaviour {
 
 		// No matter which visibility is applied to this node, children
 		// visibility must be set to false.
-		if (children_ != null && children_[0] != null) {
+		if (children_ != null) {
 			for( int i = 0; i < children_.Length; i++ ){
 				children_[i].GetComponent<QuadtreeLODPlane>().SetVisible (false);
 			}
@@ -172,14 +162,14 @@ public class QuadtreeLODPlane : MonoBehaviour {
 			return;
 		}
 
-		if (visible_ || AreChildrenLoaded()) {
+		if (Visible() || AreChildrenLoaded()) {
 			DistanceTestResult distanceTestResult = DoDistanceTest();
 			Vector3 meshSize = Vector3.Scale (GetComponent<MeshFilter>().mesh.bounds.size, gameObject.transform.lossyScale);
 
 			// Subdivide the plane if camera is closer than a threshold.
-			if (visible_ && distanceTestResult == DistanceTestResult.SUBDIVIDE ) {
+			if (Visible() && distanceTestResult == DistanceTestResult.SUBDIVIDE ) {
 				// Create children if they don't exist.
-				if (depth_ < MAX_DEPTH && children_ [0] == null) {
+				if (depth_ < MAX_DEPTH && children_ == null) {
 					CreateChildren (meshSize);
 				}
 
@@ -190,7 +180,7 @@ public class QuadtreeLODPlane : MonoBehaviour {
 						children_ [i].GetComponent<QuadtreeLODPlane>().SetVisible (true);
 					}
 				}
-			}else if ( !visible_ && AreChildrenLoaded () && distanceTestResult == DistanceTestResult.JOIN ) {
+			}else if ( !Visible() && AreChildrenLoaded () && ParentOfVisibleNodes() && distanceTestResult == DistanceTestResult.JOIN ) {
 				SetVisible (true);
 				for (int i = 0; i < children_.Length; i++) {
 					children_ [i].GetComponent<QuadtreeLODPlane>().SetVisible (false);
@@ -262,6 +252,7 @@ public class QuadtreeLODPlane : MonoBehaviour {
 			nodeID + "3"
 		};
 
+		children_ = new GameObject[]{ null, null, null, null };
 		for( int i=0; i<4; i++ ){
 			children_[i] = CreateChild( childrenIDs[i], childrenColors[i], childLocalPosition[i] );
 		}
@@ -278,7 +269,7 @@ public class QuadtreeLODPlane : MonoBehaviour {
 
 
 	private bool AreChildrenLoaded(){
-		if (children_ [0] != null) {
+		if (children_ != null) {
 			for (int i = 0; i < 4; i++) {
 				if (children_ [i].GetComponent<QuadtreeLODPlane>().Loaded() == false){
 					return false;
@@ -288,5 +279,25 @@ public class QuadtreeLODPlane : MonoBehaviour {
 		} else {
 			return false;
 		}
+	}
+
+
+	public bool Visible()
+	{
+		return gameObject.GetComponent<MeshRenderer> ().enabled;
+	}
+
+
+	public bool ParentOfVisibleNodes()
+	{
+		if (children_ == null) {
+			return false;
+		}
+		for (int i = 0; i < children_.Length; i++) {
+			if (children_ [i].GetComponent<QuadtreeLODPlane> ().Visible () == false) {
+				return false;
+			}
+		}
+		return true;
 	}
 }
