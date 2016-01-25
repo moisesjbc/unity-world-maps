@@ -23,6 +23,7 @@ public class WCSComponentInspector : Editor
 		WCSHeightMap wcsComponent = (WCSHeightMap)target;
 
 		bool serverChanged = false;
+		bool coverageChanged = false;
 
 
 		DisplayServerSelectionPanel (ref wcsComponent, out serverChanged);
@@ -57,6 +58,8 @@ public class WCSComponentInspector : Editor
 			EditorGUILayout.LabelField ("Server label : " + wcsServerInfo.label );
 		EditorGUILayout.EndVertical ();
 
+		DisplayCoverageSelectionPanel (ref wcsComponent, wcsServerInfo.coverages, out coverageChanged);
+
 		if (GUI.changed) {
 			EditorUtility.SetDirty (wcsComponent);
 			EditorSceneManager.MarkSceneDirty (EditorSceneManager.GetActiveScene ());
@@ -77,6 +80,33 @@ public class WCSComponentInspector : Editor
 			serverChanged = true;
 			wcsComponent.serverURL = newServerURL;
 		}
+
+		EditorGUILayout.EndVertical ();
+	}
+
+
+	private void DisplayCoverageSelectionPanel (ref WCSHeightMap wcsComponent, WCSCoverage[] coverages, out bool coverageChanged)
+	{
+		coverageChanged = false; 
+
+		List<string> layerPopupItems = new List<string> ();
+		layerPopupItems.Add ("Select a coverage");
+		foreach (WCSCoverage coverage in coverages) {
+			layerPopupItems.Add (coverage.label);
+		}
+
+		EditorGUILayout.BeginVertical (EditorStyles.helpBox);
+
+		EditorGUILayout.LabelField ("Coverage selection");
+
+		int newCoverageIndex = EditorGUILayout.Popup (0, layerPopupItems.ToArray());
+
+		if (newCoverageIndex != 0) {
+			wcsComponent.coverageName = coverages [newCoverageIndex-1].name;
+			wcsComponent.coverageLabel = coverages [newCoverageIndex-1].label;
+		}
+
+		EditorGUILayout.LabelField ("Selected coverage: " + wcsComponent.coverageLabel);
 
 		EditorGUILayout.EndVertical ();
 	}

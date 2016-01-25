@@ -8,6 +8,8 @@ public class WCSHeightMap : MonoBehaviour
 	private WWW request_ = null;
 	public bool heightMapLoaded = false;
 	public string serverURL = "http://www.idee.es/wcs/IDEE-WCS-UTM28N/wcsServlet";
+	public string coverageName = "MDT_canarias";
+	public string coverageLabel = "";
 	public Vector2 bottomLeftCoordinates = new Vector2 ( 416000,3067000 );
 	public Vector2 topRightCoordinates = new Vector2 ( 466000,3117000 );
 	public string wcsRequestID = "";
@@ -19,7 +21,7 @@ public class WCSHeightMap : MonoBehaviour
 		Vector2 topRightCoordinates = this.topRightCoordinates;
 		WMSComponent.GenerateWMSBoundingBox (nodeID, ref bottomLeftCoordinates, ref topRightCoordinates);
 
-		string fixedUrl = serverURL + "?REQUEST=GetCoverage&SERVICE=WCS&VERSION=1.0.0&FORMAT=AsciiGrid&COVERAGE=MDT_canarias&CRS=EPSG:25828&REFERER=CAPAWARE";
+		string fixedUrl = serverURL + "?REQUEST=GetCoverage&SERVICE=WCS&VERSION=1.0.0&FORMAT=AsciiGrid&COVERAGE=" + coverageName + "&CRS=EPSG:25828&REFERER=CAPAWARE";
 		string bboxUrlQuery = 
 			"&BBOX=" + bottomLeftCoordinates.x + "," +
 			bottomLeftCoordinates.y + "," +
