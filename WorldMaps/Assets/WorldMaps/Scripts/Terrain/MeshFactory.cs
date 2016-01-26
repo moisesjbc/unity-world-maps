@@ -27,7 +27,6 @@ public class MeshFactory {
 			int N_VERTICES = (meshVertexResolution + 2) * (meshVertexResolution + 2);
 			vertices = new Vector3[N_VERTICES];
 			uv = new Vector2[N_VERTICES];
-			//Debug.Log ("N_VERTICES: " + N_VERTICES);
 
 			for (int row=-1; row<=meshVertexResolution; row++) {
 				for (int column=-1; column<=meshVertexResolution; column++) {
@@ -39,8 +38,6 @@ public class MeshFactory {
 
 					uv[VERTEX_INDEX].x = Mathf.Clamp (DISTANCE_BETWEEN_UV * column, 0.0f, 1.0f);
 					uv[VERTEX_INDEX].y = Mathf.Clamp (1.0f - Mathf.Max( DISTANCE_BETWEEN_UV * row, 0.0f ), 0.0f, 1.0f);
-
-					//Debug.Log ("[" + VERTEX_INDEX + "] v - " + vertices[VERTEX_INDEX] + " uv - " + uv[VERTEX_INDEX]);
 				}
 			}
 		} else {

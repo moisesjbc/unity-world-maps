@@ -33,9 +33,7 @@ public class WCSServerInfoXMLParser {
 			coverages [i] = new WCSCoverage(layerLabel, layerName);
 			i++;
 		}
-
-		Debug.LogWarning ("Parsed layers");
-
+			
 		return coverages;
 	}
 }

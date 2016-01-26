@@ -111,7 +111,6 @@ public class WCSHeightMap : MonoBehaviour
 		int columnOffset = 0;
 
 		if (vertices.Length > (vertexResolution * vertexResolution)) {
-			Debug.LogWarning ("Offset!");
 			rowOffset = 1;
 			columnOffset = 1;
 		}
@@ -123,7 +122,6 @@ public class WCSHeightMap : MonoBehaviour
 			for (int column=0; column<N_COLUMNS; column++) {
 				int VERTEX_INDEX = (row + rowOffset) * N_COLUMNS + (column + columnOffset);
 				vertices [VERTEX_INDEX].y = heights [row, column] / 500.0f;	// TODO: take metersPerUnit from OnlineTexture
-				Debug.LogWarning("vertices[" + (row + rowOffset) + ", " + (column + columnOffset) + "].y: " + vertices [VERTEX_INDEX].y);
 			}
 		}
 
