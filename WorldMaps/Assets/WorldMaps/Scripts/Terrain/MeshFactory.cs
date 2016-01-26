@@ -6,12 +6,25 @@ public class MeshFactory {
 
 	static public Mesh CreateMesh( float meshSize, int meshVertexResolution )
 	{
+		Vector3[] vertices;
+		Vector2[] uv;
+
+		GenerateVertexData (meshSize, meshVertexResolution, out vertices, out uv);
+			
+		int[] triangles = GenerateTriangles(meshVertexResolution);
+			
+		return GenerateMesh(vertices, uv, triangles);
+	}
+
+
+	static private void GenerateVertexData(float meshSize, int meshVertexResolution, out Vector3[] vertices, out Vector2[] uv)
+	{
 		int N_VERTICES = meshVertexResolution * meshVertexResolution;
 		float DISTANCE_BETWEEN_VERTICES = meshSize / (float)(meshVertexResolution - 1.0f) ;
 		float DISTANCE_BETWEEN_UV = 1.0f / (float)(meshVertexResolution - 1.0f);
 
-		Vector3[] vertices = new Vector3[N_VERTICES];
-		Vector2[] uv = new Vector2[N_VERTICES];
+		vertices = new Vector3[N_VERTICES];
+		uv = new Vector2[N_VERTICES];
 
 		// Generate vertices and UV.
 		for (int row=0; row<meshVertexResolution; row++) {
@@ -26,8 +39,11 @@ public class MeshFactory {
 				uv[VERTEX_INDEX].y = 1.0f - DISTANCE_BETWEEN_UV * row;
 			}
 		}
+	}
 
-		// Generate triangles
+
+	static private int[] GenerateTriangles(int meshVertexResolution)
+	{
 		int N_TRIANGLES = 2 * (meshVertexResolution - 1) * (meshVertexResolution - 1);
 		int[] triangles = new int[N_TRIANGLES * 3];
 		int triangleIndex = 0;
@@ -44,7 +60,12 @@ public class MeshFactory {
 				triangleIndex += 6;
 			}
 		}
+		return triangles;
+	}
 
+
+	static private Mesh GenerateMesh(Vector3[] vertices, Vector2[] uv, int[] triangles)
+	{
 		Mesh mesh = new Mesh ();
 		mesh.vertices = vertices;
 		mesh.triangles = triangles;
