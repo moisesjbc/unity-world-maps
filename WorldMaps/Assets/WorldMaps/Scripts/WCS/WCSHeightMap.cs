@@ -122,7 +122,7 @@ public class WCSHeightMap : MonoBehaviour
 			int N_COLUMNS = N_ROWS;
 			for (int column=0; column<N_COLUMNS; column++) {
 				int VERTEX_INDEX = (row + rowOffset) * N_COLUMNS + (column + columnOffset);
-				vertices [VERTEX_INDEX].y = heights [row, column] / 10.0f; /// 500.0f;	// TODO: take metersPerUnit from OnlineTexture
+				vertices [VERTEX_INDEX].y = heights [row, column] / 500.0f;	// TODO: take metersPerUnit from OnlineTexture
 				Debug.LogWarning("vertices[" + (row + rowOffset) + ", " + (column + columnOffset) + "].y: " + vertices [VERTEX_INDEX].y);
 			}
 		}
@@ -140,7 +140,11 @@ public class WCSHeightMap : MonoBehaviour
 	{
 		copy.request_ = null;
 		copy.heightMapLoaded = heightMapLoaded;
+		copy.serverURL = serverURL;
+		copy.coverageName = coverageName;
+		copy.coverageLabel = coverageLabel;
 		copy.bottomLeftCoordinates = bottomLeftCoordinates;
 		copy.topRightCoordinates = topRightCoordinates;
+		wcsRequestID = "";
 	}
 }
