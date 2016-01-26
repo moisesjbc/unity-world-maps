@@ -114,17 +114,17 @@ public class WCSHeightMap : MonoBehaviour
 			rowOffset = 1;
 			columnOffset = 1;
 		}
-
+			
 		int N_ROWS = heights.GetLength(0);
 		for (int row=0; row<N_ROWS; row++) {
 			// FIXME: This is forcing N_COLUMS = N_ROWS.
 			int N_COLUMNS = N_ROWS;
 			for (int column=0; column<N_COLUMNS; column++) {
-				int VERTEX_INDEX = (row + rowOffset) * N_COLUMNS + (column + columnOffset);
-				vertices [VERTEX_INDEX].y = heights [row, column] / 500.0f;	// TODO: take metersPerUnit from OnlineTexture
+				int VERTEX_INDEX = (row + rowOffset) * (N_COLUMNS + 2) + (column + columnOffset);
+				vertices [VERTEX_INDEX].y = heights [row, column] / 250.0f; // TODO: take metersPerUnit from OnlineTexture
 			}
 		}
-
+			
 		GetComponent<MeshFilter>().mesh.vertices = vertices;
 		GetComponent<MeshFilter>().mesh.RecalculateBounds ();
 		GetComponent<MeshFilter>().mesh.RecalculateNormals ();
