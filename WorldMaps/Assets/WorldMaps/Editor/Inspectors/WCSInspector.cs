@@ -29,7 +29,7 @@ public class WCSComponentInspector : Editor
 
 		if (wcsServerInfo != null) {
 			DisplayCoverageSelectionPanel (ref wcsComponent, wcsServerInfo.coverages, out coverageChanged);
-			DisplayBoundingBoxPanel (ref wcsComponent);
+			DisplayBoundingBoxPanel (ref wcsComponent, wcsServerInfo.coverages.First((WCSCoverage c) => { return c.name == wcsComponent.coverageName; }));
 		}
 
 		if (GUI.changed) {
@@ -115,11 +115,23 @@ public class WCSComponentInspector : Editor
 	}
 
 
-	void DisplayBoundingBoxPanel (ref WCSHeightMap wcsComponent)
+	void DisplayBoundingBoxPanel (ref WCSHeightMap wcsComponent, WCSCoverage coverage)
 	{
 		EditorGUILayout.BeginVertical (EditorStyles.helpBox);
 
 		EditorGUILayout.LabelField ("Bounding box selection");
+
+		List<string> boundingBoxPopupItems = new List<string> ();
+		boundingBoxPopupItems.Add ("Select a bounding box");
+		foreach (BoundingBox boundingBox in coverage.boundingBoxes) {
+			boundingBoxPopupItems.Add (boundingBox.ToString ());
+		}
+
+		int newBoundingBoxIndex = EditorGUILayout.Popup (0, boundingBoxPopupItems.ToArray());
+		if (newBoundingBoxIndex != 0) {
+			wcsComponent.bottomLeftCoordinates = coverage.boundingBoxes [newBoundingBoxIndex-1].bottomLeftCoordinates;
+			wcsComponent.topRightCoordinates = coverage.boundingBoxes [newBoundingBoxIndex-1].topRightCoordinates;
+		}
 
 		wcsComponent.bottomLeftCoordinates = EditorGUILayout.Vector2Field("Bottom left coordinates: ", wcsComponent.bottomLeftCoordinates);
 		wcsComponent.topRightCoordinates = EditorGUILayout.Vector2Field("Top right coordinates: ", wcsComponent.topRightCoordinates);
