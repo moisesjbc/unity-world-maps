@@ -51,10 +51,10 @@ public class QuadtreeLODPlane : MonoBehaviour {
 
 			// Create the root mesh.
 			gameObject.GetComponent<MeshFilter> ().mesh = MeshFactory.CreateMesh (mapSize, vertexResolution);
-
-			// Create material
-			gameObject.GetComponent<Renderer> ().sharedMaterial = new Material (Shader.Find ("Sprites/Default"));
 		}
+
+		// Create material
+		gameObject.GetComponent<Renderer> ().sharedMaterial = new Material (Shader.Find ("Sprites/Default"));
 				
 		gameObject.tag = "MapSector";
 
