@@ -105,13 +105,25 @@ public class WCSHeightMap : MonoBehaviour
 	{
 		Vector3[] vertices = GetComponent<MeshFilter>().mesh.vertices;
 
+		int vertexResolution = gameObject.GetComponent<QuadtreeLODPlane> ().vertexResolution;
+
+		int rowOffset = 0;
+		int columnOffset = 0;
+
+		if (vertices.Length > (vertexResolution * vertexResolution)) {
+			Debug.LogWarning ("Offset!");
+			rowOffset = 1;
+			columnOffset = 1;
+		}
+
 		int N_ROWS = heights.GetLength(0);
 		for (int row=0; row<N_ROWS; row++) {
 			// FIXME: This is forcing N_COLUMS = N_ROWS.
 			int N_COLUMNS = N_ROWS;
 			for (int column=0; column<N_COLUMNS; column++) {
-				int VERTEX_INDEX = row * N_COLUMNS + column;
-				vertices[VERTEX_INDEX].y = heights[row,column] / 1000.0f;	// TODO: take metersPerUnit from OnlineTexture
+				int VERTEX_INDEX = (row + rowOffset) * N_COLUMNS + (column + columnOffset);
+				vertices [VERTEX_INDEX].y = heights [row, column] / 10.0f; /// 500.0f;	// TODO: take metersPerUnit from OnlineTexture
+				Debug.LogWarning("vertices[" + (row + rowOffset) + ", " + (column + columnOffset) + "].y: " + vertices [VERTEX_INDEX].y);
 			}
 		}
 

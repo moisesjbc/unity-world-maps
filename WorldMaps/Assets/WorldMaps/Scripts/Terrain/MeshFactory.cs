@@ -4,39 +4,61 @@ using System.Collections;
 public class MeshFactory {
 
 
-	static public Mesh CreateMesh( float meshSize, int meshVertexResolution )
+	static public Mesh CreateMesh( float meshSize, int meshVertexResolution, bool extendBorders = false )
 	{
 		Vector3[] vertices;
 		Vector2[] uv;
 
-		GenerateVertexData (meshSize, meshVertexResolution, out vertices, out uv);
+		GenerateVertexData (meshSize, meshVertexResolution, out vertices, out uv, extendBorders);
 			
-		int[] triangles = GenerateTriangles(meshVertexResolution);
+		int[] triangles = GenerateTriangles( extendBorders ? meshVertexResolution + 2 : meshVertexResolution);
 			
 		return GenerateMesh(vertices, uv, triangles);
 	}
 
 
-	static private void GenerateVertexData(float meshSize, int meshVertexResolution, out Vector3[] vertices, out Vector2[] uv)
+	static private void GenerateVertexData(float meshSize, int meshVertexResolution, out Vector3[] vertices, out Vector2[] uv, bool extendBorders)
 	{
-		int N_VERTICES = meshVertexResolution * meshVertexResolution;
 		float DISTANCE_BETWEEN_VERTICES = meshSize / (float)(meshVertexResolution - 1.0f) ;
 		float DISTANCE_BETWEEN_UV = 1.0f / (float)(meshVertexResolution - 1.0f);
 
-		vertices = new Vector3[N_VERTICES];
-		uv = new Vector2[N_VERTICES];
-
 		// Generate vertices and UV.
-		for (int row=0; row<meshVertexResolution; row++) {
-			for (int column=0; column<meshVertexResolution; column++) {
-				int VERTEX_INDEX = row * meshVertexResolution + column;
+		if (extendBorders) {
+			int N_VERTICES = (meshVertexResolution + 2) * (meshVertexResolution + 2);
+			vertices = new Vector3[N_VERTICES];
+			uv = new Vector2[N_VERTICES];
+			//Debug.Log ("N_VERTICES: " + N_VERTICES);
 
-				vertices[VERTEX_INDEX].x = -meshSize / 2.0f + column * DISTANCE_BETWEEN_VERTICES;
-				vertices[VERTEX_INDEX].y = 0.0f;
-				vertices[VERTEX_INDEX].z = meshSize / 2.0f - row * DISTANCE_BETWEEN_VERTICES;
+			for (int row=-1; row<=meshVertexResolution; row++) {
+				for (int column=-1; column<=meshVertexResolution; column++) {
+					int VERTEX_INDEX = (row + 1) * (meshVertexResolution + 2) + (column + 1);
 
-				uv[VERTEX_INDEX].x = DISTANCE_BETWEEN_UV * column;
-				uv[VERTEX_INDEX].y = 1.0f - DISTANCE_BETWEEN_UV * row;
+					vertices[VERTEX_INDEX].x = Mathf.Clamp (-meshSize / 2.0f + column * DISTANCE_BETWEEN_VERTICES, -meshSize / 2.0f, meshSize / 2.0f);
+					vertices[VERTEX_INDEX].y = 0.0f;
+					vertices[VERTEX_INDEX].z = Mathf.Clamp (meshSize / 2.0f - row * DISTANCE_BETWEEN_VERTICES, -meshSize / 2.0f, meshSize / 2.0f);
+
+					uv[VERTEX_INDEX].x = Mathf.Clamp (DISTANCE_BETWEEN_UV * column, 0.0f, 1.0f);
+					uv[VERTEX_INDEX].y = Mathf.Clamp (1.0f - Mathf.Max( DISTANCE_BETWEEN_UV * row, 0.0f ), 0.0f, 1.0f);
+
+					//Debug.Log ("[" + VERTEX_INDEX + "] v - " + vertices[VERTEX_INDEX] + " uv - " + uv[VERTEX_INDEX]);
+				}
+			}
+		} else {
+			int N_VERTICES = meshVertexResolution * meshVertexResolution;
+			vertices = new Vector3[N_VERTICES];
+			uv = new Vector2[N_VERTICES];
+
+			for (int row=0; row<meshVertexResolution; row++) {
+				for (int column=0; column<meshVertexResolution; column++) {
+					int VERTEX_INDEX = row * meshVertexResolution + column;
+
+					vertices[VERTEX_INDEX].x = -meshSize / 2.0f + column * DISTANCE_BETWEEN_VERTICES;
+					vertices[VERTEX_INDEX].y = 0.0f;
+					vertices[VERTEX_INDEX].z = meshSize / 2.0f - row * DISTANCE_BETWEEN_VERTICES;
+
+					uv[VERTEX_INDEX].x = DISTANCE_BETWEEN_UV * column;
+					uv[VERTEX_INDEX].y = 1.0f - DISTANCE_BETWEEN_UV * row;
+				}
 			}
 		}
 	}
