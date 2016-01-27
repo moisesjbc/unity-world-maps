@@ -59,23 +59,19 @@ public class WMSComponentInspector : Editor
 			EditorGUILayout.LabelField ("Server abstract: " + wmsInfo.serverAbstract);
 		EditorGUILayout.EndVertical ();
 
-		if (wmsInfo.GetLayerTitles ().Length <= 0) {
-			EditorGUILayout.LabelField("No layers");
+		if (wmsInfo.GetLayerTitles ().Length > 0) {
+			DisplayLayersSelector (ref wmsTexture, wmsInfo, out layerChanged);
 
-			if (GUI.changed) {
-				EditorUtility.SetDirty (wmsTexture);
-				EditorSceneManager.MarkSceneDirty (EditorSceneManager.GetActiveScene ());
+			if (layerChanged) {
+				wmsTexture.RequestTexturePreview ();
 			}
-			return;
-		}
-			
-		DisplayLayersSelector (ref wmsTexture, wmsInfo, out layerChanged);
 
-		if (layerChanged) {
-			wmsTexture.RequestTexturePreview ();
+			if (wmsTexture.SelectedLayersNumber () > 0) {
+				DisplayBoundingBoxPanel (ref wmsTexture, ref wmsInfo, out boundingBoxChanged);
+			}
+		} else {
+			EditorGUILayout.HelpBox("No layers returned by server", MessageType.Warning);
 		}
-
-		DisplayBoundingBoxPanel (ref wmsTexture, ref wmsInfo, out boundingBoxChanged);
 
 		// Mark the target assert as changed ("dirty") so Unity save it to disk.
 		if (GUI.changed) {
