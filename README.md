@@ -1,4 +1,4 @@
-# World maps
+﻿# World maps
 
 ![Screenshot of World Maps](Images/world_maps_screenshot.png)
 
@@ -19,18 +19,18 @@ To take a look at the possibilities of this package. Just open the scene WorldMa
 
 #### Procedure
 
-1. Drag the prefab WorldMaps/Prefabs/WCSTerrain.prefab and drop it into the scene. A plane with a red question mark should appear.
+1. Drag the prefab WorldMaps/Prefabs/WCSTerrain.prefab and drop it into the scene.
 
   ![](Images/Tutorial/WMS/DroppingWMSPrefabIntoScene.png)
 
-2. With the plane selected, a WMSComponent inspector should appear on the right. 
+2. With the plane selected, a WMSTexture inspector should appear on the right. 
 
   ![](Images/Tutorial/WMS/WMSInspector.png)
 
 4. Edit the inspector fields to meet your requirements:
-  1. Select a server(\*) from the bookmarks list or enter a custom URL and wait a moment for the inspector to load the data from server. If any errors arises, it would be output to both the inspector and the console.
+  1. Select a server(\*) from the bookmarks list or by writting a custom URL and wait a moment for the inspector to load the data from server. If any errors arises, it will be output to both the inspector and the console.
   2. Under the "Layers" panel, mark the layer(s) you want to display. Every time a layer is marked / unmarked, the plane texture is updated from server.
-  3. Under the "Bounding box" panel, select a bounding box from the list provided by the server or insert a custom one. To see the changes in the scene view, the button "Update bounding box preview" must be pressed.
+  3. Under the "Bounding box" panel, select a bounding box from the list provided by the server or insert a custom one. Changes in bounding box doesn't update the plane texture automatically. Instead, the button "Update bounding box preview" must be pressed.
 
 5. Enjoy the new scene with your map!
 
