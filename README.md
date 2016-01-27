@@ -19,7 +19,7 @@ To take a look at the possibilities of this package. Just open the scene WorldMa
 
 #### Procedure
 
-1. Drag the prefab WorldMaps/Prefabs/WCSTerrain.prefab and drop it into the scene.
+1. Drag the prefab WorldMaps/Prefabs/WMSPlane.prefab and drop it into the scene.
 
   ![](Images/Tutorial/WMS/DroppingWMSPrefabIntoScene.png)
 
