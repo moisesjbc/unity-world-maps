@@ -48,17 +48,10 @@ public abstract class OnlineTexture : MonoBehaviour {
 			string errorMessage = "";
 			if (ValidateDownloadedTexture (out errorMessage)) {
 				textureLoaded = true;
-				if (Application.isPlaying) {
-					var tempMaterial = new Material (GetComponent<MeshRenderer> ().material);
-					tempMaterial.mainTexture = request_.texture;
-					tempMaterial.mainTexture.wrapMode = TextureWrapMode.Clamp;
-					GetComponent<MeshRenderer> ().material = tempMaterial;
-				} else {
-					var tempMaterial = new Material (GetComponent<MeshRenderer> ().sharedMaterial);
-					tempMaterial.mainTexture = request_.texture;
-					tempMaterial.mainTexture.wrapMode = TextureWrapMode.Clamp;
-					GetComponent<MeshRenderer> ().sharedMaterial = tempMaterial;
-				}
+				var tempMaterial = new Material (GetComponent<MeshRenderer> ().sharedMaterial);
+				tempMaterial.mainTexture = request_.texture;
+				tempMaterial.mainTexture.wrapMode = TextureWrapMode.Clamp;
+				GetComponent<MeshRenderer> ().material = tempMaterial;
 			} else {
 				string requestedURL = request_.url;
 				request_ = null;
