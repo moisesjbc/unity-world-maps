@@ -5,7 +5,7 @@ using System.Linq;
 using System.Xml;
 
 [ExecuteInEditMode]
-public class WMSComponent : OnlineTexture {
+public class WMSTexture : OnlineTexture {
 	public string serverURL = "http://129.206.228.72/cached/osm";
 	public string wmsRequestID = "";
 	public bool keepBoundingBoxRatio = false;
@@ -107,7 +107,7 @@ public class WMSComponent : OnlineTexture {
 
 	protected override void InnerCopyTo(OnlineTexture copy)
 	{
-		WMSComponent target = (WMSComponent)copy;
+		WMSTexture target = (WMSTexture)copy;
 		target.serverURL = serverURL;
 		target.wmsRequestID = wmsRequestID;
 		target.keepBoundingBoxRatio = keepBoundingBoxRatio;

@@ -35,16 +35,16 @@ public class QuadtreeLODPlane : MonoBehaviour {
 
 			float mapSize = Mathf.Max (meshSize.x, meshSize.z);
 
-			if (GetComponent<WMSComponent> () != null) {
-				onlineTexture = this.GetComponent<WMSComponent> ();
+			if (GetComponent<WMSTexture> () != null) {
+				onlineTexture = this.GetComponent<WMSTexture> ();
 
 				if (GetComponent<BingMapsComponent> () != null) {
-					throw new UnityException ("Terrain can't have both WMSComponent and BingMapsComponent componets!");
+					throw new UnityException ("Terrain can't have both WMSTexture and BingMapsComponent componets!");
 				}
 			} else if (GetComponent<BingMapsComponent> () != null) {
 				onlineTexture = this.GetComponent<BingMapsComponent> ();
 			} else {
-				throw new MissingComponentException ("Terrain must have a WMSComponent or BingMapsComponent");
+				throw new MissingComponentException ("Terrain must have a WMSTexture or BingMapsComponent");
 			}
 
 			nodeID = "0";
@@ -101,8 +101,8 @@ public class QuadtreeLODPlane : MonoBehaviour {
 		childGameObject.GetComponent<QuadtreeLODPlane> ().nodeID = nodeID;
 
 
-		if (gameObject.GetComponent<WMSComponent> () != null) {
-			childGameObject.GetComponent<QuadtreeLODPlane>().onlineTexture = childGameObject.AddComponent<WMSComponent> ();
+		if (gameObject.GetComponent<WMSTexture> () != null) {
+			childGameObject.GetComponent<QuadtreeLODPlane>().onlineTexture = childGameObject.AddComponent<WMSTexture> ();
 		} else {
 			childGameObject.GetComponent<QuadtreeLODPlane>().onlineTexture = childGameObject.AddComponent<BingMapsComponent> ();
 		}
