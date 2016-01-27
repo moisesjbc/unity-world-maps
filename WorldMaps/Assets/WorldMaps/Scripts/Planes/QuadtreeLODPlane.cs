@@ -54,7 +54,7 @@ public class QuadtreeLODPlane : MonoBehaviour {
 		}
 
 		// Create material
-		gameObject.GetComponent<Renderer> ().sharedMaterial = new Material (Shader.Find ("Sprites/Default"));
+		gameObject.GetComponent<Renderer> ().material = new Material (Shader.Find ("Sprites/Default"));
 
 		if (Application.isPlaying) {
 			onlineTexture.RequestTexture (nodeID);
