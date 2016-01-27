@@ -141,7 +141,7 @@ public class WMSComponentInspector : Editor
 		for( int i=0; i<layers.Length; i++) {
 			if( layers[i].name != "" ){
 				bool newToggleValue = 
-					EditorGUILayout.Toggle (layers[i].title, (wmsTexture.LayerSelected(layers[i].name)));
+					EditorGUILayout.ToggleLeft (layers[i].title, (wmsTexture.LayerSelected(layers[i].name)));
 				
 				layerChanged |= (newToggleValue != wmsTexture.LayerSelected(layers[i].name));
 				wmsTexture.SetLayerSelected (layers[i].name, newToggleValue);
