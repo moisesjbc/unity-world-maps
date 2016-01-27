@@ -188,7 +188,7 @@ public class WMSComponentInspector : Editor
 			newTopRightCoordinates,
 			wmsTexture.keepBoundingBoxRatio);
 
-		if( boundingBoxChanged || GUILayout.Button("Update bounding box preview (may take a while)")){
+		if(GUILayout.Button("Update bounding box preview (may take a while)")){
 			wmsTexture.RequestTexturePreview ();
 		}
 
