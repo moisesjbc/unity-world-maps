@@ -6,7 +6,7 @@ using System.Collections.Generic;
 
 
 // This [ExecuteInEditMode] is for Start to execute and then display the right mesh
-// created with MeshFactory. 
+// created with PlanesFactory. 
 [ExecuteInEditMode]
 public class QuadtreeLODPlane : MonoBehaviour {
 	public int vertexResolution = 20;
@@ -50,7 +50,7 @@ public class QuadtreeLODPlane : MonoBehaviour {
 			nodeID = "0";
 
 			// Create the root mesh.
-			gameObject.GetComponent<MeshFilter> ().mesh = MeshFactory.CreateMesh (mapSize, vertexResolution);
+			gameObject.GetComponent<MeshFilter> ().mesh = PlanesFactory.CreateHorizontalPlane (mapSize, vertexResolution);
 		}
 
 		// Create material
