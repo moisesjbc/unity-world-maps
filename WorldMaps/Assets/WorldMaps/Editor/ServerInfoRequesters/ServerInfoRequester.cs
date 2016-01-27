@@ -21,6 +21,12 @@ public abstract class ServerInfoRequester <ResponseType>
 	}
 
 
+	public bool ExistsTransaction(string requestID)
+	{
+		return transactions.ContainsKey (requestID);
+	}
+
+
 	public RequestStatus Update( string requestID )
 	{
 		return transactions [requestID].Update (ParseResponse);
