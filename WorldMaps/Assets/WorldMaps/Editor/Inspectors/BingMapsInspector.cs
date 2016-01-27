@@ -9,17 +9,11 @@ using UnityEditor.SceneManagement;
 [CustomEditor(typeof(BingMapsTexture))]
 public class BingMapsInspector : Editor
 {
-	const float MIN_LATTITUDE = -90.0f;
-	const float MAX_LATTITUDE = 90.0f;
-
-	const float MIN_LONGITUDE = -180.0f;
-	const float MAX_LONGITUDE = 180.0f;
-
 	const int MIN_ZOOM = 0;
 	const int MAX_ZOOM = 7;
 
-	static string lattitudeLabel = "Lattitude (float): ";
-	static string longitudeLabel = "Longitude (float): ";
+	static string lattitudeLabel = "Lattitude (decimal): ";
+	static string longitudeLabel = "Longitude (decimal): ";
 	static string zoomLabel = "Zoom (" + MIN_ZOOM + ", " + MAX_ZOOM + ")";
 
 
