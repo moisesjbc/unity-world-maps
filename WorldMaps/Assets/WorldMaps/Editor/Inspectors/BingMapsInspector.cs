@@ -6,7 +6,7 @@ using System;
 using System.IO;
 using UnityEditor.SceneManagement;
 
-[CustomEditor(typeof(BingMapsComponent))]
+[CustomEditor(typeof(BingMapsTexture))]
 public class BingMapsInspector : Editor
 {
 	const float MIN_LATTITUDE = -90.0f;
@@ -30,25 +30,25 @@ public class BingMapsInspector : Editor
 			return;
 		}
 
-		BingMapsComponent bingMapsComponent = (BingMapsComponent)target;
+		BingMapsTexture bingMapsTexture = (BingMapsTexture)target;
 
 		EditorGUILayout.LabelField ("Server template URL");
-		bingMapsComponent.serverURL = EditorGUILayout.TextField (bingMapsComponent.serverURL);
-		if (bingMapsComponent.serverURL == BingMapsComponent.testServerURL) {
+		bingMapsTexture.serverURL = EditorGUILayout.TextField (bingMapsTexture.serverURL);
+		if (bingMapsTexture.serverURL == BingMapsTexture.testServerURL) {
 			EditorGUILayout.HelpBox("This is a test server URL. When building your app, please generate a new server template URL by following the instructions on file Assets/WorldMaps/README.pdf", MessageType.Warning);
 		}
 
-		bingMapsComponent.latitude = EditorGUILayout.FloatField(lattitudeLabel, bingMapsComponent.latitude);
-		bingMapsComponent.longitude = EditorGUILayout.FloatField(longitudeLabel, bingMapsComponent.longitude);
-		bingMapsComponent.initialZoom = EditorGUILayout.IntField (zoomLabel, bingMapsComponent.initialZoom);
-		bingMapsComponent.ComputeInitialSector ();
+		bingMapsTexture.latitude = EditorGUILayout.FloatField(lattitudeLabel, bingMapsTexture.latitude);
+		bingMapsTexture.longitude = EditorGUILayout.FloatField(longitudeLabel, bingMapsTexture.longitude);
+		bingMapsTexture.initialZoom = EditorGUILayout.IntField (zoomLabel, bingMapsTexture.initialZoom);
+		bingMapsTexture.ComputeInitialSector ();
 
 		if (GUILayout.Button ("Update preview (may take a while)")) {
-			bingMapsComponent.RequestTexturePreview ();
+			bingMapsTexture.RequestTexturePreview ();
 		}
 
 		if (GUI.changed) {
-			EditorUtility.SetDirty (bingMapsComponent);
+			EditorUtility.SetDirty (bingMapsTexture);
 			EditorSceneManager.MarkSceneDirty (EditorSceneManager.GetActiveScene ());
 		}
 	}
