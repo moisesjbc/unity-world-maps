@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Xml;
 
-[ExecuteInEditMode]
+
 public class WMSTexture : OnlineTexture {
 	public string serverURL = "http://129.206.228.72/cached/osm";
 	public string wmsRequestID = "";
