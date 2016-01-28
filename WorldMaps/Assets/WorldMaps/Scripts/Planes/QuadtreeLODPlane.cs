@@ -65,6 +65,7 @@ public class QuadtreeLODPlane : MonoBehaviour {
 		// Initially this was done by duplicating current game object, but this copied
 		// children as well and errors arisen.
 		GameObject childGameObject = new GameObject();
+		childGameObject.name = GenerateNameForChild (gameObject.name, nodeID);
 		childGameObject.AddComponent<MeshRenderer>();
 		childGameObject.AddComponent<MeshFilter>();
 		childGameObject.AddComponent<QuadtreeLODPlane>();
@@ -108,6 +109,17 @@ public class QuadtreeLODPlane : MonoBehaviour {
 		childGameObject.GetComponent<QuadtreeLODPlane>().SetVisible (false);
 
 		return childGameObject;
+	}
+
+
+	private string GenerateNameForChild(string parentName, string childNodeID)
+	{
+		// Strip node ID from parent name (root node doesn't have ID, so we omit 
+		// that case.
+		if (depth_ > 0) {
+			parentName = parentName.Substring (0, parentName.IndexOf (" - [")); 
+		}
+		return parentName + " - [" + childNodeID + "]";
 	}
 
 
