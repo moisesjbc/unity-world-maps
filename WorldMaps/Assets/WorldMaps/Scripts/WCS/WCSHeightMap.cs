@@ -19,7 +19,7 @@ public class WCSHeightMap : MonoBehaviour
 		heightMapLoaded = false;
 		Vector2 bottomLeftCoordinates = this.bottomLeftCoordinates;
 		Vector2 topRightCoordinates = this.topRightCoordinates;
-		WMSComponent.GenerateWMSBoundingBox (nodeID, ref bottomLeftCoordinates, ref topRightCoordinates);
+		WMSTexture.GenerateWMSBoundingBox (nodeID, ref bottomLeftCoordinates, ref topRightCoordinates);
 
 		string fixedUrl = serverURL + "?REQUEST=GetCoverage&SERVICE=WCS&VERSION=1.0.0&FORMAT=AsciiGrid&COVERAGE=" + coverageName + "&CRS=EPSG:25828&REFERER=CAPAWARE";
 		string bboxUrlQuery = 

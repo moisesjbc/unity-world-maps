@@ -4,8 +4,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Xml;
 
-[ExecuteInEditMode]
-public class WMSComponent : OnlineTexture {
+
+public class WMSTexture : OnlineTexture {
 	public string serverURL = "http://129.206.228.72/cached/osm";
 	public string wmsRequestID = "";
 	public bool keepBoundingBoxRatio = false;
@@ -107,7 +107,7 @@ public class WMSComponent : OnlineTexture {
 
 	protected override void InnerCopyTo(OnlineTexture copy)
 	{
-		WMSComponent target = (WMSComponent)copy;
+		WMSTexture target = (WMSTexture)copy;
 		target.serverURL = serverURL;
 		target.wmsRequestID = wmsRequestID;
 		target.keepBoundingBoxRatio = keepBoundingBoxRatio;
@@ -121,7 +121,12 @@ public class WMSComponent : OnlineTexture {
 
 	public override bool ValidateDownloadedTexture( out string errorMessage )
 	{
-		// TODO: Extract possible errors from XML.
-		return base.ValidateDownloadedTexture(out errorMessage);
+		if (request_.text.IndexOf("<ServiceException>") != -1) {
+			errorMessage = 
+				"Service exception error returned by server: \n" + request_.text;
+			return false;
+		}else{
+			return base.ValidateDownloadedTexture(out errorMessage);
+		}
 	}
 }

@@ -10,9 +10,14 @@ public class WCSCoverage {
 	[SerializeField]
 	public string name = null;
 
-	public WCSCoverage(string label, string name)
+	[SerializeField]
+	public BoundingBox[] boundingBoxes;
+
+
+	public WCSCoverage(string label, string name, BoundingBox[] boundingBoxes)
 	{
 		this.label = label;
 		this.name = name;
+		this.boundingBoxes = boundingBoxes;
 	}
 }

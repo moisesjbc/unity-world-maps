@@ -1,10 +1,9 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class MeshFactory {
+public class PlanesFactory {
 
-
-	static public Mesh CreateMesh( float meshSize, int meshVertexResolution, bool extendBorders = false )
+	static public Mesh CreateHorizontalPlane( float meshSize, int meshVertexResolution, bool extendBorders = false )
 	{
 		Vector3[] vertices;
 		Vector2[] uv;
