@@ -121,7 +121,12 @@ public class WMSTexture : OnlineTexture {
 
 	public override bool ValidateDownloadedTexture( out string errorMessage )
 	{
-		// TODO: Extract possible errors from XML.
-		return base.ValidateDownloadedTexture(out errorMessage);
+		if (request_.text.Contains ("<ServiceException>")) {
+			errorMessage = 
+				"Service exception error returned by server: \n" + request_.text;
+			return false;
+		}else{
+			return base.ValidateDownloadedTexture(out errorMessage);
+		}
 	}
 }
