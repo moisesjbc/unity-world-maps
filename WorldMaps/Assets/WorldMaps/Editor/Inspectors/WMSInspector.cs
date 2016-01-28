@@ -215,6 +215,8 @@ public class WMSComponentInspector : Editor
 
 				wmsTexture.bottomLeftCoordinates = currentBoundingBox.bottomLeftCoordinates;
 				wmsTexture.topRightCoordinates = currentBoundingBox.topRightCoordinates;
+
+				wmsTexture.RequestTexturePreview ();
 			}else{
 				if( wmsTexture.selectedLayers.Count == 1 ){
 					// If we have one layer selected, use the SRS of its first bounding box.
