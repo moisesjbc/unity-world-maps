@@ -14,7 +14,7 @@ GameObject:
   - 114: {fileID: 11401632}
   - 114: {fileID: 11455338}
   m_Layer: 0
-  m_Name: WCSTerrain
+  m_Name: WMSPlane
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

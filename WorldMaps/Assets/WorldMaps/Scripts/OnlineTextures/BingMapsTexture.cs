@@ -9,9 +9,9 @@ public enum BingMapsType
 	ROADS
 }
 
-public class BingMapsComponent : OnlineTexture {
+public class BingMapsTexture : OnlineTexture {
 	public static string testServerURL = "http://ecn.{subdomain}.tiles.virtualearth.net/tiles/r{quadkey}.jpeg?g=4892&mkt={culture}&shading=hill";
-	public string serverURL = BingMapsComponent.testServerURL;
+	public string serverURL = BingMapsTexture.testServerURL;
 	public string initialSector = "0";
 	public float latitude = 28.127222f;
 	public float longitude = -15.431389f;
@@ -58,10 +58,10 @@ public class BingMapsComponent : OnlineTexture {
 	public void ValidateServerURL()
 	{
 		if( serverURL.IndexOf("{quadkey}" ) < 0 ){
-			throw new UnityException ("BingMaps inspector - missing {quadkey} in server URL");
+			Debug.LogError ("BingMaps inspector - missing {quadkey} in server URL");
 		}
 		if( serverURL.IndexOf("{subdomain}" ) < 0 ){
-			throw new UnityException ("BingMaps inspector - missing {subdomain} in server URL");
+			Debug.LogError ("BingMaps inspector - missing {subdomain} in server URL");
 		}
 	}
 
@@ -89,7 +89,7 @@ public class BingMapsComponent : OnlineTexture {
 
 	protected override void InnerCopyTo(OnlineTexture copy)
 	{
-		BingMapsComponent target = (BingMapsComponent)copy;
+		BingMapsTexture target = (BingMapsTexture)copy;
 		target.serverURL = serverURL;
 		target.initialSector = initialSector;
 		target.latitude = latitude;

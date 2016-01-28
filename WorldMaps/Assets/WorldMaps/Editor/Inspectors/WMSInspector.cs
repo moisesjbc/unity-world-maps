@@ -7,7 +7,7 @@ using System;
 using System.IO;
 using System.Linq;
 
-[CustomEditor(typeof(WMSComponent))]
+[CustomEditor(typeof(WMSTexture))]
 public class WMSComponentInspector : Editor
 {
 	private static WMSServerBookmarks bookmarks = new WMSServerBookmarks();
@@ -21,7 +21,7 @@ public class WMSComponentInspector : Editor
 			return;
 		}
 
-		WMSComponent wmsComponent = (WMSComponent)target;
+		WMSTexture wmsTexture = (WMSTexture)target;
 
 		bool serverChanged = false;
 		bool layerChanged = false;
@@ -29,15 +29,15 @@ public class WMSComponentInspector : Editor
 
 		EditorGUILayout.BeginVertical (EditorStyles.helpBox);
 			EditorGUILayout.LabelField ("Server");
-			DisplayServerSelector (ref wmsComponent, out serverChanged);
+			DisplayServerSelector (ref wmsTexture, out serverChanged);
 
 			if (serverChanged) {
-				wmsComponent.selectedLayers.Clear ();
-				RequestWMSInfo (ref wmsComponent);
+				wmsTexture.selectedLayers.Clear ();
+				RequestWMSInfo (ref wmsTexture);
 			}
 
 			RequestStatus requestStatus = 
-				wmsInfoRequester.GetRequestStatus (wmsComponent.wmsRequestID);
+				wmsInfoRequester.GetRequestStatus (wmsTexture.wmsRequestID);
 				
 			if (requestStatus != RequestStatus.OK) {
 				if( requestStatus == RequestStatus.DOWNLOADING ){
@@ -47,69 +47,71 @@ public class WMSComponentInspector : Editor
 				}
 
 				if (GUI.changed) {
-					EditorUtility.SetDirty (wmsComponent);
+					EditorUtility.SetDirty (wmsTexture);
 					EditorSceneManager.MarkSceneDirty (EditorSceneManager.GetActiveScene ());
 				}
 				EditorGUILayout.EndVertical ();
 				return;
 			}
 
-			WMSInfo wmsInfo = wmsInfoRequester.GetResponse (wmsComponent.wmsRequestID);
+			WMSInfo wmsInfo = wmsInfoRequester.GetResponse (wmsTexture.wmsRequestID);
 			EditorGUILayout.LabelField ("Server title: " + wmsInfo.serverTitle);
 			EditorGUILayout.LabelField ("Server abstract: " + wmsInfo.serverAbstract);
 		EditorGUILayout.EndVertical ();
 
-		if (wmsInfo.GetLayerTitles ().Length <= 0) {
-			EditorGUILayout.LabelField("No layers");
+		if (wmsInfo.GetLayerTitles ().Length > 0) {
+			DisplayLayersSelector (ref wmsTexture, wmsInfo, out layerChanged);
 
-			if (GUI.changed) {
-				EditorUtility.SetDirty (wmsComponent);
-				EditorSceneManager.MarkSceneDirty (EditorSceneManager.GetActiveScene ());
+			if (layerChanged) {
+				wmsTexture.RequestTexturePreview ();
 			}
-			return;
+
+			if (wmsTexture.SelectedLayersNumber () > 0) {
+				DisplayBoundingBoxPanel (ref wmsTexture, ref wmsInfo, out boundingBoxChanged);
+			}
+		} else {
+			EditorGUILayout.HelpBox("No layers returned by server", MessageType.Warning);
 		}
 			
-		DisplayLayersSelector (ref wmsComponent, wmsInfo, out layerChanged);
 
-		if (layerChanged) {
-			wmsComponent.RequestTexturePreview ();
+		if (wmsTexture.IsDownloading ()) {
+			EditorGUILayout.HelpBox("Downloading texture from server...", MessageType.Info);
 		}
 
-		DisplayBoundingBoxPanel (ref wmsComponent, ref wmsInfo, out boundingBoxChanged);
 
 		// Mark the target assert as changed ("dirty") so Unity save it to disk.
 		if (GUI.changed) {
-			EditorUtility.SetDirty (wmsComponent);
+			EditorUtility.SetDirty (wmsTexture);
 			EditorSceneManager.MarkSceneDirty (EditorSceneManager.GetActiveScene ());
 		}
 	}
 
 
-	private void RequestWMSInfo(ref WMSComponent wmsComponent)
+	private void RequestWMSInfo(ref WMSTexture wmsTexture)
 	{
-		wmsComponent.wmsRequestID = wmsInfoRequester.RequestServerInfo (wmsComponent.serverURL);
-		wmsComponent.RequestTexturePreview ();
+		wmsTexture.wmsRequestID = wmsInfoRequester.RequestServerInfo (wmsTexture.serverURL);
+		wmsTexture.RequestTexturePreview ();
 		EditorApplication.update += Refresh;
 	}
 
 
-	private void DisplayServerSelector(ref WMSComponent wmsComponent, out bool serverChanged)
+	private void DisplayServerSelector(ref WMSTexture wmsTexture, out bool serverChanged)
 	{
 		serverChanged = false;
 
-		DisplayServerPopup (ref wmsComponent, ref serverChanged);
+		DisplayServerPopup (ref wmsTexture, ref serverChanged);
 
-		string newServerURL = EditorGUILayout.TextField("Server URL:", wmsComponent.serverURL);
+		string newServerURL = EditorGUILayout.TextField("Server URL:", wmsTexture.serverURL);
 
-		serverChanged |= (newServerURL != wmsComponent.serverURL);
-		wmsComponent.serverURL = newServerURL;
+		serverChanged |= (newServerURL != wmsTexture.serverURL);
+		wmsTexture.serverURL = newServerURL;
 
-		if ( (wmsComponent.wmsRequestID != "") && (wmsInfoRequester.GetRequestStatus(wmsComponent.wmsRequestID) == RequestStatus.OK)){
+		if ( (wmsTexture.wmsRequestID != "") && (wmsInfoRequester.GetRequestStatus(wmsTexture.wmsRequestID) == RequestStatus.OK)){
 			WMSInfo wmsInfo = 
-				wmsInfoRequester.GetResponse (wmsComponent.wmsRequestID);
+				wmsInfoRequester.GetResponse (wmsTexture.wmsRequestID);
 			
 			if (!bookmarks.ServerIsBookmarked (wmsInfo.serverTitle)) {
-				DisplayServerBookmarkButton (wmsInfo.serverTitle, wmsComponent.serverURL);
+				DisplayServerBookmarkButton (wmsInfo.serverTitle, wmsTexture.serverURL);
 			//} else {
 			//	RemoveServerFromBookmarksButton (requestStatus.response.serverTitle);
 			}
@@ -117,20 +119,20 @@ public class WMSComponentInspector : Editor
 	}
 
 
-	private void DisplayServerPopup(ref WMSComponent wmsComponent, ref bool serverChanged)
+	private void DisplayServerPopup(ref WMSTexture wmsTexture, ref bool serverChanged)
 	{
 		string[] serverTitles = bookmarks.ServerTitles();
 
 		int newServerIndex = EditorGUILayout.Popup ("Bookmarked servers", 0, serverTitles);
-		serverChanged = (newServerIndex != 0 && bookmarks.GetServerURL(serverTitles[newServerIndex]) != wmsComponent.serverURL);
+		serverChanged = (newServerIndex != 0 && bookmarks.GetServerURL(serverTitles[newServerIndex]) != wmsTexture.serverURL);
 
 		if (serverChanged) {
-			wmsComponent.serverURL = bookmarks.GetServerURL (serverTitles[newServerIndex]);
+			wmsTexture.serverURL = bookmarks.GetServerURL (serverTitles[newServerIndex]);
 		}
 	}
 
 
-	private void DisplayLayersSelector( ref WMSComponent wmsComponent, WMSInfo wmsInfo, out bool layerChanged )
+	private void DisplayLayersSelector( ref WMSTexture wmsTexture, WMSInfo wmsInfo, out bool layerChanged )
 	{
 		layerChanged = false;
 
@@ -141,14 +143,14 @@ public class WMSComponentInspector : Editor
 		for( int i=0; i<layers.Length; i++) {
 			if( layers[i].name != "" ){
 				bool newToggleValue = 
-					EditorGUILayout.Toggle (layers[i].title, (wmsComponent.LayerSelected(layers[i].name)));
+					EditorGUILayout.ToggleLeft (layers[i].title, (wmsTexture.LayerSelected(layers[i].name)));
 				
-				layerChanged |= (newToggleValue != wmsComponent.LayerSelected(layers[i].name));
-				wmsComponent.SetLayerSelected (layers[i].name, newToggleValue);
+				layerChanged |= (newToggleValue != wmsTexture.LayerSelected(layers[i].name));
+				wmsTexture.SetLayerSelected (layers[i].name, newToggleValue);
 			}
 		}
 
-		if (wmsComponent.SelectedLayersNumber () == 0) {
+		if (wmsTexture.SelectedLayersNumber () == 0) {
 			EditorGUILayout.HelpBox ("No layers selected", MessageType.Warning);
 		}
 
@@ -156,51 +158,51 @@ public class WMSComponentInspector : Editor
 	}
 
 
-	public void DisplayBoundingBoxPanel(ref WMSComponent wmsComponent, ref WMSInfo wmsInfo, out bool boundingBoxChanged)
+	public void DisplayBoundingBoxPanel(ref WMSTexture wmsTexture, ref WMSInfo wmsInfo, out bool boundingBoxChanged)
 	{
 		EditorGUILayout.BeginVertical (EditorStyles.helpBox);
 
 		EditorGUILayout.LabelField ("Bounding Box");
 
-		DisplayBoundingBoxSelector (ref wmsComponent, wmsInfo, out boundingBoxChanged);
+		DisplayBoundingBoxSelector (ref wmsTexture, wmsInfo, out boundingBoxChanged);
 
-		EditorGUILayout.LabelField ("SRS", wmsComponent.SRS);
+		EditorGUILayout.LabelField ("SRS", wmsTexture.SRS);
 
-		wmsComponent.keepBoundingBoxRatio = 
-			EditorGUILayout.Toggle ("Keep ratio", wmsComponent.keepBoundingBoxRatio);
+		wmsTexture.keepBoundingBoxRatio = 
+			EditorGUILayout.Toggle ("Keep ratio", wmsTexture.keepBoundingBoxRatio);
 
 		Vector2 newBottomLeftCoordinates =
 			EditorGUILayout.Vector2Field (
 				"Bottom left coords.",
-				wmsComponent.bottomLeftCoordinates
+				wmsTexture.bottomLeftCoordinates
 			);
 
 		Vector2 newTopRightCoordinates =
 			EditorGUILayout.Vector2Field (
 				"Top right coords.",
-				wmsComponent.topRightCoordinates
+				wmsTexture.topRightCoordinates
 			);
 
 		UpdateBoundingBox (
-			ref wmsComponent.bottomLeftCoordinates,
-			ref wmsComponent.topRightCoordinates,
+			ref wmsTexture.bottomLeftCoordinates,
+			ref wmsTexture.topRightCoordinates,
 			newBottomLeftCoordinates,
 			newTopRightCoordinates,
-			wmsComponent.keepBoundingBoxRatio);
+			wmsTexture.keepBoundingBoxRatio);
 
-		if( boundingBoxChanged || GUILayout.Button("Update bounding box preview (may take a while)")){
-			wmsComponent.RequestTexturePreview ();
+		if(GUILayout.Button("Update bounding box preview (may take a while)")){
+			wmsTexture.RequestTexturePreview ();
 		}
 
 		EditorGUILayout.EndVertical ();
 	}
 
 
-	private void DisplayBoundingBoxSelector( ref WMSComponent wmsComponent, WMSInfo wmsInfo, out bool boundingBoxChanged )
+	private void DisplayBoundingBoxSelector( ref WMSTexture wmsTexture, WMSInfo wmsInfo, out bool boundingBoxChanged )
 	{
 		boundingBoxChanged = false;
 
-		List<string> boundingBoxesNames = wmsInfo.GetBoundingBoxesNames(wmsComponent.selectedLayers).ToList();
+		List<string> boundingBoxesNames = wmsInfo.GetBoundingBoxesNames(wmsTexture.selectedLayers).ToList();
 		boundingBoxesNames.Insert (0, "Select bounding box from server");
 
 		if( boundingBoxesNames.Count > 1 ){
@@ -214,15 +216,17 @@ public class WMSComponentInspector : Editor
 			boundingBoxChanged = (newBoundingBoxIndex != -1);
 
 			if( boundingBoxChanged ){
-				wmsComponent.SRS = wmsInfo.GetBoundingBox (wmsComponent.selectedLayers, newBoundingBoxIndex).SRS;
-				WMSBoundingBox currentBoundingBox = wmsInfo.GetBoundingBox( wmsComponent.selectedLayers, newBoundingBoxIndex );
+				wmsTexture.SRS = wmsInfo.GetBoundingBox (wmsTexture.selectedLayers, newBoundingBoxIndex).SRS;
+				WMSBoundingBox currentBoundingBox = wmsInfo.GetBoundingBox( wmsTexture.selectedLayers, newBoundingBoxIndex );
 
-				wmsComponent.bottomLeftCoordinates = currentBoundingBox.bottomLeftCoordinates;
-				wmsComponent.topRightCoordinates = currentBoundingBox.topRightCoordinates;
+				wmsTexture.bottomLeftCoordinates = currentBoundingBox.bottomLeftCoordinates;
+				wmsTexture.topRightCoordinates = currentBoundingBox.topRightCoordinates;
+
+				wmsTexture.RequestTexturePreview ();
 			}else{
-				if( wmsComponent.selectedLayers.Count == 1 ){
+				if( wmsTexture.selectedLayers.Count == 1 ){
 					// If we have one layer selected, use the SRS of its first bounding box.
-					wmsComponent.SRS = wmsInfo.GetBoundingBox (wmsComponent.selectedLayers, 0).SRS;
+					wmsTexture.SRS = wmsInfo.GetBoundingBox (wmsTexture.selectedLayers, 0).SRS;
 				}
 			}
 		}
@@ -285,8 +289,10 @@ public class WMSComponentInspector : Editor
 
 	public void OnEnable()
 	{
-		WMSComponent wmsComponent = (WMSComponent)target;
-		RequestWMSInfo (ref wmsComponent);
+		WMSTexture wmsTexture = (WMSTexture)target;
+		if (!Application.isPlaying && (wmsTexture.wmsRequestID == "" || !wmsInfoRequester.ExistsTransaction (wmsTexture.wmsRequestID))) {
+			RequestWMSInfo (ref wmsTexture);
+		}
 	}
 
 
@@ -298,8 +304,8 @@ public class WMSComponentInspector : Editor
 
 	public void Refresh()
 	{
-		WMSComponent wmsComponent = (WMSComponent)target;
-		if (wmsInfoRequester.Update (wmsComponent.wmsRequestID) != RequestStatus.DOWNLOADING) {
+		WMSTexture wmsTexture = (WMSTexture)target;
+		if (wmsInfoRequester.Update (wmsTexture.wmsRequestID) != RequestStatus.DOWNLOADING) {
 			// Stop refreshing when server download stops.
 			EditorApplication.update -= Refresh;
 			Repaint ();

@@ -29,11 +29,7 @@ public class WMSLayer
 	{
 		WMSBoundingBox[] boundingBoxes = GetBoundingBoxes().ToArray();
 
-		if ( index < boundingBoxes.Length ) {
-			return boundingBoxes[index];
-		}else{
-			throw new System.IndexOutOfRangeException();
-		}
+		return boundingBoxes[index];
 	}
 
 

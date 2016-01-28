@@ -1,6 +1,8 @@
 ﻿using UnityEngine;
 using System.Collections;
+#if UNITY_EDITOR
 using UnityEditor;
+#endif
 
 [ExecuteInEditMode]
 public abstract class OnlineTexture : MonoBehaviour {
@@ -31,6 +33,7 @@ public abstract class OnlineTexture : MonoBehaviour {
 	}
 
 
+#if UNITY_EDITOR
 	// Make this update with editor.
 	void OnEnable(){
 		EditorApplication.update += Update;
@@ -40,31 +43,33 @@ public abstract class OnlineTexture : MonoBehaviour {
 	void OnDisable(){
 		EditorApplication.update -= Update;
 	}
+#endif
 		
 
 	public void Update()
 	{
 		if (textureLoaded == false && request_ != null && request_.isDone) {
 			string errorMessage = "";
+			var tempMaterial = new Material(GetComponent<MeshRenderer> ().sharedMaterial);
+
 			if (ValidateDownloadedTexture (out errorMessage)) {
 				textureLoaded = true;
-				if (Application.isPlaying) {
-					var tempMaterial = new Material (GetComponent<MeshRenderer> ().material);
-					tempMaterial.mainTexture = request_.texture;
-					tempMaterial.mainTexture.wrapMode = TextureWrapMode.Clamp;
-					GetComponent<MeshRenderer> ().material = tempMaterial;
-				} else {
-					var tempMaterial = new Material (GetComponent<MeshRenderer> ().sharedMaterial);
-					tempMaterial.mainTexture = request_.texture;
-					tempMaterial.mainTexture.wrapMode = TextureWrapMode.Clamp;
-					GetComponent<MeshRenderer> ().sharedMaterial = tempMaterial;
-				}
+				tempMaterial.mainTexture = request_.texture;
 			} else {
 				string requestedURL = request_.url;
 				request_ = null;
-				throw new UnityException ("Errors when downloading texture [" + requestedURL + "]:\n" + errorMessage);
+				Debug.LogError ("Errors when downloading texture [" + requestedURL + "]:\n" + errorMessage);
+				tempMaterial.mainTexture = Texture2D.whiteTexture;
 			}
+			tempMaterial.mainTexture.wrapMode = TextureWrapMode.Clamp;
+			GetComponent<MeshRenderer> ().material = tempMaterial;
 		}
+	}
+
+
+	public bool IsDownloading()
+	{
+		return textureLoaded == false && request_ != null && !request_.isDone;
 	}
 
 
