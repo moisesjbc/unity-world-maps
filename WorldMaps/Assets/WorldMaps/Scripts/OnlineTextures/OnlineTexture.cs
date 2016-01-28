@@ -64,6 +64,12 @@ public abstract class OnlineTexture : MonoBehaviour {
 	}
 
 
+	public bool IsDownloading()
+	{
+		return textureLoaded == false && request_ != null && !request_.isDone;
+	}
+
+
 	protected abstract string GenerateRequestURL (string nodeID);
 	public void CopyTo(OnlineTexture copy)
 	{

@@ -41,6 +41,10 @@ public class BingMapsInspector : Editor
 			bingMapsTexture.RequestTexturePreview ();
 		}
 
+		if (bingMapsTexture.IsDownloading ()) {
+			EditorGUILayout.HelpBox("Downloading texture from server...", MessageType.Info);
+		}
+
 		if (GUI.changed) {
 			EditorUtility.SetDirty (bingMapsTexture);
 			EditorSceneManager.MarkSceneDirty (EditorSceneManager.GetActiveScene ());

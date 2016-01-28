@@ -72,6 +72,12 @@ public class WMSComponentInspector : Editor
 		} else {
 			EditorGUILayout.HelpBox("No layers returned by server", MessageType.Warning);
 		}
+			
+
+		if (wmsTexture.IsDownloading ()) {
+			EditorGUILayout.HelpBox("Downloading texture from server...", MessageType.Info);
+		}
+
 
 		// Mark the target assert as changed ("dirty") so Unity save it to disk.
 		if (GUI.changed) {
