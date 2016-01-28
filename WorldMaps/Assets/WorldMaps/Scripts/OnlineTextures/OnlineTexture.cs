@@ -1,6 +1,8 @@
 ﻿using UnityEngine;
 using System.Collections;
+#if UNITY_EDITOR
 using UnityEditor;
+#endif
 
 [ExecuteInEditMode]
 public abstract class OnlineTexture : MonoBehaviour {
@@ -31,6 +33,7 @@ public abstract class OnlineTexture : MonoBehaviour {
 	}
 
 
+#if UNITY_EDITOR
 	// Make this update with editor.
 	void OnEnable(){
 		EditorApplication.update += Update;
@@ -40,6 +43,7 @@ public abstract class OnlineTexture : MonoBehaviour {
 	void OnDisable(){
 		EditorApplication.update -= Update;
 	}
+#endif
 		
 
 	public void Update()
