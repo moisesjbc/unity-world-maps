@@ -6,20 +6,14 @@ using System;
 using System.IO;
 using UnityEditor.SceneManagement;
 
-[CustomEditor(typeof(BingMapsComponent))]
+[CustomEditor(typeof(BingMapsTexture))]
 public class BingMapsInspector : Editor
 {
-	const float MIN_LATTITUDE = -90.0f;
-	const float MAX_LATTITUDE = 90.0f;
-
-	const float MIN_LONGITUDE = -180.0f;
-	const float MAX_LONGITUDE = 180.0f;
-
 	const int MIN_ZOOM = 0;
 	const int MAX_ZOOM = 7;
 
-	static string lattitudeLabel = "Lattitude (float): ";
-	static string longitudeLabel = "Longitude (float): ";
+	static string lattitudeLabel = "Lattitude (decimal): ";
+	static string longitudeLabel = "Longitude (decimal): ";
 	static string zoomLabel = "Zoom (" + MIN_ZOOM + ", " + MAX_ZOOM + ")";
 
 
@@ -30,25 +24,29 @@ public class BingMapsInspector : Editor
 			return;
 		}
 
-		BingMapsComponent bingMapsComponent = (BingMapsComponent)target;
+		BingMapsTexture bingMapsTexture = (BingMapsTexture)target;
 
 		EditorGUILayout.LabelField ("Server template URL");
-		bingMapsComponent.serverURL = EditorGUILayout.TextField (bingMapsComponent.serverURL);
-		if (bingMapsComponent.serverURL == BingMapsComponent.testServerURL) {
-			EditorGUILayout.HelpBox("This is a test server URL. When building your app, please generate a new server URL by following the instructions on this URL: https://github.com/moisesjbc/unity-world-maps", MessageType.Warning);
+		bingMapsTexture.serverURL = EditorGUILayout.TextField (bingMapsTexture.serverURL);
+		if (bingMapsTexture.serverURL == BingMapsTexture.testServerURL) {
+			EditorGUILayout.HelpBox("This is a test server URL. When building your app, please generate a new server template URL by following the instructions on file Assets/WorldMaps/README.pdf", MessageType.Warning);
 		}
 
-		bingMapsComponent.latitude = EditorGUILayout.FloatField(lattitudeLabel, bingMapsComponent.latitude);
-		bingMapsComponent.longitude = EditorGUILayout.FloatField(longitudeLabel, bingMapsComponent.longitude);
-		bingMapsComponent.initialZoom = EditorGUILayout.IntField (zoomLabel, bingMapsComponent.initialZoom);
-		bingMapsComponent.ComputeInitialSector ();
+		bingMapsTexture.latitude = EditorGUILayout.FloatField(lattitudeLabel, bingMapsTexture.latitude);
+		bingMapsTexture.longitude = EditorGUILayout.FloatField(longitudeLabel, bingMapsTexture.longitude);
+		bingMapsTexture.initialZoom = EditorGUILayout.IntField (zoomLabel, bingMapsTexture.initialZoom);
+		bingMapsTexture.ComputeInitialSector ();
 
 		if (GUILayout.Button ("Update preview (may take a while)")) {
-			bingMapsComponent.RequestTexturePreview ();
+			bingMapsTexture.RequestTexturePreview ();
+		}
+
+		if (bingMapsTexture.IsDownloading ()) {
+			EditorGUILayout.HelpBox("Downloading texture from server...", MessageType.Info);
 		}
 
 		if (GUI.changed) {
-			EditorUtility.SetDirty (bingMapsComponent);
+			EditorUtility.SetDirty (bingMapsTexture);
 			EditorSceneManager.MarkSceneDirty (EditorSceneManager.GetActiveScene ());
 		}
 	}

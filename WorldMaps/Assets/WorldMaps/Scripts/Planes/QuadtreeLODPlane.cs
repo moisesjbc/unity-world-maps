@@ -6,7 +6,7 @@ using System.Collections.Generic;
 
 
 // This [ExecuteInEditMode] is for Start to execute and then display the right mesh
-// created with MeshFactory. 
+// created with PlanesFactory. 
 [ExecuteInEditMode]
 public class QuadtreeLODPlane : MonoBehaviour {
 	public int vertexResolution = 20;
@@ -36,29 +36,24 @@ public class QuadtreeLODPlane : MonoBehaviour {
 
 			float mapSize = Mathf.Max (meshSize.x, meshSize.z);
 
-			if (GetComponent<WMSComponent> () != null) {
-				onlineTexture = this.GetComponent<WMSComponent> ();
+			if (GetComponent<WMSTexture> () != null) {
+				onlineTexture = this.GetComponent<WMSTexture> ();
 
-				if (GetComponent<BingMapsComponent> () != null) {
-					throw new UnityException ("Terrain can't have both WMSComponent and BingMapsComponent componets!");
+				if (GetComponent<BingMapsTexture> () != null) {
+					Debug.LogError ("Terrain can't have both WMSTexture and BingMapsTexture componets!");
 				}
-			} else if (GetComponent<BingMapsComponent> () != null) {
-				onlineTexture = this.GetComponent<BingMapsComponent> ();
+			} else if (GetComponent<BingMapsTexture> () != null) {
+				onlineTexture = this.GetComponent<BingMapsTexture> ();
 			} else {
-				throw new MissingComponentException ("Terrain must have a WMSComponent or BingMapsComponent");
+				Debug.LogError ("Terrain must have a WMSTexture or BingMapsTexture");
 			}
 			onlineHeightMap = GetComponent<WCSHeightMap> ();
 
 			nodeID = "0";
 
 			// Create the root mesh.
-			gameObject.GetComponent<MeshFilter> ().mesh = MeshFactory.CreateMesh (mapSize, vertexResolution);
-
-			// Create material
-			gameObject.GetComponent<Renderer> ().sharedMaterial = new Material (Shader.Find ("Sprites/Default"));
+			gameObject.GetComponent<MeshFilter> ().mesh = PlanesFactory.CreateHorizontalPlane (mapSize, vertexResolution);
 		}
-							
-		gameObject.tag = "MapSector";
 
 		if (Application.isPlaying) {
 			Debug.Log ("Requesting texture and height map for this node");
@@ -76,6 +71,7 @@ public class QuadtreeLODPlane : MonoBehaviour {
 		// Initially this was done by duplicating current game object, but this copied
 		// children as well and errors arisen.
 		GameObject childGameObject = new GameObject();
+		childGameObject.name = GenerateNameForChild (gameObject.name, nodeID);
 		childGameObject.AddComponent<MeshRenderer>();
 		childGameObject.AddComponent<MeshFilter>();
 		childGameObject.AddComponent<QuadtreeLODPlane>();
@@ -99,6 +95,9 @@ public class QuadtreeLODPlane : MonoBehaviour {
 
 		childGameObject.transform.localScale = new Vector3( 0.5f, 1.0f, 0.5f );
 
+		// Create material
+		childGameObject.GetComponent<Renderer> ().material = new Material (GetComponent<Renderer>().material.shader);
+
 		#if PAINT_QUADS
 			childGameObject.GetComponent<Renderer>().material.color = color;
 		#endif
@@ -106,10 +105,11 @@ public class QuadtreeLODPlane : MonoBehaviour {
 		childGameObject.GetComponent<QuadtreeLODPlane>().vertexResolution = this.vertexResolution;
 		childGameObject.GetComponent<QuadtreeLODPlane> ().nodeID = nodeID;
 
-		if (gameObject.GetComponent<WMSComponent> () != null) {
-			childGameObject.GetComponent<QuadtreeLODPlane>().onlineTexture = childGameObject.AddComponent<WMSComponent> ();
+
+		if (gameObject.GetComponent<WMSTexture> () != null) {
+			childGameObject.GetComponent<QuadtreeLODPlane>().onlineTexture = childGameObject.AddComponent<WMSTexture> ();
 		} else {
-			childGameObject.GetComponent<QuadtreeLODPlane>().onlineTexture = childGameObject.AddComponent<BingMapsComponent> ();
+			childGameObject.GetComponent<QuadtreeLODPlane>().onlineTexture = childGameObject.AddComponent<BingMapsTexture> ();
 		}
 		onlineTexture.CopyTo (childGameObject.GetComponent<QuadtreeLODPlane>().onlineTexture);
 		childGameObject.GetComponent<QuadtreeLODPlane>().SetVisible (false);
@@ -120,6 +120,17 @@ public class QuadtreeLODPlane : MonoBehaviour {
 		}
 
 		return childGameObject;
+	}
+
+
+	private string GenerateNameForChild(string parentName, string childNodeID)
+	{
+		// Strip node ID from parent name (root node doesn't have ID, so we omit 
+		// that case.
+		if (depth_ > 0) {
+			parentName = parentName.Substring (0, parentName.IndexOf (" - [")); 
+		}
+		return parentName + " - [" + childNodeID + "]";
 	}
 
 
