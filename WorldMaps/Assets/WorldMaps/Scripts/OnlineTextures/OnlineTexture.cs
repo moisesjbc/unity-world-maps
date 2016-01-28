@@ -46,20 +46,19 @@ public abstract class OnlineTexture : MonoBehaviour {
 	{
 		if (textureLoaded == false && request_ != null && request_.isDone) {
 			string errorMessage = "";
-
-			// Texture is always assigned because even when errors arise, request_.texture
-			// returns a white texture with a red question mark, valid as a hint for the user 
-			// about the error.
-			GetComponent<MeshRenderer> ().material.mainTexture = request_.texture;
-			GetComponent<MeshRenderer> ().material.mainTexture.wrapMode = TextureWrapMode.Clamp;
+			var tempMaterial = new Material(GetComponent<MeshRenderer> ().sharedMaterial);
 
 			if (ValidateDownloadedTexture (out errorMessage)) {
 				textureLoaded = true;
+				tempMaterial.mainTexture = request_.texture;
 			} else {
 				string requestedURL = request_.url;
 				request_ = null;
 				Debug.LogError ("Errors when downloading texture [" + requestedURL + "]:\n" + errorMessage);
+				tempMaterial.mainTexture = Texture2D.whiteTexture;
 			}
+			tempMaterial.mainTexture.wrapMode = TextureWrapMode.Clamp;
+			GetComponent<MeshRenderer> ().material = tempMaterial;
 		}
 	}
 
