@@ -53,9 +53,6 @@ public class QuadtreeLODPlane : MonoBehaviour {
 			gameObject.GetComponent<MeshFilter> ().mesh = PlanesFactory.CreateHorizontalPlane (mapSize, vertexResolution);
 		}
 
-		// Create material
-		gameObject.GetComponent<Renderer> ().material = new Material (Shader.Find ("Sprites/Default"));
-
 		if (Application.isPlaying) {
 			onlineTexture.RequestTexture (nodeID);
 		}
@@ -90,6 +87,9 @@ public class QuadtreeLODPlane : MonoBehaviour {
 		childGameObject.transform.localPosition = localPosition;
 
 		childGameObject.transform.localScale = new Vector3( 0.5f, 1.0f, 0.5f );
+
+		// Create material
+		childGameObject.GetComponent<Renderer> ().material = new Material (GetComponent<Renderer>().material.shader);
 
 		#if PAINT_QUADS
 			childGameObject.GetComponent<Renderer>().material.color = color;
