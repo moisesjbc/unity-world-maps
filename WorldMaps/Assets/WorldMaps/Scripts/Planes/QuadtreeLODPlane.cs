@@ -54,7 +54,7 @@ public class QuadtreeLODPlane : MonoBehaviour {
 			// Create the root mesh.
 			gameObject.GetComponent<MeshFilter> ().mesh = PlanesFactory.CreateHorizontalPlane (mapSize, vertexResolution, true);
 		}
-
+			
 		if (Application.isPlaying) {
 			Debug.Log ("Requesting texture and height map for this node");
 			onlineTexture.RequestTexture (nodeID);
