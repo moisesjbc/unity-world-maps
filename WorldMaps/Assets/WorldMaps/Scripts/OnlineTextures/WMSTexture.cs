@@ -121,7 +121,7 @@ public class WMSTexture : OnlineTexture {
 
 	public override bool ValidateDownloadedTexture( out string errorMessage )
 	{
-		if (request_.text.Contains ("<ServiceException>")) {
+		if (request_.text.IndexOf("<ServiceException>") != -1) {
 			errorMessage = 
 				"Service exception error returned by server: \n" + request_.text;
 			return false;

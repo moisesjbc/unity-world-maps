@@ -39,12 +39,12 @@ public class QuadtreeLODPlane : MonoBehaviour {
 				onlineTexture = this.GetComponent<WMSTexture> ();
 
 				if (GetComponent<BingMapsTexture> () != null) {
-					throw new UnityException ("Terrain can't have both WMSTexture and BingMapsTexture componets!");
+					Debug.LogError ("Terrain can't have both WMSTexture and BingMapsTexture componets!");
 				}
 			} else if (GetComponent<BingMapsTexture> () != null) {
 				onlineTexture = this.GetComponent<BingMapsTexture> ();
 			} else {
-				throw new MissingComponentException ("Terrain must have a WMSTexture or BingMapsTexture");
+				Debug.LogError ("Terrain must have a WMSTexture or BingMapsTexture");
 			}
 
 			nodeID = "0";

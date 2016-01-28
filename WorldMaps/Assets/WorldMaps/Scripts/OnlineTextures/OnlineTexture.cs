@@ -55,7 +55,7 @@ public abstract class OnlineTexture : MonoBehaviour {
 			} else {
 				string requestedURL = request_.url;
 				request_ = null;
-				throw new UnityException ("Errors when downloading texture [" + requestedURL + "]:\n" + errorMessage);
+				Debug.LogError ("Errors when downloading texture [" + requestedURL + "]:\n" + errorMessage);
 			}
 		}
 	}

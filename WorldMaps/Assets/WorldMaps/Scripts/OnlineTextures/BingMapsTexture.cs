@@ -58,10 +58,10 @@ public class BingMapsTexture : OnlineTexture {
 	public void ValidateServerURL()
 	{
 		if( serverURL.IndexOf("{quadkey}" ) < 0 ){
-			throw new UnityException ("BingMaps inspector - missing {quadkey} in server URL");
+			Debug.LogError ("BingMaps inspector - missing {quadkey} in server URL");
 		}
 		if( serverURL.IndexOf("{subdomain}" ) < 0 ){
-			throw new UnityException ("BingMaps inspector - missing {subdomain} in server URL");
+			Debug.LogError ("BingMaps inspector - missing {subdomain} in server URL");
 		}
 	}
 
