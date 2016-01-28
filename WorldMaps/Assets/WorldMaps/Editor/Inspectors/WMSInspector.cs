@@ -282,7 +282,7 @@ public class WMSComponentInspector : Editor
 	public void OnEnable()
 	{
 		WMSTexture wmsTexture = (WMSTexture)target;
-		if (wmsTexture.wmsRequestID == "" || !wmsInfoRequester.ExistsTransaction (wmsTexture.wmsRequestID)) {
+		if (!Application.isPlaying && (wmsTexture.wmsRequestID == "" || !wmsInfoRequester.ExistsTransaction (wmsTexture.wmsRequestID))) {
 			RequestWMSInfo (ref wmsTexture);
 		}
 	}
