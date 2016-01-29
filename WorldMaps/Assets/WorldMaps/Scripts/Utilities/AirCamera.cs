@@ -49,5 +49,6 @@ public class AirCamera : MonoBehaviour {
 	void OnCollisionEnter()
 	{
 		speed = 0.0f;
+		GetComponent<Rigidbody> ().velocity = Vector3.zero;
 	}
 }
