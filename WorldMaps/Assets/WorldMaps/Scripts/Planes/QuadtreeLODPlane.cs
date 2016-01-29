@@ -56,7 +56,6 @@ public class QuadtreeLODPlane : MonoBehaviour {
 		}
 			
 		if (Application.isPlaying) {
-			Debug.Log ("Requesting texture and height map for this node");
 			onlineTexture.RequestTexture (nodeID);
 			if (onlineHeightMap != null) {
 				onlineHeightMap.RequestHeightMap (nodeID, vertexResolution);
