@@ -64,6 +64,9 @@ public class WCSHeightMap : MonoBehaviour
 		const int HEIGHTS_START_LINE = 6;
 		int N_COLUMNS = int.Parse ( specLines [0].Split (new string[]{" "}, System.StringSplitOptions.RemoveEmptyEntries) [1] );
 		int N_ROWS = int.Parse ( specLines [1].Split (new string[]{" "}, System.StringSplitOptions.RemoveEmptyEntries) [1] );
+		float N_CELLSIZE = float.Parse ( specLines [4].Split (new string[]{" "}, System.StringSplitOptions.RemoveEmptyEntries) [1] );
+
+		float metersPerUnit = N_CELLSIZE * GetComponent<QuadtreeLODPlane>().vertexResolution / GetComponent<Renderer>().bounds.size.x;
 
 		float[,] heightsMatrix = new float[N_ROWS,N_COLUMNS];
 
@@ -72,7 +75,7 @@ public class WCSHeightMap : MonoBehaviour
 
 			for(int j=0; j<N_COLUMNS; j++){
 				heightsMatrix[i,j] = float.Parse ( heightsStrLine[j] );
-				heightsMatrix[i,j] = Mathf.Max( heightsMatrix[i,j], 0.0f );
+				heightsMatrix[i,j] = Mathf.Max( heightsMatrix[i,j], 0.0f ) / metersPerUnit;
 			}
 		}
 
@@ -120,7 +123,7 @@ public class WCSHeightMap : MonoBehaviour
 			int N_COLUMNS = N_ROWS;
 			for (int column=0; column<N_COLUMNS; column++) {
 				int VERTEX_INDEX = (row + rowOffset) * (N_COLUMNS + 2) + (column + columnOffset);
-				vertices [VERTEX_INDEX].y = heights [row, column] / 250.0f; // TODO: take metersPerUnit from OnlineTexture
+				vertices [VERTEX_INDEX].y = heights [row, column]; // TODO: take metersPerUnit from OnlineTexture
 			}
 		}
 			
