@@ -86,6 +86,8 @@ public class QuadtreeLODPlane : MonoBehaviour {
 		childMesh.RecalculateBounds ();
 		childGameObject.GetComponent<MeshFilter> ().mesh = childMesh;
 
+		childGameObject.AddComponent<MeshCollider> ();
+
 		// Make this child transform relative to parent.
 		childGameObject.transform.parent = gameObject.transform;
 
@@ -150,12 +152,11 @@ public class QuadtreeLODPlane : MonoBehaviour {
 		// Set node visibility.
 		gameObject.GetComponent<MeshRenderer> ().enabled = visible;
 
-
 		// Enable or disable collider according to new visibility value.
-		//Collider collider = gameObject.GetComponent<Collider>();
-		//if ( collider != null ) {
-		//	collider.enabled = visible;
-		//}
+		Collider collider = gameObject.GetComponent<Collider>();
+		if ( collider != null ) {
+			collider.enabled = visible;
+		}
 
 		// No matter which visibility is applied to this node, children
 		// visibility must be set to false.

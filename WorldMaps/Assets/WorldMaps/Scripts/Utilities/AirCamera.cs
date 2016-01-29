@@ -7,6 +7,15 @@ public class AirCamera : MonoBehaviour {
 	public float maxSpeed = 5.0f;
 	public float speedStep = 0.1f;
 	public float ROTATION_SENSITIVITY = 5.0f;
+	private Vector3 initialPosition = Vector3.zero;
+
+
+	void Awake(){
+		initialPosition = transform.position;
+		Cursor.lockState = CursorLockMode.Locked;
+		GetComponent<Rigidbody> ().freezeRotation = true;
+	}
+
 
 	// Update is called once per frame
 	void Update () {
@@ -29,7 +38,16 @@ public class AirCamera : MonoBehaviour {
 				0.0f );
 		}
 
-
+		// Move the player forward with the given speed.
+		GetComponent<Rigidbody>().MovePosition(transform.position + /*GetComponent<OVRCameraRig> ().centerEyeAnchor.rotation */
+			(speed * Time.fixedDeltaTime * Vector3.forward));
+		
 		transform.Translate (velocity);
+	}
+		
+
+	void OnCollisionEnter()
+	{
+		speed = 0.0f;
 	}
 }
