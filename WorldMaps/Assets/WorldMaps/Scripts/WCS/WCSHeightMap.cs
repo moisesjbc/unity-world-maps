@@ -42,7 +42,7 @@ public class WCSHeightMap : MonoBehaviour
 	public void Update()
 	{
 		if (heightMapLoaded == false && request_ != null && request_.isDone) {
-			if (request_.error == null) {
+			if (request_.error == null && request_.text.IndexOf ("<ServiceException>") == -1) {
 				float [,] heightMatrix = ParseHeightMatrix (request_.text);
 				//if( GetComponent<QuadtreeLODPlane>().depth_ == 0 ){
 					SetHeightsMap( heightMatrix );
@@ -52,7 +52,11 @@ public class WCSHeightMap : MonoBehaviour
 				//}
 				heightMapLoaded = true;
 			} else {
-				Debug.LogError("Errors when downloading height map from [" + request_.url + "]:\n" + request_.error);
+				if (request_.error != null) {
+					Debug.LogError ("Errors when downloading height map from [" + request_.url + "]:\n" + request_.error);
+				} else {
+					Debug.LogError ("Errors response returned from [" + request_.url + "]: \n" + request_.text);
+				}
 				request_ = null;
 			}
 		}
