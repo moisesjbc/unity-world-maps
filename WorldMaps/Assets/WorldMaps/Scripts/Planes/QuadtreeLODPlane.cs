@@ -1,6 +1,4 @@
-﻿//#define PAINT_QUADS
-
-using UnityEngine;
+﻿using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 
@@ -99,9 +97,6 @@ public class QuadtreeLODPlane : MonoBehaviour {
 		// Create material
 		childGameObject.GetComponent<Renderer> ().material = new Material (GetComponent<Renderer>().material.shader);
 
-		#if PAINT_QUADS
-			childGameObject.GetComponent<Renderer>().material.color = color;
-		#endif
 		childGameObject.GetComponent<QuadtreeLODPlane>().depth_ = this.depth_ + 1;
 		childGameObject.GetComponent<QuadtreeLODPlane>().vertexResolution = this.vertexResolution;
 		childGameObject.GetComponent<QuadtreeLODPlane> ().nodeID = nodeID;
