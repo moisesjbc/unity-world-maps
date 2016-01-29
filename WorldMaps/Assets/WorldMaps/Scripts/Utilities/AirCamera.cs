@@ -21,7 +21,6 @@ public class AirCamera : MonoBehaviour {
 	void Update () {
 	
 		if (Input.GetAxis ("Mouse ScrollWheel") > 0) {
-			Debug.Log ("Increasing speed");
 			speed += speedStep;
 		}else if(Input.GetAxis ("Mouse ScrollWheel") < 0){
 			speed -= speedStep;
