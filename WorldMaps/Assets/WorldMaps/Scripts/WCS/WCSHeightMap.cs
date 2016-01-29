@@ -52,9 +52,8 @@ public class WCSHeightMap : MonoBehaviour
 				//}
 				heightMapLoaded = true;
 			} else {
-				string requestedURL = request_.url;
+				Debug.LogError("Errors when downloading height map from [" + request_.url + "]:\n" + request_.error);
 				request_ = null;
-				throw new UnityException ("Errors when height map texture [" + requestedURL + "]:\n" + request_.error);
 			}
 		}
 	}
