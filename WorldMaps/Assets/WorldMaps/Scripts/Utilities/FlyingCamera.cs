@@ -7,7 +7,6 @@ public class FlyingCamera : MonoBehaviour {
 	public float maxSpeed = 5.0f;
 	public float speedStep = 0.1f;
 	public float ROTATION_SENSITIVITY = 5.0f;
-	private Vector3 initialPosition = Vector3.zero;
 
 
 	void Awake(){
