@@ -44,12 +44,7 @@ public class WCSHeightMap : MonoBehaviour
 		if (heightMapLoaded == false && request_ != null && request_.isDone) {
 			if (request_.error == null && request_.text.IndexOf ("<ServiceException>") == -1) {
 				float [,] heightMatrix = ParseHeightMatrix (request_.text);
-				//if( GetComponent<QuadtreeLODPlane>().depth_ == 0 ){
-					SetHeightsMap( heightMatrix );
-				//}else{
-				//	int vertexResolution = GetComponent<QuadtreeLODPlane> ().vertexResolution;
-				//	SetHeightsMap( GetSubMatrix( heightMatrix, vertexResolution - 1, vertexResolution - 1, 2 * vertexResolution - 1, 2 * vertexResolution - 1 ) );
-				//}
+				SetHeightsMap (heightMatrix);
 				heightMapLoaded = true;
 			} else {
 				if (request_.error != null) {
@@ -87,26 +82,6 @@ public class WCSHeightMap : MonoBehaviour
 	}
 
 
-	private float[,] GetSubMatrix( float[,] M, 
-		int startRow, 
-		int startColumn,
-		int lastRow,
-		int lastColumn )
-	{
-		int N_ROWS = lastRow - startRow;
-		int N_COLUMNS = lastColumn - startColumn;
-
-		float[,] subMatrix = new float[N_ROWS,N_COLUMNS];
-
-		for (int i=0; i<N_ROWS; i++) {
-			for(int j=0; j<N_COLUMNS; j++){
-				subMatrix[i,j] = M[i+startRow,j+startColumn];
-			}
-		}
-		return subMatrix;
-	}
-
-
 	private void SetHeightsMap( float[,] heights )
 	{
 		Vector3[] vertices = GetComponent<MeshFilter>().mesh.vertices;
@@ -134,9 +109,6 @@ public class WCSHeightMap : MonoBehaviour
 		GetComponent<MeshFilter>().mesh.vertices = vertices;
 		GetComponent<MeshFilter>().mesh.RecalculateBounds ();
 		GetComponent<MeshFilter>().mesh.RecalculateNormals ();
-
-		// Add a collider to the node.
-		//gameObject_.AddComponent<MeshCollider>();
 	}
 
 
