@@ -14,12 +14,12 @@ public class QuadtreeLODPlane : MonoBehaviour {
 	private OnlineTexture onlineTexture = null;
 	private WCSHeightMap onlineHeightMap = null;
 
-	public string nodeID = "0";
+	private string nodeID = "0";
 
 	GameObject[] children_ = null;
 
-	public int depth_ = 0;
-	const int MAX_DEPTH = 7;
+	private int depth_ = 0;
+	public const int MAX_DEPTH = 7;
 
 
 	public void Start()
