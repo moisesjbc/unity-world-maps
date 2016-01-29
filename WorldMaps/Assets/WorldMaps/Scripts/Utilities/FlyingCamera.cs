@@ -10,7 +10,6 @@ public class FlyingCamera : MonoBehaviour {
 
 
 	void Awake(){
-		initialPosition = transform.position;
 		Cursor.lockState = CursorLockMode.Locked;
 		GetComponent<Rigidbody> ().freezeRotation = true;
 	}
