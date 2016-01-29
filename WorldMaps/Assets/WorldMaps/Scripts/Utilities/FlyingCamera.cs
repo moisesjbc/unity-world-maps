@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class AirCamera : MonoBehaviour {
+public class FlyingCamera : MonoBehaviour {
 	public float speed = 0.0f;
 	public float minSpeed = -5.0f;
 	public float maxSpeed = 5.0f;
