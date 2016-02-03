@@ -40,6 +40,9 @@ public class BingMapsInspector : Editor
 		bingMapsTexture.latitude = EditorGUILayout.FloatField(lattitudeLabel, bingMapsTexture.latitude);
 		bingMapsTexture.longitude = EditorGUILayout.FloatField(longitudeLabel, bingMapsTexture.longitude);
 		bingMapsTexture.initialZoom = EditorGUILayout.IntField (zoomLabel, bingMapsTexture.initialZoom);
+		if (bingMapsTexture.initialZoom < 0 || bingMapsTexture.initialZoom > MAX_ZOOM) {
+			EditorGUILayout.HelpBox ("Initial zoom out of range", MessageType.Error);
+		}
 		bingMapsTexture.ComputeInitialSector ();
 
 		if (GUILayout.Button ("Update preview (may take a while)")) {
