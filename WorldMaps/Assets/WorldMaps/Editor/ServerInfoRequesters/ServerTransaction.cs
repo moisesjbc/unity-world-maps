@@ -49,7 +49,6 @@ class ServerTransaction <ResponseType>
 				} else {
 					// Connection error
 					this.errorLog = "Couldn't get info from server: " + request.error;
-					Debug.LogError (this.errorLog);
 					return RequestStatus.ERROR;
 				}
 			}
@@ -81,7 +80,6 @@ class ServerTransaction <ResponseType>
 		}catch( Exception e ){
 			// Parsing error
 			this.errorLog = "Couldn't parse response from server: " + e.Message;
-			Debug.LogError (this.errorLog);
 			return false;
 		}
 	}

@@ -43,6 +43,12 @@ public abstract class ServerInfoRequester <ResponseType>
 	{
 		return transactions [requestID].response;
 	}
+
+
+	public string GetErrorLog( string requestID )
+	{
+		return transactions [requestID].errorLog;
+	}
 		
 
 	protected string GenerateRequestID( string serverURL )

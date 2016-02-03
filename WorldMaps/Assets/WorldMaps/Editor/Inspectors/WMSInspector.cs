@@ -43,7 +43,8 @@ public class WMSComponentInspector : Editor
 				if( requestStatus == RequestStatus.DOWNLOADING ){
 					EditorGUILayout.HelpBox("Downloading WMS info ...", MessageType.Info);
 				}else if( requestStatus == RequestStatus.ERROR ){
-					EditorGUILayout.HelpBox("ERROR downloading WMS info (see console for more info)", MessageType.Error);
+					string errorLog = wmsInfoRequester.GetErrorLog (wmsTexture.wmsRequestID);
+					EditorGUILayout.HelpBox("ERROR downloading WMS info: \n" + errorLog, MessageType.Error);
 				}
 
 				if (GUI.changed) {
