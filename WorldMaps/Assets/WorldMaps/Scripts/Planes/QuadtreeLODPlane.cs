@@ -25,15 +25,7 @@ public class QuadtreeLODPlane : MonoBehaviour {
 	{
 		if (depth_ == 0) {
 			Vector3 meshSize = GetComponent<MeshRenderer> ().bounds.size;
-			if (meshSize.x != meshSize.z) {
-				Debug.LogWarning ("LOD plane must be square (currently: " +
-				meshSize.x +
-				"x" +
-				meshSize.y +
-				")");
-			}
-
-			float mapSize = Mathf.Max (meshSize.x, meshSize.z);
+			Vector2 mapSize = new Vector2 (meshSize.x, meshSize.z);
 
 			onlineTexture = null;
 			if (GetComponent<WMSTexture> () != null) {

@@ -4,10 +4,10 @@ using System.Collections;
 public class PlanesFactory {
 
 
-	static public Mesh CreateHorizontalPlane( float meshSize, int meshVertexResolution )
+	static public Mesh CreateHorizontalPlane( Vector2 meshSize, int meshVertexResolution )
 	{
 		int N_VERTICES = meshVertexResolution * meshVertexResolution;
-		float DISTANCE_BETWEEN_VERTICES = meshSize / (float)(meshVertexResolution - 1.0f) ;
+		Vector2 DISTANCE_BETWEEN_VERTICES = new Vector2( meshSize.x / (float)(meshVertexResolution - 1.0f), meshSize.y / (float)(meshVertexResolution - 1.0f) );
 		float DISTANCE_BETWEEN_UV = 1.0f / (float)(meshVertexResolution - 1.0f);
 
 		Vector3[] vertices = new Vector3[N_VERTICES];
@@ -18,9 +18,9 @@ public class PlanesFactory {
 			for (int column=0; column<meshVertexResolution; column++) {
 				int VERTEX_INDEX = row * meshVertexResolution + column;
 
-				vertices[VERTEX_INDEX].x = -meshSize / 2.0f + column * DISTANCE_BETWEEN_VERTICES;
+				vertices[VERTEX_INDEX].x = -meshSize.x / 2.0f + column * DISTANCE_BETWEEN_VERTICES.x;
 				vertices[VERTEX_INDEX].y = 0.0f;
-				vertices[VERTEX_INDEX].z = meshSize / 2.0f - row * DISTANCE_BETWEEN_VERTICES;
+				vertices[VERTEX_INDEX].z = meshSize.y / 2.0f - row * DISTANCE_BETWEEN_VERTICES.y;
 
 				uv[VERTEX_INDEX].x = DISTANCE_BETWEEN_UV * column;
 				uv[VERTEX_INDEX].y = 1.0f - DISTANCE_BETWEEN_UV * row;
