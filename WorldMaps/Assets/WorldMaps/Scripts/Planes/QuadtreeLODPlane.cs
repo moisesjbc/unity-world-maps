@@ -11,7 +11,7 @@ using System.Collections.Generic;
 public class QuadtreeLODPlane : MonoBehaviour {
 	public int vertexResolution = 20;
 
-	private OnlineTexture onlineTexture;
+	private OnlineTexture onlineTexture = null;
 
 	private string nodeID = "0";
 
@@ -35,16 +35,11 @@ public class QuadtreeLODPlane : MonoBehaviour {
 
 			float mapSize = Mathf.Max (meshSize.x, meshSize.z);
 
+			onlineTexture = null;
 			if (GetComponent<WMSTexture> () != null) {
 				onlineTexture = this.GetComponent<WMSTexture> ();
-
-				if (GetComponent<BingMapsTexture> () != null) {
-					Debug.LogError ("Terrain can't have both WMSTexture and BingMapsTexture componets!");
-				}
 			} else if (GetComponent<BingMapsTexture> () != null) {
 				onlineTexture = this.GetComponent<BingMapsTexture> ();
-			} else {
-				Debug.LogError ("Terrain must have a WMSTexture or BingMapsTexture");
 			}
 
 			nodeID = "0";
@@ -53,7 +48,7 @@ public class QuadtreeLODPlane : MonoBehaviour {
 			gameObject.GetComponent<MeshFilter> ().mesh = PlanesFactory.CreateHorizontalPlane (mapSize, vertexResolution);
 		}
 
-		if (Application.isPlaying) {
+		if (Application.isPlaying && onlineTexture != null) {
 			onlineTexture.RequestTexture (nodeID);
 		}
 	}
@@ -99,13 +94,14 @@ public class QuadtreeLODPlane : MonoBehaviour {
 		childGameObject.GetComponent<QuadtreeLODPlane>().vertexResolution = this.vertexResolution;
 		childGameObject.GetComponent<QuadtreeLODPlane> ().nodeID = nodeID;
 
-
-		if (gameObject.GetComponent<WMSTexture> () != null) {
-			childGameObject.GetComponent<QuadtreeLODPlane>().onlineTexture = childGameObject.AddComponent<WMSTexture> ();
-		} else {
-			childGameObject.GetComponent<QuadtreeLODPlane>().onlineTexture = childGameObject.AddComponent<BingMapsTexture> ();
+		if (onlineTexture != null) {
+			if (gameObject.GetComponent<WMSTexture> () != null) {
+				childGameObject.GetComponent<QuadtreeLODPlane> ().onlineTexture = childGameObject.AddComponent<WMSTexture> ();
+			} else {
+				childGameObject.GetComponent<QuadtreeLODPlane> ().onlineTexture = childGameObject.AddComponent<BingMapsTexture> ();
+			}
+			onlineTexture.CopyTo (childGameObject.GetComponent<QuadtreeLODPlane> ().onlineTexture);
 		}
-		onlineTexture.CopyTo (childGameObject.GetComponent<QuadtreeLODPlane>().onlineTexture);
 		childGameObject.GetComponent<QuadtreeLODPlane>().SetVisible (false);
 
 		return childGameObject;
@@ -262,7 +258,7 @@ public class QuadtreeLODPlane : MonoBehaviour {
 	private bool AreChildrenLoaded(){
 		if (children_ != null) {
 			for (int i = 0; i < 4; i++) {
-				if (children_ [i].GetComponent<QuadtreeLODPlane>().onlineTexture.textureLoaded == false) {
+				if (children_ [i].GetComponent<QuadtreeLODPlane>().onlineTexture == null || children_ [i].GetComponent<QuadtreeLODPlane>().onlineTexture.textureLoaded == false) {
 					return false;
 				}
 			}
