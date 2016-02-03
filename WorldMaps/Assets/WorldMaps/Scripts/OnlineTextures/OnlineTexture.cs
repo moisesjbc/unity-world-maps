@@ -56,9 +56,7 @@ public abstract class OnlineTexture : MonoBehaviour {
 				textureLoaded = true;
 				tempMaterial.mainTexture = request_.texture;
 			} else {
-				string requestedURL = request_.url;
 				request_ = null;
-				Debug.LogError ("Errors when downloading texture [" + requestedURL + "]:\n" + errorMessage);
 				tempMaterial.mainTexture = Texture2D.whiteTexture;
 			}
 			tempMaterial.mainTexture.wrapMode = TextureWrapMode.Clamp;
