@@ -79,7 +79,7 @@ class ServerTransaction <ResponseType>
 			return true;
 		}catch( Exception e ){
 			// Parsing error
-			this.errorLog = "Couldn't parse response from server: " + e.Message;
+			this.errorLog = "Couldn't parse response from server: " + e.Message + "\nResponse from server: \n" + request.text;
 			return false;
 		}
 	}
