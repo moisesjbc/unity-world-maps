@@ -4,7 +4,9 @@ using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 
-
+// This is needed for executing the Start() method and replacing the Unity
+// plane with a custom one.
+[ExecuteInEditMode]
 public class QuadtreeLODPlane : MonoBehaviour {
 	public int vertexResolution = 20;
 
@@ -21,7 +23,7 @@ public class QuadtreeLODPlane : MonoBehaviour {
 	public void Start()
 	{
 		if (depth_ == 0) {
-			Vector3 meshSize = GetComponent<MeshRenderer> ().bounds.size;
+			Vector3 meshSize = GetComponent<MeshFilter>().sharedMesh.bounds.size;
 			Vector2 mapSize = new Vector2 (meshSize.x, meshSize.z);
 
 			onlineTexture = null;
