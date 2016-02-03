@@ -3,11 +3,6 @@ using System.Collections;
 using System;
 using System.Text;
 
-public enum BingMapsType
-{
-	AERIAL,
-	ROADS
-}
 
 public class BingMapsTexture : OnlineTexture {
 	public static string testServerURL = "http://ecn.{subdomain}.tiles.virtualearth.net/tiles/r{quadkey}.jpeg?g=4892&mkt={culture}&shading=hill";
