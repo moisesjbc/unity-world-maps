@@ -50,14 +50,18 @@ public class BingMapsTexture : OnlineTexture {
 	}
 
 
-	public void ValidateServerURL()
+	public static bool ValidateServerURL(string serverURL, out string errorMessage)
 	{
+		errorMessage = "";
 		if( serverURL.IndexOf("{quadkey}" ) < 0 ){
-			Debug.LogError ("BingMaps inspector - missing {quadkey} in server URL");
+			errorMessage = "BingMaps inspector - missing {quadkey} in server URL";
+			return false;
 		}
 		if( serverURL.IndexOf("{subdomain}" ) < 0 ){
-			Debug.LogError ("BingMaps inspector - missing {subdomain} in server URL");
+			errorMessage = "BingMaps inspector - missing {subdomain} in server URL";
+			return false;
 		}
+		return true;
 	}
 
 
@@ -66,8 +70,6 @@ public class BingMapsTexture : OnlineTexture {
 		// Children node numbering differs between QuadtreeLODNoDe and Bing maps, so we
 		// correct it here.
 		nodeID = nodeID.Substring(1).Replace('1','9').Replace('2','1').Replace('9','2');
-
-		ValidateServerURL ();
 
 		string url = CurrentFixedUrl ();
 		url = url.Replace ("{quadkey}", initialSector + nodeID);

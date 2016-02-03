@@ -32,6 +32,11 @@ public class BingMapsInspector : Editor
 			EditorGUILayout.HelpBox("This is a test server URL. When building your app, please generate a new server template URL by following the instructions on file Assets/WorldMaps/README.pdf", MessageType.Warning);
 		}
 
+		string errorMessage = "";
+		if( BingMapsTexture.ValidateServerURL(bingMapsTexture.serverURL, out errorMessage) == false ){
+			EditorGUILayout.HelpBox (errorMessage, MessageType.Error);
+		}
+
 		bingMapsTexture.latitude = EditorGUILayout.FloatField(lattitudeLabel, bingMapsTexture.latitude);
 		bingMapsTexture.longitude = EditorGUILayout.FloatField(longitudeLabel, bingMapsTexture.longitude);
 		bingMapsTexture.initialZoom = EditorGUILayout.IntField (zoomLabel, bingMapsTexture.initialZoom);
