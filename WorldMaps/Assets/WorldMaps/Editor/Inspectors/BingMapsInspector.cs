@@ -14,7 +14,7 @@ public class BingMapsInspector : Editor
 
 	static string lattitudeLabel = "Lattitude (decimal): ";
 	static string longitudeLabel = "Longitude (decimal): ";
-	static string zoomLabel = "Zoom (" + MIN_ZOOM + ", " + MAX_ZOOM + ")";
+	static string zoomLabel = "Zoom: ";
 
 
 	public override void OnInspectorGUI()
@@ -39,10 +39,7 @@ public class BingMapsInspector : Editor
 
 		bingMapsTexture.latitude = EditorGUILayout.FloatField(lattitudeLabel, bingMapsTexture.latitude);
 		bingMapsTexture.longitude = EditorGUILayout.FloatField(longitudeLabel, bingMapsTexture.longitude);
-		bingMapsTexture.initialZoom = EditorGUILayout.IntField (zoomLabel, bingMapsTexture.initialZoom);
-		if (bingMapsTexture.initialZoom < 0 || bingMapsTexture.initialZoom > MAX_ZOOM) {
-			EditorGUILayout.HelpBox ("Initial zoom out of range", MessageType.Error);
-		}
+		bingMapsTexture.initialZoom = EditorGUILayout.IntSlider(zoomLabel, bingMapsTexture.initialZoom, MIN_ZOOM, MAX_ZOOM);
 		bingMapsTexture.ComputeInitialSector ();
 
 		if (GUILayout.Button ("Update preview (may take a while)")) {
